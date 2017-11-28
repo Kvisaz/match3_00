@@ -8,31 +8,25 @@ function BejeweledGroup(game, cols, rows) {
 
     this.cols = cols;
     this.rows = rows;
-    this.jewels = [];
     this.COLORS_AMOUNT = 8;
     this.JEWEL_SIZE = 64;
     this.CURSOR_SIZE = 66;
     this.GRID_STEP = 66;
 
     this.selectedJewel = undefined;
-    this.swapJewel = undefined;
     this.isSwapping = false;
+    this.swipe = new Swipe(this.GRID_STEP);
 
     var col, row, jewel, jewelType;
     for (col = 0; col < cols; col++) {
-        this.jewels[col] = [];
         for (row = 0; row < rows; row++) {
-            console.log("col = " + col + " / row = " + row);
             jewelType = Math.floor(Math.random() * this.COLORS_AMOUNT);
             jewel = JewelGenerator.createJewel(game, jewelType); // jewelType сохраняется как поле в jewel
             jewel.jewelType = jewelType;
-            jewel.jewelCol = col;
-            jewel.jewelRow = row;
             jewel.tweenTarget = {x: 0, y: 0};
             jewel.tween = game.add.tween(jewel);
             jewel.tween.to(jewel.tweenTarget, 250);
             this.group.add(jewel);
-            this.jewels[col][row] = jewel;
         }
     }
 
@@ -50,6 +44,7 @@ function BejeweledGroup(game, cols, rows) {
     this.group.add(this.cursor);
 
     this.group.onChildInputDown.add(this.onDown, this);
+    game.input.onUp.add(this.onUp, this);
 }
 
 BejeweledGroup.prototype.setXY = function (x, y) {
@@ -58,20 +53,55 @@ BejeweledGroup.prototype.setXY = function (x, y) {
     return this;
 };
 
+BejeweledGroup.prototype.onUp = function (pointer) {
+    if (this.isSwapping || this.selectedJewel === undefined) return;
+
+    if (this.swipe.check(pointer.x, pointer.y) == false) return;
+    var jewel1 = this.selectedJewel;
+    this.unselect();
+    var jewel2 = this.selectNear(jewel1, this.swipe.direction);
+    this.swap(jewel1, jewel2);
+};
+
+BejeweledGroup.prototype.selectNear = function (jewel, direction) {
+    var target;
+    switch (direction) {
+        case this.swipe.directions.LEFT:
+            target = {x: jewel.x - this.GRID_STEP, y: jewel.y};
+            break;
+        case this.swipe.directions.UP:
+            target = {x: jewel.x, y: jewel.y - this.GRID_STEP};
+            break;
+        case this.swipe.directions.RIGHT:
+            target = {x: jewel.x + this.GRID_STEP, y: jewel.y};
+            break;
+        case this.swipe.directions.DOWN:
+            target = {x: jewel.x, y: jewel.y + this.GRID_STEP};
+            break;
+    }
+
+    var i, jewel2;
+    for(var i=0;i<this.group.children.length;i++){
+        jewel2 = this.group.children[i];
+        if(jewel2.jewelType === undefined) continue;
+        if (jewel2.x == target.x && jewel2.y == target.y) {
+            console.log("Near got!");
+            return jewel2;
+        }
+    }
+    return undefined;
+};
+
 BejeweledGroup.prototype.onDown = function (jewel, pointer) {
     if (this.isSwapping) return;
-
+    this.swipe.start(pointer.x, pointer.y);
     var col = Math.floor(jewel.x / this.GRID_STEP);
     var row = Math.floor(jewel.y / this.GRID_STEP);
-
-    console.log("onDown on jewel " + jewel.jewelType);
-    console.log("jewelCol " + col);
-    console.log("row " + row);
     if (jewel.jewelType !== undefined) {
         this.select(jewel);
     }
     else {
-        this.unselect(jewel);
+        this.unselect();
     }
 
 };
@@ -84,7 +114,7 @@ BejeweledGroup.prototype.isNear = function (jewel1, jewel2) {
     var row2 = Math.floor(jewel2.y / this.GRID_STEP);
 
     var diag = Math.abs(col1 - col2) == 1 && Math.abs(row1 - row2) == 1;
-    var near = Math.abs(col1 - col2) == 1 || Math.abs(row1 - row2) == 1;
+    var near = Math.abs(col1 - col2) <= 1 && Math.abs(row1 - row2) <= 1;
 
     return near && !diag;
 };
@@ -92,33 +122,9 @@ BejeweledGroup.prototype.isNear = function (jewel1, jewel2) {
 BejeweledGroup.prototype.select = function (jewel) {
     if (this.selectedJewel && this.isNear(this.selectedJewel, jewel)) { // проверка на соседство
         // swap
-        console.log("SWAP!");
-        var jewel2 = this.selectedJewel;
+        var selectedJewel = this.selectedJewel;
         this.unselect();
-
-        this.isSwapping = true; // блокируем ввод
-        jewel2.tweenTarget.x = jewel.x;
-        jewel2.tweenTarget.y = jewel.y;
-
-        jewel.tweenTarget.x = jewel2.x;
-        jewel.tweenTarget.y = jewel2.y;
-
-        jewel.tween.start();
-        jewel2.tween.start();
-        jewel2.tween.onComplete.add(function () {
-            var tmpCol = jewel2.jewelRow;
-            var tmpRow = jewel2.jewelCol;
-
-            jewel2.jewelCol = jewel.jewelCol;
-            jewel2.jewelRow = jewel.jewelRow;
-
-            jewel.jewelCol = tmpCol;
-            jewel.jewelRow = tmpRow;
-
-            this.isSwapping = false; // разблокируем ввод
-        }, this);
-
-
+        this.swap(selectedJewel, jewel);
     }
     else { // select new
         this.selectedJewel = jewel;
@@ -128,7 +134,32 @@ BejeweledGroup.prototype.select = function (jewel) {
 
 };
 
-BejeweledGroup.prototype.unselect = function (jewel) {
+BejeweledGroup.prototype.unselect = function () {
     this.selectedJewel = undefined;
     this.cursor.kill();
+};
+
+BejeweledGroup.prototype.swap = function (jewel1, jewel2) {
+    console.log("SWAP!");
+    this.isSwapping = true; // блокируем ввод
+    jewel2.tweenTarget.x = jewel1.x;
+    jewel2.tweenTarget.y = jewel1.y;
+
+    jewel1.tweenTarget.x = jewel2.x;
+    jewel1.tweenTarget.y = jewel2.y;
+
+    jewel1.tween.start();
+    jewel2.tween.start();
+    jewel2.tween.onComplete.add(function () {
+        var tmpCol = jewel2.jewelRow;
+        var tmpRow = jewel2.jewelCol;
+
+        jewel2.jewelCol = jewel1.jewelCol;
+        jewel2.jewelRow = jewel1.jewelRow;
+
+        jewel1.jewelCol = tmpCol;
+        jewel1.jewelRow = tmpRow;
+
+        this.isSwapping = false; // разблокируем ввод
+    }, this);
 };
