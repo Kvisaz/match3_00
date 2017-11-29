@@ -10,6 +10,7 @@ function BejeweledGroup(game, cols, rows) {
     this.JEWEL_SIZE = 64;
     this.CURSOR_SIZE = 66;
     this.GRID_STEP = 66;
+    this.COMBO_AMOUNT_MIN = 3;
 
     this.selectedJewel = undefined;
     this.isSwapping = false;
@@ -22,10 +23,9 @@ function BejeweledGroup(game, cols, rows) {
     };
 
     this.cache = {
-        nextJewel: undefined, // временный элемент для перебора
+        combo1: [],
+        combo2: [],
         nears: [], // просто соседи
-        sameNears: [], // группа одного цвета
-        sameNearsSize: 0, // лимит для sameNears, чтобы не задействовать push / shift
     };
 
     var col, row, jewel, jewelType;
@@ -72,15 +72,6 @@ BejeweledGroup.prototype.onDown = function (jewel, pointer) {
     console.log("jewel = " + jewel.jewelCol + ", " + jewel.jewelRow);
     if (jewel.jewelType !== undefined) { // undefined - курсор
         this.select(jewel);
-
-        // todo test
-        this.getSameNears(jewel);
-        this.cache.sameNears.forEach(function (nearJewel) {
-            if (nearJewel) {
-                console.log("nearJewel " + nearJewel.jewelCol + " / " + nearJewel.jewelRow);
-            }
-        });
-
     }
     else {
         this.unselect();
@@ -121,7 +112,6 @@ BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
 // Поиск всех граничащих соседей одного цвета
 BejeweledGroup.prototype.getSameNears = function (jewel) {
     console.log("getSameNears started....");
-    var me = this; // захват контекста
 
     // сбрасываем флаг обработки у всех камней
     // выбрана группа, потому что одна одномерная, в отличие от индекса this.data.jewels
@@ -129,37 +119,27 @@ BejeweledGroup.prototype.getSameNears = function (jewel) {
         jewel.jewelCounted = false;
     });
 
-    // обнуляем кэш цвета
-    this.cache.sameNearsSize = 0;
-
-    this.cache.sameNears.forEach(function (jewel2, index) {
-        me.cache.sameNears[index] = undefined;
-    });
-
-    // добавляем в кэш текущий
-    this.cache.sameNears[this.cache.sameNearsSize++] = jewel;
+    var sameJewels = []; // сюда будем сохранять результат
+    sameJewels.push(jewel); // добавляем в кэш текущий
     var sameNearIndex = 0; // текущий элемент для поиска следующих
     var next; // курсор для перебора группы одного цвета
 
     do {
-        next = this.cache.sameNears[sameNearIndex++];
-        next.jewelCounted = true;
-        console.log("next index : "+sameNearIndex);
+        next = sameJewels[sameNearIndex];
+        console.log("current index : " + sameNearIndex);
         this.getNears(next); // берем всех соседей у очередного элемента
         this.cache.nears.forEach(function (near) {
             // сосед есть && сосед не обработан && сосед того же цвета
             if (near && !(near.jewelCounted) && near.jewelType === next.jewelType) {
-                // добавляем соседа
-                me.cache.sameNears[me.cache.sameNearsSize++] = near;
-                // помечаем соседа обработанным
-                near.jewelCounted = true;
+                sameJewels.push(near); // добавляем соседа
             }
         });
-        console.log("sameNearIndex = "+sameNearIndex + " this.cache.sameNearsSize = "+this.cache.sameNearsSize);
+        next.jewelCounted = true; // помечаем соседа обработанным
+        console.log("sameNearIndex = " + sameNearIndex + " sameJewels.length = " + sameJewels.length);
+        sameNearIndex++;
+    } while (sameNearIndex < sameJewels.length)
 
-    } while (sameNearIndex < this.cache.sameNearsSize)
-
-    return this.cache.sameNears;
+    return sameJewels;
 };
 
 // Поиск всех соседей
@@ -207,13 +187,39 @@ BejeweledGroup.prototype.unselect = function () {
 
 BejeweledGroup.prototype.swap = function (jewel1, jewel2) {
     console.log("SWAP!");
+    if(jewel1.jewelType === jewel2.jewelType)  return; // запрет на своп одинакового цвета - упрощает вычисление групп
     this.isSwapping = true; // блокируем ввод
-    // настраиваем цели движения для камней ...........
-    jewel2.tweenTarget.x = jewel1.x;
-    jewel2.tweenTarget.y = jewel1.y;
-    jewel1.tweenTarget.x = jewel2.x;
-    jewel1.tweenTarget.y = jewel2.y;
 
+    // меняем данные, чтобы сработала проверка комбо
+    this.swapInModel(jewel1, jewel2);
+
+    // проверяем есть ли комбо
+    this.combo1 = this.getSameNears(jewel1);
+    this.combo2 = this.getSameNears(jewel2);
+
+    // комбо хотя бы 1 есть
+    if(this.combo1.length >= this.COMBO_AMOUNT_MIN
+    || this.combo2.length >= this.COMBO_AMOUNT_MIN){
+        // настраиваем цели движения для камней ...........
+        jewel2.tweenTarget.x = jewel1.x;
+        jewel2.tweenTarget.y = jewel1.y;
+        jewel1.tweenTarget.x = jewel2.x;
+        jewel1.tweenTarget.y = jewel2.y;
+
+        // отдаем приказ на движение
+        jewel1.tween.start();
+        jewel2.tween.start();
+        jewel2.tween.onComplete.add(this.onSwapComplete, this);
+        // todo сохранить группы комбо и взорвать их после свопа
+    }
+    else {
+        // отменить логику
+        this.swapInModel(jewel1, jewel2);
+        this.isSwapping = false; // разблокируем ввод
+    }
+};
+
+BejeweledGroup.prototype.swapInModel = function (jewel1, jewel2) {
     // меняем данные о колонке и ряде для камней ...........
     var tmpCol = jewel2.jewelCol;
     var tmpRow = jewel2.jewelRow;
@@ -225,11 +231,18 @@ BejeweledGroup.prototype.swap = function (jewel1, jewel2) {
     // обновляем индекс
     this.data.jewels[jewel2.jewelCol][jewel2.jewelRow] = jewel2;
     this.data.jewels[jewel1.jewelCol][jewel1.jewelRow] = jewel1;
+};
 
-    // отдаем приказ на движение
-    jewel1.tween.start();
-    jewel2.tween.start();
-    jewel2.tween.onComplete.add(function () {
-        this.isSwapping = false; // разблокируем ввод
-    }, this);
+BejeweledGroup.prototype.onSwapComplete = function () {
+    // todo взрываем группы
+    this.combo1.forEach(function (jewel) {
+        jewel.kill();
+    });
+
+    this.combo2.forEach(function (jewel) {
+        jewel.kill();
+    });
+
+    // разблокируем ввод
+    this.isSwapping = false;
 };
