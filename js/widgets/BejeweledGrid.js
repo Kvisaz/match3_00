@@ -18,7 +18,13 @@ function BejeweledGroup(game, cols, rows) {
     this.data = { // индекс наших камней для быстрого поиска соседей
         jewels: [],
         cols: cols,
-        rows: rows
+        rows: rows,
+    };
+
+    this.cache = {
+        nears: [], // просто соседи
+        sameNears: [], // группа одного цвета
+        sameNearsSize: 0, // лимит для sameNears, чтобы не задействовать push / shift
     };
 
     var col, row, jewel, jewelType;
@@ -27,8 +33,8 @@ function BejeweledGroup(game, cols, rows) {
         for (row = 0; row < rows; row++) {
             jewelType = Math.floor(Math.random() * this.COLORS_AMOUNT);
             jewel = JewelGenerator.createJewel(game, jewelType); // jewelType сохраняется как поле в jewel
-            jewel.x = col*this.GRID_STEP;
-            jewel.y = row*this.GRID_STEP;
+            jewel.x = col * this.GRID_STEP;
+            jewel.y = row * this.GRID_STEP;
             jewel.jewelType = jewelType;
             jewel.tweenTarget = {x: 0, y: 0}; // цель анимации
             jewel.tween = game.add.tween(jewel); // анимация, которую запустим потом
@@ -64,6 +70,15 @@ BejeweledGroup.prototype.onDown = function (jewel, pointer) {
     console.log("jewel = " + jewel.jewelCol + ", " + jewel.jewelRow);
     if (jewel.jewelType !== undefined) { // undefined - курсор
         this.select(jewel);
+
+        // todo test
+        this.getNears(jewel);
+        this.cache.nears.forEach(function (nearJewel) {
+            if (nearJewel) {
+                console.log("nearJewel " + nearJewel.jewelCol + " / " + nearJewel.jewelRow);
+            }
+        });
+
     }
     else {
         this.unselect();
@@ -78,7 +93,7 @@ BejeweledGroup.prototype.onUp = function (pointer) {
     var jewel1 = this.selectedJewel;
     this.unselect();
     var jewel2 = this.selectNearByDirection(jewel1, this.swipe.direction);
-    if(jewel2===undefined) {
+    if (jewel2 === undefined) {
         this.unselect();
         return;
     }
@@ -89,16 +104,38 @@ BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
     var nearJewel;
     switch (direction) {
         case this.swipe.directions.LEFT:
-            if(this.data.jewels[jewel.jewelCol - 1]===undefined) return undefined;
+            if (this.data.jewels[jewel.jewelCol - 1] === undefined) return undefined;
             return this.data.jewels[jewel.jewelCol - 1][jewel.jewelRow];
         case this.swipe.directions.UP:
             return this.data.jewels[jewel.jewelCol][jewel.jewelRow - 1];
         case this.swipe.directions.RIGHT:
-            if(this.data.jewels[jewel.jewelCol + 1]===undefined) return undefined;
+            if (this.data.jewels[jewel.jewelCol + 1] === undefined) return undefined;
             return this.data.jewels[jewel.jewelCol + 1][jewel.jewelRow];
         case this.swipe.directions.DOWN:
             return this.data.jewels[jewel.jewelCol][jewel.jewelRow + 1];
     }
+};
+
+// Поиск всех граничащих соседей одного цвета
+BejeweledGroup.prototype.getSameNears = function (jewel) {
+
+};
+
+// Поиск всех соседей
+BejeweledGroup.prototype.getNears = function (jewel) {
+    this.cache.nears[0] = jewel.jewelCol > 0 ?
+        this.data.jewels[jewel.jewelCol - 1][jewel.jewelRow]
+        : undefined;
+    this.cache.nears[1] = jewel.jewelCol < this.data.cols - 1 ?
+        this.data.jewels[jewel.jewelCol + 1][jewel.jewelRow]
+        : undefined;
+    this.cache.nears[2] = jewel.jewelRow > 0 ?
+        this.data.jewels[jewel.jewelCol][jewel.jewelRow - 1]
+        : undefined;
+    this.cache.nears[3] = jewel.jewelRow < this.data.rows - 1 ?
+        this.data.jewels[jewel.jewelCol][jewel.jewelRow + 1]
+        : undefined;
+    return this.cache.nears;
 };
 
 // проверка на допустимых соседей (по вертикали и горизонтали)
