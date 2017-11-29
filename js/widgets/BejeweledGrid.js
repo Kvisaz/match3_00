@@ -17,8 +17,13 @@ function BejeweledGroup(game, cols, rows) {
     this.isSwapping = false;
     this.swipe = new Swipe(this.GRID_STEP);
 
+    this.data = { // индекс наших камней для быстрого поиска
+        jewels: []
+    };
+
     var col, row, jewel, jewelType;
     for (col = 0; col < cols; col++) {
+        this.data.jewels[col] = [];
         for (row = 0; row < rows; row++) {
             jewelType = Math.floor(Math.random() * this.COLORS_AMOUNT);
             jewel = JewelGenerator.createJewel(game, jewelType); // jewelType сохраняется как поле в jewel
@@ -27,6 +32,9 @@ function BejeweledGroup(game, cols, rows) {
             jewel.tween = game.add.tween(jewel);
             jewel.tween.to(jewel.tweenTarget, 250);
             this.group.add(jewel);
+            this.data.jewels[col][row] = jewel; // непременно сохраняем ссылку в индексе
+            jewel.jewelCol = col;
+            jewel.jewelRow = row;
         }
     }
 
@@ -51,6 +59,19 @@ BejeweledGroup.prototype.setXY = function (x, y) {
     this.group.x = x;
     this.group.y = y;
     return this;
+};
+
+
+BejeweledGroup.prototype.onDown = function (jewel, pointer) {
+    if (this.isSwapping) return;
+    this.swipe.start(pointer.x, pointer.y);
+    console.log("jewel = " + jewel.jewelCol + ", " + jewel.jewelRow);
+    if (jewel.jewelType !== undefined) { // undefined - курсор
+        this.select(jewel);
+    }
+    else {
+        this.unselect();
+    }
 };
 
 BejeweledGroup.prototype.onUp = function (pointer) {
@@ -81,9 +102,9 @@ BejeweledGroup.prototype.selectNear = function (jewel, direction) {
     }
 
     var i, jewel2;
-    for(var i=0;i<this.group.children.length;i++){
+    for (var i = 0; i < this.group.children.length; i++) {
         jewel2 = this.group.children[i];
-        if(jewel2.jewelType === undefined) continue;
+        if (jewel2.jewelType === undefined) continue;
         if (jewel2.x == target.x && jewel2.y == target.y) {
             console.log("Near got!");
             return jewel2;
@@ -92,31 +113,11 @@ BejeweledGroup.prototype.selectNear = function (jewel, direction) {
     return undefined;
 };
 
-BejeweledGroup.prototype.onDown = function (jewel, pointer) {
-    if (this.isSwapping) return;
-    this.swipe.start(pointer.x, pointer.y);
-    var col = Math.floor(jewel.x / this.GRID_STEP);
-    var row = Math.floor(jewel.y / this.GRID_STEP);
-    if (jewel.jewelType !== undefined) {
-        this.select(jewel);
-    }
-    else {
-        this.unselect();
-    }
-
-};
 
 BejeweledGroup.prototype.isNear = function (jewel1, jewel2) {
-    var col1 = Math.floor(jewel1.x / this.GRID_STEP);
-    var row1 = Math.floor(jewel1.y / this.GRID_STEP);
-
-    var col2 = Math.floor(jewel2.x / this.GRID_STEP);
-    var row2 = Math.floor(jewel2.y / this.GRID_STEP);
-
-    var diag = Math.abs(col1 - col2) == 1 && Math.abs(row1 - row2) == 1;
-    var near = Math.abs(col1 - col2) <= 1 && Math.abs(row1 - row2) <= 1;
-
-    return near && !diag;
+    var inRow = jewel1.jewelRow == jewel2.jewelRow && Math.abs(jewel1.jewelCol - jewel2.jewelCol) == 1;
+    var inColumn = jewel1.jewelCol == jewel2.jewelCol && Math.abs(jewel1.jewelRow - jewel2.jewelRow) == 1;
+    return inRow || inColumn;
 };
 
 BejeweledGroup.prototype.select = function (jewel) {
@@ -131,7 +132,6 @@ BejeweledGroup.prototype.select = function (jewel) {
         this.cursor.alignIn(jewel, Phaser.CENTER);
         this.cursor.revive();
     }
-
 };
 
 BejeweledGroup.prototype.unselect = function () {
@@ -142,24 +142,24 @@ BejeweledGroup.prototype.unselect = function () {
 BejeweledGroup.prototype.swap = function (jewel1, jewel2) {
     console.log("SWAP!");
     this.isSwapping = true; // блокируем ввод
+    // настраиваем цели движения для камней ...........
     jewel2.tweenTarget.x = jewel1.x;
     jewel2.tweenTarget.y = jewel1.y;
-
     jewel1.tweenTarget.x = jewel2.x;
     jewel1.tweenTarget.y = jewel2.y;
 
+    // меняем данные о колонке и ряде для камней ...........
+    var tmpCol = jewel2.jewelCol;
+    var tmpRow = jewel2.jewelRow;
+    jewel2.jewelCol = jewel1.jewelCol;
+    jewel2.jewelRow = jewel1.jewelRow;
+    jewel1.jewelCol = tmpCol;
+    jewel1.jewelRow = tmpRow;
+
+    // отдаем приказ на движение
     jewel1.tween.start();
     jewel2.tween.start();
     jewel2.tween.onComplete.add(function () {
-        var tmpCol = jewel2.jewelRow;
-        var tmpRow = jewel2.jewelCol;
-
-        jewel2.jewelCol = jewel1.jewelCol;
-        jewel2.jewelRow = jewel1.jewelRow;
-
-        jewel1.jewelCol = tmpCol;
-        jewel1.jewelRow = tmpRow;
-
         this.isSwapping = false; // разблокируем ввод
     }, this);
 };
