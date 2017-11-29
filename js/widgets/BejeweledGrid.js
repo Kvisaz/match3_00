@@ -22,6 +22,7 @@ function BejeweledGroup(game, cols, rows) {
     };
 
     this.cache = {
+        nextJewel: undefined, // временный элемент для перебора
         nears: [], // просто соседи
         sameNears: [], // группа одного цвета
         sameNearsSize: 0, // лимит для sameNears, чтобы не задействовать push / shift
@@ -36,6 +37,7 @@ function BejeweledGroup(game, cols, rows) {
             jewel.x = col * this.GRID_STEP;
             jewel.y = row * this.GRID_STEP;
             jewel.jewelType = jewelType;
+            jewel.jewelCounted = false; // флаг для обработки в поиске групп
             jewel.tweenTarget = {x: 0, y: 0}; // цель анимации
             jewel.tween = game.add.tween(jewel); // анимация, которую запустим потом
             jewel.tween.to(jewel.tweenTarget, 250); // программируем анимацию
@@ -72,8 +74,8 @@ BejeweledGroup.prototype.onDown = function (jewel, pointer) {
         this.select(jewel);
 
         // todo test
-        this.getNears(jewel);
-        this.cache.nears.forEach(function (nearJewel) {
+        this.getSameNears(jewel);
+        this.cache.sameNears.forEach(function (nearJewel) {
             if (nearJewel) {
                 console.log("nearJewel " + nearJewel.jewelCol + " / " + nearJewel.jewelRow);
             }
@@ -118,7 +120,46 @@ BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
 
 // Поиск всех граничащих соседей одного цвета
 BejeweledGroup.prototype.getSameNears = function (jewel) {
+    console.log("getSameNears started....");
+    var me = this; // захват контекста
 
+    // сбрасываем флаг обработки у всех камней
+    // выбрана группа, потому что одна одномерная, в отличие от индекса this.data.jewels
+    this.group.forEach(function (jewel) {
+        jewel.jewelCounted = false;
+    });
+
+    // обнуляем кэш цвета
+    this.cache.sameNearsSize = 0;
+
+    this.cache.sameNears.forEach(function (jewel2, index) {
+        me.cache.sameNears[index] = undefined;
+    });
+
+    // добавляем в кэш текущий
+    this.cache.sameNears[this.cache.sameNearsSize++] = jewel;
+    var sameNearIndex = 0; // текущий элемент для поиска следующих
+    var next; // курсор для перебора группы одного цвета
+
+    do {
+        next = this.cache.sameNears[sameNearIndex++];
+        next.jewelCounted = true;
+        console.log("next index : "+sameNearIndex);
+        this.getNears(next); // берем всех соседей у очередного элемента
+        this.cache.nears.forEach(function (near) {
+            // сосед есть && сосед не обработан && сосед того же цвета
+            if (near && !(near.jewelCounted) && near.jewelType === next.jewelType) {
+                // добавляем соседа
+                me.cache.sameNears[me.cache.sameNearsSize++] = near;
+                // помечаем соседа обработанным
+                near.jewelCounted = true;
+            }
+        });
+        console.log("sameNearIndex = "+sameNearIndex + " this.cache.sameNearsSize = "+this.cache.sameNearsSize);
+
+    } while (sameNearIndex < this.cache.sameNearsSize)
+
+    return this.cache.sameNears;
 };
 
 // Поиск всех соседей
