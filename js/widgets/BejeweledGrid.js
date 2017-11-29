@@ -109,7 +109,8 @@ BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
     }
 };
 
-// Поиск всех граничащих соседей одного цвета
+// Поиск всех граничащих соседей одного типа
+
 BejeweledGroup.prototype.getSameNears = function (jewel) {
     console.log("getSameNears started....");
 
@@ -193,13 +194,13 @@ BejeweledGroup.prototype.swap = function (jewel1, jewel2) {
     // меняем данные, чтобы сработала проверка комбо
     this.swapInModel(jewel1, jewel2);
 
-    // проверяем есть ли комбо
-    this.combo1 = this.getSameNears(jewel1);
-    this.combo2 = this.getSameNears(jewel2);
+    // проверяем есть ли комбо для всех, кроме NONE
+    this.cache.combo1 = jewel1.jewelType != JewelType.NONE ? this.getSameNears(jewel1) : [];
+    this.cache.combo2 = jewel2.jewelType != JewelType.NONE ? this.getSameNears(jewel2) : [];
 
     // комбо хотя бы 1 есть
-    if(this.combo1.length >= this.COMBO_AMOUNT_MIN
-    || this.combo2.length >= this.COMBO_AMOUNT_MIN){
+    if(this.cache.combo1.length >= this.COMBO_AMOUNT_MIN
+    || this.cache.combo2.length >= this.COMBO_AMOUNT_MIN){
         // настраиваем цели движения для камней ...........
         jewel2.tweenTarget.x = jewel1.x;
         jewel2.tweenTarget.y = jewel1.y;
@@ -210,7 +211,6 @@ BejeweledGroup.prototype.swap = function (jewel1, jewel2) {
         jewel1.tween.start();
         jewel2.tween.start();
         jewel2.tween.onComplete.add(this.onSwapComplete, this);
-        // todo сохранить группы комбо и взорвать их после свопа
     }
     else {
         // отменить логику
@@ -234,15 +234,26 @@ BejeweledGroup.prototype.swapInModel = function (jewel1, jewel2) {
 };
 
 BejeweledGroup.prototype.onSwapComplete = function () {
-    // todo взрываем группы
-    this.combo1.forEach(function (jewel) {
-        jewel.kill();
-    });
-
-    this.combo2.forEach(function (jewel) {
-        jewel.kill();
-    });
+    this.blast(this.cache.combo1);
+    this.blast(this.cache.combo2);
 
     // разблокируем ввод
     this.isSwapping = false;
+};
+
+BejeweledGroup.prototype.blast = function (jewelArr) {
+    if(jewelArr.length < this.COMBO_AMOUNT_MIN) return; // минимальные не взрываем
+    jewelArr.forEach(function (jewel) {
+        jewel.jewelType = JewelType.NONE;
+        // todo blast
+        jewel.kill();
+    });
+};
+
+// проверить пустые места, если есть - сдвинуть соседей сверху на 1
+// на конец анимации - вызвать себя еще раз
+// вернуть true
+// если пустых мест нет - вернуть false
+BejeweledGroup.prototype.checkVoid = function () {
+
 };
