@@ -77,13 +77,15 @@ BejeweledGroup.prototype.onUp = function (pointer) {
 
     var jewel1 = this.selectedJewel;
     this.unselect();
-    var jewel2 = this.selectNear(jewel1, this.swipe.direction);
-    if(jewel2===undefined) return;
+    var jewel2 = this.selectNearByDirection(jewel1, this.swipe.direction);
+    if(jewel2===undefined) {
+        this.unselect();
+        return;
+    }
     this.swap(jewel1, jewel2);
 };
 
-BejeweledGroup.prototype.selectNear = function (jewel, direction) {
-
+BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
     var nearJewel;
     switch (direction) {
         case this.swipe.directions.LEFT:
