@@ -107,3 +107,15 @@ JewelLevel.prototype.swap = function (jewel1, jewel2) {
 
     return this;
 };
+
+// сбрасывает все пустые вниз
+JewelLevel.prototype.makeFall = function () {
+    var voidRow = -1;
+    this.jewels.forEach(function (column) {
+        column.sort(function (jewel1, jewel2) {
+            return jewel1.type === JewelType.NONE ? -1 : jewel2.type === JewelType.NONE ? 1 : 0;
+        }).forEach(function (jewel, row) {
+            jewel.row = row;
+        });
+    });
+};

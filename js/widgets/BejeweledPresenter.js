@@ -96,11 +96,11 @@ BejeweledPresenter.prototype.blast = function (combo1, combo2) {
 
 BejeweledPresenter.prototype.onBlastFinished = function () {
     console.log("onBlastFinished");
-    this.isAnimationWorking = false;
-    // fall all jewels
-    this.fall();
+    this.jewelLevel.makeFall();  // fall all jewels
+    this.view.refreshJewels(this.jewelLevel.jewels);
 };
 
-BejeweledPresenter.prototype.fall = function () {
-
+BejeweledPresenter.prototype.onFallFinished = function () {
+    console.log("onFallFinished");
+    this.isAnimationWorking = false; // check all
 };

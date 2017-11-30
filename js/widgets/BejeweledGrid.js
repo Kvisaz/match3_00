@@ -9,6 +9,7 @@ function BejeweledGroup(game, cols, rows) {
 
     this.BLAST_ANIMATION_DURATION = 150;
     this.JEWEL_SIZE = 64;
+    this.FALL_SPEED_PIXELS_PER_MS = 0.6;
     this.CURSOR_SIZE = 66;
     this.GRID_STEP = 66;
     this.COMBO_AMOUNT_MIN = 3;
@@ -87,227 +88,6 @@ BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
     }
 };
 
-// Поиск всех граничащих соседей одного типа
-BejeweledGroup.prototype.getSameNears = function (jewel) {
-    console.log("getSameNears started....");
-
-    // сбрасываем флаг обработки у всех камней
-    // выбрана группа, потому что одна одномерная, в отличие от индекса this.data.jewels
-    this.group.forEach(function (jewel) {
-        jewel.jewelCounted = false;
-    });
-
-    var sameJewels = []; // сюда будем сохранять результат
-    sameJewels.push(jewel); // добавляем в кэш текущий
-    var sameNearIndex = 0; // текущий элемент для поиска следующих
-    var next; // курсор для перебора группы одного цвета
-    var nears; // соседи
-    do {
-        next = sameJewels[sameNearIndex];
-        console.log("current index : " + sameNearIndex);
-        nears = this.getNears(next); // берем всех соседей у очередного элемента
-        nears.forEach(function (near) {
-            // сосед есть && сосед не обработан && сосед того же цвета
-            if (near && !(near.jewelCounted) && near.jewelType === next.jewelType) {
-                sameJewels.push(near); // добавляем соседа
-            }
-        });
-        next.jewelCounted = true; // помечаем соседа обработанным
-        console.log("sameNearIndex = " + sameNearIndex + " sameJewels.length = " + sameJewels.length);
-        sameNearIndex++;
-    } while (sameNearIndex < sameJewels.length)
-
-    return sameJewels;
-};
-
-// Поиск всех соседей
-BejeweledGroup.prototype.getNears = function (jewel) {
-    this.cache.nears[0] = jewel.jewelCol > 0 ?
-        this.data.jewels[jewel.jewelCol - 1][jewel.jewelRow]
-        : undefined;
-    this.cache.nears[1] = jewel.jewelCol < this.data.cols - 1 ?
-        this.data.jewels[jewel.jewelCol + 1][jewel.jewelRow]
-        : undefined;
-    this.cache.nears[2] = jewel.jewelRow > 0 ?
-        this.data.jewels[jewel.jewelCol][jewel.jewelRow - 1]
-        : undefined;
-    this.cache.nears[3] = jewel.jewelRow < this.data.rows - 1 ?
-        this.data.jewels[jewel.jewelCol][jewel.jewelRow + 1]
-        : undefined;
-    return this.cache.nears;
-};
-
-// проверка на допустимых соседей (по вертикали и горизонтали)
-BejeweledGroup.prototype.isNear = function (jewel1, jewel2) {
-    var inRow = jewel1.model.row == jewel2.model.row && Math.abs(jewel1.model.column - jewel2.model.column) == 1;
-    var inColumn = jewel1.model.column == jewel2.model.column && Math.abs(jewel1.model.row - jewel2.model.row) == 1;
-    return inRow || inColumn;
-};
-
-BejeweledGroup.prototype.select = function (jewel) {
-    if (this.selectedJewel && this.isNear(this.selectedJewel, jewel)) { // проверка на соседство
-        // swap
-        var selectedJewel = this.selectedJewel;
-        this.unselect();
-        this.swap(selectedJewel, jewel);
-    }
-    else { // select new
-        this.selectedJewel = jewel;
-        this.cursor.alignIn(jewel, Phaser.CENTER);
-        this.cursor.revive();
-    }
-};
-
-BejeweledGroup.prototype.unselect = function () {
-    this.selectedJewel = undefined;
-    this.cursor.kill();
-};
-
-BejeweledGroup.prototype.swap___Old = function (jewel1, jewel2) {
-    console.log("SWAP!");
-    if (jewel1.model.type === jewel2.model.type)  return; // запрет на своп одинакового цвета - упрощает вычисление групп
-    this.isSwapping = true; // блокируем ввод
-
-    // меняем данные, чтобы сработала проверка комбо
-    this.swapInModel(jewel1, jewel2);
-
-    // проверяем есть ли комбо для всех, кроме NONE
-    //this.cache.combo1 = jewel1.model.type != JewelType.NONE ? this.getSameNears(jewel1) : [];
-    //this.cache.combo2 = jewel2.model.type != JewelType.NONE ? this.getSameNears(jewel2) : [];
-
-    var combo1 = jewel1.model.type != JewelType.NONE ? this.getSameNears(jewel1) : [];
-    var combo2 = jewel2.model.type != JewelType.NONE ? this.getSameNears(jewel2) : [];
-
-    // комбо хотя бы 1 есть
-    if (this.cache.combo1.length >= this.COMBO_AMOUNT_MIN
-        || this.cache.combo2.length >= this.COMBO_AMOUNT_MIN) {
-        // настраиваем цели движения для камней ...........
-        jewel2.tweenTarget.x = jewel1.x;
-        jewel2.tweenTarget.y = jewel1.y;
-        jewel1.tweenTarget.x = jewel2.x;
-        jewel1.tweenTarget.y = jewel2.y;
-
-        // отдаем приказ на движение
-        jewel1.tween.start();
-        jewel2.tween.start();
-        jewel2.tween.onComplete.add(this.onSwapComplete, this);
-    }
-    else {
-        // отменить логику
-        this.swapInModel(jewel1, jewel2);
-        this.isSwapping = false; // разблокируем ввод
-    }
-};
-
-BejeweledGroup.prototype.swapInModel = function (jewel1, jewel2) {
-    // меняем данные о колонке и ряде для камней ...........
-    var tmpCol = jewel2.jewelCol;
-    var tmpRow = jewel2.jewelRow;
-    jewel2.jewelCol = jewel1.jewelCol;
-    jewel2.jewelRow = jewel1.jewelRow;
-    jewel1.jewelCol = tmpCol;
-    jewel1.jewelRow = tmpRow;
-
-    // обновляем индекс
-    this.data.jewels[jewel2.jewelCol][jewel2.jewelRow] = jewel2;
-    this.data.jewels[jewel1.jewelCol][jewel1.jewelRow] = jewel1;
-};
-
-BejeweledGroup.prototype.onSwapComplete = function () {
-    this.cache.removed = [];
-    this.blast(this.cache.combo1);
-    this.blast(this.cache.combo2);
-
-    this.checkVoid();
-
-    // разблокируем ввод
-    this.isSwapping = false;
-};
-
-BejeweledGroup.prototype.blast = function (jewelArr) {
-    if (jewelArr.length < this.COMBO_AMOUNT_MIN) return; // минимальные не взрываем
-    this.cache.removed = this.cache.removed.concat(jewelArr);
-    var me = this;
-    jewelArr.forEach(function (jewel) {
-        jewel.jewelType = JewelType.NONE;
-        jewel.kill();
-        me.data.jewels[jewel.jewelCol][jewel.jewelRow] = undefined;
-    });
-};
-
-// проверить пустые места, если есть - сдвинуть соседей сверху на 1
-// на конец анимации - вызвать себя еще раз
-// вернуть true
-// если пустых мест нет - вернуть false
-BejeweledGroup.prototype.checkVoid = function () {
-    var hasVoids = false;
-    var nextJewel, fallJewel, col, row;
-    for (col = 0; col < this.data.cols; col++) {
-        for (row = 0; row < this.data.rows; row++) {
-            nextJewel = this.data.jewels[col][row];
-            if (nextJewel === undefined) {
-                if (row == 0) { // первый ряд - создаем новый
-                    nextJewel.jewelType = JewelType.getRandomCommon();
-                    nextJewel.revive();
-                }
-                else {
-                    this.data.jewels[col][row - 1] = nextJewel; // поднимаем пустой выше
-                    nextJewel.jewelRow--;
-
-                    fallJewel = this.data.jewels[col][row - 1];
-                    fallJewel.tweenTarget.x = nextJewel.x;
-                    fallJewel.tweenTarget.y = nextJewel.y;
-
-                    this.data.jewels[col][row] = fallJewel; // поднимаем пустой выше
-                    fallJewel.jewelRow = row; // поднимаем пустой выше
-                    fallJewel.jewelCol = col; // поднимаем пустой выше
-
-                    fallJewel.tween.start();
-                    hasVoids = true;
-                }
-            }
-        }
-    }
-    // когда последняя анимация завершится - проверяем снова
-    if (fallJewel !== undefined) {
-        fallJewel.tween.onComplete.add(this.checkVoid, this);
-    }
-};
-
-
-//  Падение в Match-3
-// передаем 2D-массив, в котором записаны фишки
-// jewels[col][row] - то есть у нас просто массив
-BejeweledGroup.prototype.fallAll = function (jewels) {
-    for (var i = 0; i < jewels.length; i++) {
-        this.fallColumn(jewels[i]);
-    }
-};
-
-//  Падение в Match-3 для 1 колонки
-BejeweledGroup.prototype.fallColumn = function (jewelsColumn) {
-    // суть - назначаем всем фишкам время и расстояние "падения"
-    // эти переменные зависят от числа найденных "пустых фишек" под текущей фишкой
-    var deltaY = 0;  // расстояние падения по дефолту
-    var deltaTime = 0; // время падения по дефолту
-
-    var stepY = this.GRID_STEP;
-    var stepTime = 100; //ms
-    var next;
-    for (var i = jewelsColumn.length - 1; i > 0; i--) {
-        next = jewelsColumn[i];
-        if (next == undefined) {
-            deltaY += stepY;
-            deltaTime += stepTime;
-        }
-        else {
-            // next.tweenTarget
-            // todo нужна модель
-        }
-
-    }
-};
-
 // ------------------- for presenter --------------------
 BejeweledGroup.prototype.addJewelView = function (jewelModel) {
     var jewelImage = JewelGenerator.createJewel(this.game, jewelModel.type);
@@ -349,8 +129,21 @@ BejeweledGroup.prototype.blast = function (jewelModelArray) {
     var i, tween, max = jewelModelArray.length - 1;
     for (var i = 0; i <= max; i++) {
         tween = this.game.add.tween(jewelModelArray[i].view).to({alpha: 0}, this.BLAST_ANIMATION_DURATION).start();
-        if (i == max) {
-            tween.onComplete.add(this.presenter.onBlastFinished, this.presenter);
+    }
+    tween.onComplete.add(this.presenter.onBlastFinished, this.presenter);
+};
+
+BejeweledGroup.prototype.refreshJewels = function (jewels) {
+    var jewel, x, y, duration, col, row, tween, maxCol = jewels.length - 1, maxRow = jewels[0].length - 1;
+    for (col = 0; col <= maxCol; col++) {
+        for (row = 0; row <= maxRow; row++) {
+            jewel = jewels[col][row];
+            x = col * this.GRID_STEP;
+            y = row * this.GRID_STEP;
+            duration = Math.floor((y - jewel.view.y)/ this.FALL_SPEED_PIXELS_PER_MS);
+            tween = this.game.add.tween(jewel.view).to({x: x, y: y}, duration).start();
         }
     }
+    // в последний твин пишем коллбэк презентер
+    tween.onComplete.add(this.presenter.onFallFinished, this.presenter);
 };
