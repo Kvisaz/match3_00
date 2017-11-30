@@ -7,6 +7,7 @@ function BejeweledGroup(game, cols, rows) {
     this.group = game.add.group();
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
+    this.BLAST_ANIMATION_DURATION = 150;
     this.JEWEL_SIZE = 64;
     this.CURSOR_SIZE = 66;
     this.GRID_STEP = 66;
@@ -331,7 +332,7 @@ BejeweledGroup.prototype.hideCursor = function () {
     this.cursor.kill();
 };
 
-BejeweledGroup.prototype.swap = function (jewelModel1, jewelModel2, undo) {
+BejeweledGroup.prototype.swap = function (jewelModel1, jewelModel2, callback, callbackContext) {
     // меняем позиции
     jewelModel1.view.tweenTarget.x = jewelModel2.view.x;
     jewelModel1.view.tweenTarget.y = jewelModel2.view.y;
@@ -340,8 +341,16 @@ BejeweledGroup.prototype.swap = function (jewelModel1, jewelModel2, undo) {
     jewelModel1.view.tween.start();
     jewelModel2.view.tween.start();
 
-    // меняем модели
-    var callback = undo ? this.presenter.onUndoSwapFinished : this.presenter.onSwapFinished;
     // передача аргументов в addOnce не работает, идет мусор - image, tween   и тд
-    jewelModel2.view.tween.onComplete.addOnce(callback, this.presenter, 0);
+    jewelModel2.view.tween.onComplete.addOnce(callback, callbackContext, 0);
+};
+
+BejeweledGroup.prototype.blast = function (jewelModelArray) {
+    var i, tween, max = jewelModelArray.length - 1;
+    for (var i = 0; i <= max; i++) {
+        tween = this.game.add.tween(jewelModelArray[i].view).to({alpha: 0}, this.BLAST_ANIMATION_DURATION).start();
+        if (i == max) {
+            tween.onComplete.add(this.presenter.onBlastFinished, this.presenter);
+        }
+    }
 };

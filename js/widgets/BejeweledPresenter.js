@@ -15,70 +15,92 @@ function BejeweledPresenter(view, cols, rows) {
         .forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
 
     this.selectedJewel = undefined;
-    this.swap = {jewel1: undefined, jewel2: undefined};
+    this.swapPair = {jewel1: undefined, jewel2: undefined};
 };
 
 // передаем сюда модель
 BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
     console.log("presenter.onJewelClickDown - jewel col: " + jewel.column + " row: " + jewel.row);
     if (this.isAnimationWorking) return; // блокировка анимаций
-
     // есть выделение и это соседи
-    if (this.selectedJewel !== undefined && this.jewelLevel.isNear(this.selectedJewel, jewel)) {
-        this.view.hideCursor();
-        var selectedJewel = this.selectedJewel;
-        this.selectedJewel = undefined;
-        this.checkSwap(selectedJewel, jewel);
+    if (this.hasSelection() && this.jewelLevel.isNear(this.selectedJewel, jewel)) {
+        if (this.isSwapAllowed(this.selectedJewel, jewel)) {
+            this.swap(this.selectedJewel, jewel);
+        }
+        this.unselect();
     }
     else { // нет выделения или кликнули на далеко отстоящем - переносим выделение на новый
-        this.selectedJewel = jewel;
-        this.view.showCursor(jewel);
+        this.select(jewel);
     }
 };
 
-BejeweledPresenter.prototype.checkSwap = function (jewel1, jewel2) {
-    console.log("checkSwap");
-    if (jewel1.type === jewel2.type)  return; // запрет на своп одинакового цвета - упрощает вычисление групп
-    console.log("jewel1 !== jewel2");
-
-    this.jewelLevel.swap(jewel1, jewel2);
-
-    this.isAnimationWorking = true;
-    this.swap.jewel1 = jewel1;
-    this.swap.jewel2 = jewel2;
-    this.view.swap(jewel1, jewel2);
+BejeweledPresenter.prototype.select = function (jewel) {
+    this.selectedJewel = jewel;
+    this.view.showCursor(jewel);
 };
 
-BejeweledPresenter.prototype.onSwapFinished = function () {
-    console.log("onSwapFinished");
-
-    // 1. проверить, есть ли комбо
-    var combo1 = this.jewelLevel.getSameNears(this.swap.jewel1);
-    var combo2 = this.jewelLevel.getSameNears(this.swap.jewel2);
-
-    console.log("combo1.length = " + combo1.length + " / combo2.length" + combo2.length);
-
-    if (combo1.length < this.COMBO_AMOUNT_MIN && combo2.length < this.COMBO_AMOUNT_MIN) {
-        this.undoSwap(this.swap.jewel1, this.swap.jewel2);
-        return;
-    }
-
-
-    // 2. отыграть комбо или свопнуть обратно
-    this.swap.jewel1 = undefined;
-    this.swap.jewel2 = undefined;
-    this.isAnimationWorking = false;
-
+BejeweledPresenter.prototype.unselect = function () {
+    this.view.hideCursor();
+    this.selectedJewel = undefined;
 };
 
-BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
+BejeweledPresenter.prototype.hasSelection = function () {
+    return this.selectedJewel !== undefined
+};
+
+BejeweledPresenter.prototype.isSwapAllowed = function (jewel1, jewel2) {
+    // запрет на своп одинакового цвета - упрощает вычисление групп
+    return jewel1.type !== jewel2.type;
+};
+
+BejeweledPresenter.prototype.swap = function (jewel1, jewel2, undo) {
     this.isAnimationWorking = true;
     this.jewelLevel.swap(jewel1, jewel2);
-    this.view.swap(jewel1, jewel2, true);
-    this.swap.jewel1 = undefined;
-    this.swap.jewel2 = undefined;
+    this.swapPair.jewel1 = jewel1;
+    this.swapPair.jewel2 = jewel2;
+    var callback = undo ? this.onUndoSwapFinished : this.onSwapFinished;
+    this.view.swap(jewel1, jewel2, callback, this);
 };
 
 BejeweledPresenter.prototype.onUndoSwapFinished = function (jewel1, jewel2) {
     this.isAnimationWorking = false;
+};
+
+BejeweledPresenter.prototype.onSwapFinished = function () {
+    var combo1 = this.jewelLevel.getSameNears(this.swapPair.jewel1); // 1. проверить, есть ли комбо
+    var combo2 = this.jewelLevel.getSameNears(this.swapPair.jewel2);
+    console.log("combo1.length = " + combo1.length + " / combo2.length" + combo2.length);
+
+    if (combo1.length < this.COMBO_AMOUNT_MIN && combo2.length < this.COMBO_AMOUNT_MIN) {
+        this.swap(this.swapPair.jewel1, this.swapPair.jewel2, true); // undo Swap
+        return;
+    }
+    else {
+        this.blast(combo1, combo2);
+    }
+    // 2. отыграть комбо или свопнуть обратно
+    this.swapPair.jewel1 = undefined;
+    this.swapPair.jewel2 = undefined;
+    this.isAnimationWorking = false;
+};
+
+BejeweledPresenter.prototype.blast = function (combo1, combo2) {
+    var jewelArray = [];
+    if(combo1.length >= this.COMBO_AMOUNT_MIN) jewelArray = jewelArray.concat(jewelArray, combo1);
+    if(combo2.length >= this.COMBO_AMOUNT_MIN) jewelArray = jewelArray.concat(jewelArray, combo2);
+    jewelArray.forEach(function (jewel) {
+        jewel.type = JewelType.NONE;
+    });
+    this.view.blast(jewelArray);
+};
+
+BejeweledPresenter.prototype.onBlastFinished = function () {
+    console.log("onBlastFinished");
+    this.isAnimationWorking = false;
+    // fall all jewels
+    this.fall();
+};
+
+BejeweledPresenter.prototype.fall = function () {
+
 };

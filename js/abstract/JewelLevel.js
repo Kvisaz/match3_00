@@ -107,9 +107,3 @@ JewelLevel.prototype.swap = function (jewel1, jewel2) {
 
     return this;
 };
-
-// отмена своппинга
-JewelLevel.prototype.undoSwap = function (jewel1, jewel2) {
-    this.swap(jewel1, jewel2);
-    return this;
-};
