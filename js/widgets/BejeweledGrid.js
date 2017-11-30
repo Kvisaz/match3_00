@@ -7,7 +7,6 @@ function BejeweledGroup(game, cols, rows) {
     this.group = game.add.group();
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
-    this.COLORS_AMOUNT = 8;
     this.JEWEL_SIZE = 64;
     this.CURSOR_SIZE = 66;
     this.GRID_STEP = 66;
@@ -38,32 +37,11 @@ function BejeweledGroup(game, cols, rows) {
     this.cursor.kill();
 
     this.group.onChildInputDown.add(this.onDown, this);
-
+    // game.input.onUp.add(this.onUp, this);
     this.presenter = new BejeweledPresenter(this, cols, rows);
 
-    /*this.jewelLevel = new JewelLevel(cols, rows); // модель уровня
-     this.jewelLevel.fill(JewelType.getCommonTypeArray()); // заполняем модель*/
-
-    /*var jewelImage, my = this;
-     this.jewelLevel.forEach(function (jewelModel) {
-     jewelImage = JewelGenerator.createJewel(game, jewelModel.type);
-     jewelImage.x = jewelModel.column * my.GRID_STEP;
-     jewelImage.y = jewelModel.row * my.GRID_STEP;
-     jewelImage.model = jewelModel;
-     jewelModel.view = jewelImage;
-     my.group.add(jewelImage);
-     }, this);*/
-
-    /* this.cursor = ImageBuilder.createStrokedRectangleImage(game, 0, 0,
-     this.CURSOR_SIZE,
-     this.CURSOR_SIZE,
-     "#00ffff",
-     "cursor", 6);
-     this.cursor.kill();
-     this.group.add(this.cursor);
-
-     this.group.onChildInputDown.add(this.onDown, this);
-     game.input.onUp.add(this.onUp, this);*/
+    // todo test
+    myAsyncTest_1();
 }
 
 BejeweledGroup.prototype.setXY = function (x, y) {
