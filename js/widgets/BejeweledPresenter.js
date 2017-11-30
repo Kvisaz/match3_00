@@ -60,6 +60,7 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2, undo) {
     this.swapPair.jewel2 = jewel2;
     var callback = undo ? this.onUndoSwapFinished : this.onSwapFinished;
     this.view.swap(jewel1, jewel2, callback, this);
+    if(undo) this.isAnimationWorking = false;
 };
 
 BejeweledPresenter.prototype.onUndoSwapFinished = function (jewel1, jewel2) {
@@ -81,7 +82,6 @@ BejeweledPresenter.prototype.onSwapFinished = function () {
     // 2. отыграть комбо или свопнуть обратно
     this.swapPair.jewel1 = undefined;
     this.swapPair.jewel2 = undefined;
-    this.isAnimationWorking = false;
 };
 
 BejeweledPresenter.prototype.blast = function (combo1, combo2) {

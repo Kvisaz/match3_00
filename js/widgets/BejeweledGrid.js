@@ -126,10 +126,10 @@ BejeweledGroup.prototype.swap = function (jewelModel1, jewelModel2, callback, ca
 };
 
 BejeweledGroup.prototype.blast = function (jewelModelArray) {
-    var i, tween, max = jewelModelArray.length - 1;
-    for (var i = 0; i <= max; i++) {
-        tween = this.game.add.tween(jewelModelArray[i].view).to({alpha: 0}, this.BLAST_ANIMATION_DURATION).start();
-    }
+    var tween, me = this;
+    jewelModelArray.forEach(function (jewel) {
+        tween = me.game.add.tween(jewel.view).to({alpha: 0}, me.BLAST_ANIMATION_DURATION).start();
+    });
     tween.onComplete.add(this.presenter.onBlastFinished, this.presenter);
 };
 
@@ -140,7 +140,7 @@ BejeweledGroup.prototype.refreshJewels = function (jewels) {
             jewel = jewels[col][row];
             x = col * this.GRID_STEP;
             y = row * this.GRID_STEP;
-            duration = Math.floor((y - jewel.view.y)/ this.FALL_SPEED_PIXELS_PER_MS);
+            duration = Math.floor((y - jewel.view.y) / this.FALL_SPEED_PIXELS_PER_MS);
             tween = this.game.add.tween(jewel.view).to({x: x, y: y}, duration).start();
         }
     }
