@@ -17,22 +17,7 @@ function BejeweledGroup(game, cols, rows) {
 
     this.selectedJewel = undefined;
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
-
-    this.isSwapping = false;
     this.swipe = new Swipe(this.GRID_STEP);
-
-    this.data = { // индекс наших камней для быстрого поиска соседей
-        jewels: [],
-        cols: cols,
-        rows: rows,
-    };
-
-    this.cache = {
-        removed: [],
-        combo1: [],
-        combo2: [],
-        nears: [], // просто соседи
-    };
 
     this.cursor = ImageBuilder.strokeRect(0, 0,
         this.CURSOR_SIZE, this.CURSOR_SIZE,
@@ -65,22 +50,6 @@ BejeweledGroup.prototype.onUp = function (pointer) {
     if (this.swipe.check(pointer.x, pointer.y) == false) return; // меньше допустимого значения - выходим
     this.presenter.onSwipe(this.swipe.direction);
 };
-
-/*BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
-    var nearJewel;
-    switch (direction) {
-        case this.swipe.directions.LEFT:
-            if (this.data.jewels[jewel.jewelCol - 1] === undefined) return undefined;
-            return this.data.jewels[jewel.jewelCol - 1][jewel.jewelRow];
-        case this.swipe.directions.UP:
-            return this.data.jewels[jewel.jewelCol][jewel.jewelRow - 1];
-        case this.swipe.directions.RIGHT:
-            if (this.data.jewels[jewel.jewelCol + 1] === undefined) return undefined;
-            return this.data.jewels[jewel.jewelCol + 1][jewel.jewelRow];
-        case this.swipe.directions.DOWN:
-            return this.data.jewels[jewel.jewelCol][jewel.jewelRow + 1];
-    }
-};*/
 
 // ------------------- for presenter --------------------
 BejeweledGroup.prototype.addJewelView = function (jewelModel) {
