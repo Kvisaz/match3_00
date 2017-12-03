@@ -31,11 +31,9 @@ function BejeweledGroup(game, cols, rows) {
         nears: [], // просто соседи
     };
 
-    this.cursor = ImageBuilder.createStrokedRectangleImage(game, 0, 0,
-        this.CURSOR_SIZE,
-        this.CURSOR_SIZE,
-        "#00ffff",
-        "cursor", 6);
+    this.cursor = ImageBuilder.strokeRect(0, 0,
+        this.CURSOR_SIZE, this.CURSOR_SIZE,
+        "#00ffff", 6);
     this.cursor.kill();
 
     this.group.onChildInputDown.add(this.onDown, this);

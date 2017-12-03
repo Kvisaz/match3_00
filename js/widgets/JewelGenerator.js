@@ -21,6 +21,5 @@ var JewelGenerator = {
 JewelGenerator.createJewel = function (game, type) {
     type = Math.abs(type % this.colors.length); // защита от выхода за пределы
     var color = this.colors[type];
-    var cacheName = "jewelTexture_" + type;
-    return ImageBuilder.createRectangleImage(game, 0, 0, this.JEWEL_SIZE, this.JEWEL_SIZE, color, cacheName);
+    return ImageBuilder.rect(0, 0, this.JEWEL_SIZE, this.JEWEL_SIZE, color);
 };
