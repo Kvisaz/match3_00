@@ -20,6 +20,7 @@ function BejeweledPresenter(view, cols, rows) {
 // передаем сюда модель
 BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
     console.log("presenter.onJewelClickDown - jewel col: " + jewel.column + " row: " + jewel.row);
+    console.log("presenter.onJewelClickDown - jewel type: " + jewel.type);
 
     // снимаем выделение по щелчку на том же камне
     if(jewel == this.selectedJewel) {
@@ -106,4 +107,8 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
 
 BejeweledPresenter.prototype.onFallFinished = function () {
     console.log("onFallFinished");
+};
+
+BejeweledPresenter.prototype.getNewJewel = function (jewelModel) {
+     return this.jewelLevel.getNewJewel(jewelModel);
 };

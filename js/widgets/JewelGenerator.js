@@ -18,8 +18,14 @@ var JewelGenerator = {
     ]
 };
 
-JewelGenerator.createJewel = function (game, type) {
+JewelGenerator.createJewel = function (type) {
     type = Math.abs(type % this.colors.length); // защита от выхода за пределы
     var color = this.colors[type];
     return ImageBuilder.rect(0, 0, this.JEWEL_SIZE, this.JEWEL_SIZE, color);
+};
+
+JewelGenerator.getJewelTexture = function (type) {
+    type = Math.abs(type % this.colors.length); // защита от выхода за пределы
+    var color = this.colors[type];
+    return ImageBuilder.rectTexture(this.JEWEL_SIZE, this.JEWEL_SIZE, color);
 };

@@ -53,7 +53,7 @@ BejeweledGroup.prototype.onUp = function (pointer) {
 
 // ------------------- for presenter --------------------
 BejeweledGroup.prototype.addJewelView = function (jewelModel) {
-    var jewelImage = JewelGenerator.createJewel(this.game, jewelModel.type);
+    var jewelImage = JewelGenerator.createJewel(jewelModel.type);
     jewelImage.x = jewelModel.column * this.GRID_STEP;
     jewelImage.y = jewelModel.row * this.GRID_STEP;
     jewelImage.model = jewelModel;
@@ -128,12 +128,16 @@ BejeweledGroup.prototype.newFall = function () {
     var i, x, y, jewel, duration, tween, length = this.group.children.length;
     for (i = 0; i < length; i++) {
         jewel = this.group.children[i];
-        if (jewel.model.type !== JewelType.NONE) {
-            x = jewel.model.column * this.GRID_STEP;
-            y = jewel.model.row * this.GRID_STEP;
-            duration = Math.floor((y - jewel.y) / this.FALL_SPEED_PIXELS_PER_MS);
-            tween = this.game.add.tween(jewel).to({x: x, y: y}, duration).start();
+        // todo ГЕНЕРАЦИЯ В VIEW???
+        if (jewel.model.type === JewelType.NONE) {
+            jewel.model = this.presenter.getNewJewel(jewel.model);
+            jewel.loadTexture(JewelGenerator.getJewelTexture(jewel.model.type));
+            jewel.alpha = 1;
         }
+        x = jewel.model.column * this.GRID_STEP;
+        y = jewel.model.row * this.GRID_STEP;
+        duration = Math.floor((y - jewel.y) / this.FALL_SPEED_PIXELS_PER_MS);
+        tween = this.game.add.tween(jewel).to({x: x, y: y}, duration).start();
     }
     // в последний твин пишем коллбэк презентер
     var me = this;

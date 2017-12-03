@@ -135,3 +135,10 @@ JewelLevel.prototype.selectNearByDirection = function (jewel, direction) {
     if (column < 0 || row < 0 || column >= this.cols || row >= this.rows) return undefined;
     return this.jewels[column][row];
 };
+
+// создаем новый и возвращаем его
+JewelLevel.prototype.getNewJewel = function (jewel) {
+    jewel.type = JewelType.getRandomCommon();
+    this.jewels[jewel.column][jewel.row] = jewel;
+    return jewel;
+};
