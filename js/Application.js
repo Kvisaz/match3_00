@@ -17,7 +17,7 @@ var App = function (states) {
     }
 
 
-
+    ImageBuilder.init(game); // передаем ссылку нашей библиотеке для построения картинок
     game.state.start(States.PRELOADER); // запускаем загрузчик
 };
 
