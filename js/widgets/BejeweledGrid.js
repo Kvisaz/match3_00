@@ -27,9 +27,6 @@ function BejeweledGroup(game, cols, rows) {
     this.group.onChildInputDown.add(this.onDown, this);
     this.game.input.onUp.add(this.onUp, this);
     this.presenter = new BejeweledPresenter(this, cols, rows);
-
-    // todo test
-    myAsyncTest_1();
 }
 
 BejeweledGroup.prototype.setXY = function (x, y) {
@@ -131,7 +128,7 @@ BejeweledGroup.prototype.newFall = function () {
         // todo ГЕНЕРАЦИЯ В VIEW???
         if (jewel.model.type === JewelType.NONE) {
             jewel.model = this.presenter.getNewJewel(jewel.model);
-            jewel.loadTexture(JewelGenerator.getJewelTexture(jewel.model.type));
+            jewel.loadTexture(JewelGenerator.getJewelTexture(jewel.model.type)); // с false памяти жрется меньше
             jewel.alpha = 1;
         }
         x = jewel.model.column * this.GRID_STEP;
