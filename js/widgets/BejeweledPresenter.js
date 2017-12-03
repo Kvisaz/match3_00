@@ -20,6 +20,13 @@ function BejeweledPresenter(view, cols, rows) {
 // передаем сюда модель
 BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
     console.log("presenter.onJewelClickDown - jewel col: " + jewel.column + " row: " + jewel.row);
+
+    // снимаем выделение по щелчку на том же камне
+    if(jewel == this.selectedJewel) {
+        this.unselect();
+        return;
+    }
+
     // есть выделение и это соседи
     if (this.hasSelection() && this.jewelLevel.isNear(this.selectedJewel, jewel)) {
         if (this.isSwapAllowed(this.selectedJewel, jewel)) {
@@ -62,14 +69,13 @@ BejeweledPresenter.prototype.isSwapAllowed = function (jewel1, jewel2) {
 
 BejeweledPresenter.prototype.swap = function (jewel1, jewel2, undo) {
     this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
-    var blasted = this.getBlastedJewels(jewel1, jewel2); // смотрим, сколько взорвалось
-    if (blasted.length > 0) { // взрывы есть
+    if (this.checkBlastedJewels(jewel1, jewel2)) { // взрывы есть
         this.jewelLevel.makeFall();  // в модели выполняем падение пустых элементов, то есть сортировку
         // затем показываем сложную анимацию
         //      1. своп двух камней jewel1, jewel2
         //      2. взрывы для blasted
         //      3. падение для всех
-        this.view.animateSwapBlast(jewel1, jewel2, blasted);
+        this.view.animateSwapBlast(jewel1, jewel2);
     }
     else { // обратный своп
         this.jewelLevel.swap(jewel1, jewel2); // возвращаем логику обратно
@@ -77,25 +83,25 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2, undo) {
     }
 };
 
-BejeweledPresenter.prototype.getBlastedJewels = function (jewel1, jewel2) {
-    var jewelArray = [];
+BejeweledPresenter.prototype.checkBlastedJewels = function (jewel1, jewel2) {
     // проверяем, есть ли комбо
-    var combo1 = this.jewelLevel.getSameNears(jewel1);
-    var combo2 = this.jewelLevel.getSameNears(jewel2);
-    var hasCombo = combo1.length >= this.COMBO_AMOUNT_MIN || combo2.length >= this.COMBO_AMOUNT_MIN;
-    if (hasCombo === false) return jewelArray; // комбо нет, пустой массив
-    if (combo1.length >= this.COMBO_AMOUNT_MIN) jewelArray = jewelArray.concat(jewelArray, combo1);
-    if (combo2.length >= this.COMBO_AMOUNT_MIN) jewelArray = jewelArray.concat(jewelArray, combo2);
-    jewelArray.forEach(function (jewel) {
-        jewel.type = JewelType.NONE;
-    });
-    return jewelArray; // комбо есть возвращаем массив "взорванных"
+    var hasCombo1 = this.markBlasted(jewel1);
+    var hasCombo2 = this.markBlasted(jewel2);
+    return hasCombo1 || hasCombo2;
 };
 
-BejeweledPresenter.prototype.onBlastFinished = function () {
-    console.log("onBlastFinished");
-    this.jewelLevel.makeFall();  // fall all jewels
-    this.view.refreshJewels(this.jewelLevel.jewels);
+// пометить взорванными всех соседей того же цвета, если комбо выполняется
+BejeweledPresenter.prototype.markBlasted = function (jewel) {
+    var hasCombo = false;
+    var combo = this.jewelLevel.getSameNears(jewel);
+    var i, length = combo.length;
+    if(length >= this.COMBO_AMOUNT_MIN){
+        hasCombo = true;
+        for(i=0;i<length;i++){
+            combo[i].type = JewelType.NONE;
+        }
+    }
+    return hasCombo;
 };
 
 BejeweledPresenter.prototype.onFallFinished = function () {

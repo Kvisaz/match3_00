@@ -111,15 +111,28 @@ BejeweledGroup.prototype.blastAndFall = function () {
     var i, x, y, jewel, duration, tween, length = this.group.children.length;
     for (i = 0; i < length; i++) {
         jewel = this.group.children[i];
-        tween = this.game.add.tween(jewel);
-        if(jewel.model.type == JewelType.NONE) {
-            tween.to({alpha: 0}, this.BLAST_ANIMATION_DURATION).start();
+        if (jewel.model.type === JewelType.NONE) {
+            x = jewel.model.column * this.GRID_STEP;
+            y = 0;
+            tween = this.game.add.tween(jewel)
+                .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // взрываем
+                .to({x: x, y: y}, 1) // откатываем вьюху на первую свободную позицию
+                .start()
         }
-        else {
+    }
+    tween.onComplete.add(this.newFall, this); // переходим к падению после последнего обновления
+};
+
+BejeweledGroup.prototype.newFall = function () {
+    console.log("BejeweledGroup.prototype.newFall");
+    var i, x, y, jewel, duration, tween, length = this.group.children.length;
+    for (i = 0; i < length; i++) {
+        jewel = this.group.children[i];
+        if (jewel.model.type !== JewelType.NONE) {
             x = jewel.model.column * this.GRID_STEP;
             y = jewel.model.row * this.GRID_STEP;
             duration = Math.floor((y - jewel.y) / this.FALL_SPEED_PIXELS_PER_MS);
-            tween.to({x: x, y: y}, duration).start();
+            tween = this.game.add.tween(jewel).to({x: x, y: y}, duration).start();
         }
     }
     // в последний твин пишем коллбэк презентер
