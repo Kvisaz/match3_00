@@ -8,6 +8,14 @@ function JewelLevel(cols, rows) {
     this.rows = rows;
     this.jewels = [];
 
+    // для быстрого вычисления
+    this.directionsDelta = [
+        {column: -1, row: 0}, //LEFT: 0,
+        {column: 0, row: -1},//UP: 1,
+        {column: 1, row: 0},//RIGHT: 2,
+        {column: 0, row: 1},//DOWN: 3,
+    ];
+
     for (var i = 0; i < cols; i++) {
         this.jewels[i] = [];
         for (var j = 0; j < rows; j++) {
@@ -118,4 +126,12 @@ JewelLevel.prototype.makeFall = function () {
             jewel.row = row;
         });
     });
+};
+
+// сбрасывает все пустые вниз
+JewelLevel.prototype.selectNearByDirection = function (jewel, direction) {
+    var column = jewel.column + this.directionsDelta[direction].column;
+    var row = jewel.row + this.directionsDelta[direction].row;
+    if (column < 0 || row < 0 || column >= this.cols || row >= this.rows) return undefined;
+    return this.jewels[column][row];
 };

@@ -7,6 +7,7 @@ function BejeweledGroup(game, cols, rows) {
     this.group = game.add.group();
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
+    this.SWAP_ANIMATION_DURATION = 200;
     this.BLAST_ANIMATION_DURATION = 150;
     this.JEWEL_SIZE = 64;
     this.FALL_SPEED_PIXELS_PER_MS = 0.6;
@@ -15,6 +16,8 @@ function BejeweledGroup(game, cols, rows) {
     this.COMBO_AMOUNT_MIN = 3;
 
     this.selectedJewel = undefined;
+    this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
+
     this.isSwapping = false;
     this.swipe = new Swipe(this.GRID_STEP);
 
@@ -37,7 +40,7 @@ function BejeweledGroup(game, cols, rows) {
     this.cursor.kill();
 
     this.group.onChildInputDown.add(this.onDown, this);
-    // game.input.onUp.add(this.onUp, this);
+    this.game.input.onUp.add(this.onUp, this);
     this.presenter = new BejeweledPresenter(this, cols, rows);
 
     // todo test
@@ -51,26 +54,19 @@ BejeweledGroup.prototype.setXY = function (x, y) {
 };
 
 BejeweledGroup.prototype.onDown = function (jewel, pointer) {
+    if (this.isUiBlocked) return;
     this.swipe.start(pointer.x, pointer.y); // для проверки свайпа
     this.presenter.onJewelClickDown(jewel.model);
 };
 
 // проверяем  на свайп
 BejeweledGroup.prototype.onUp = function (pointer) {
-    if (this.isSwapping || this.selectedJewel === undefined) return;
+    if (this.isUiBlocked) return;
     if (this.swipe.check(pointer.x, pointer.y) == false) return; // меньше допустимого значения - выходим
-
-    var jewel1 = this.selectedJewel;
-    this.unselect();
-    var jewel2 = this.selectNearByDirection(jewel1, this.swipe.direction);
-    if (jewel2 === undefined) {
-        this.unselect();
-        return;
-    }
-    this.swap(jewel1, jewel2);
+    this.presenter.onSwipe(this.swipe.direction);
 };
 
-BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
+/*BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
     var nearJewel;
     switch (direction) {
         case this.swipe.directions.LEFT:
@@ -84,7 +80,7 @@ BejeweledGroup.prototype.selectNearByDirection = function (jewel, direction) {
         case this.swipe.directions.DOWN:
             return this.data.jewels[jewel.jewelCol][jewel.jewelRow + 1];
     }
-};
+};*/
 
 // ------------------- for presenter --------------------
 BejeweledGroup.prototype.addJewelView = function (jewelModel) {
@@ -123,25 +119,68 @@ BejeweledGroup.prototype.swap = function (jewelModel1, jewelModel2, callback, ca
     jewelModel2.view.tween.onComplete.addOnce(callback, callbackContext, 0);
 };
 
+// анимация своп и обратный своп
+BejeweledGroup.prototype.animateSwapUnswap = function (jewel1, jewel2) {
+    this.lockUi();
+    this.game.add.tween(jewel1.view)
+        .to({x: jewel2.view.x, y: jewel2.view.y}, this.SWAP_ANIMATION_DURATION)
+        .yoyo(true)
+        .start();
+
+    this.game.add.tween(jewel2.view)
+        .to({x: jewel1.view.x, y: jewel1.view.y}, this.SWAP_ANIMATION_DURATION)
+        .yoyo(true)
+        .start()
+        .onComplete.add(this.unlockUi, this); // только в конце, так как не возвращает ссылку на tween
+};
+
+BejeweledGroup.prototype.animateSwapBlast = function (jewel1, jewel2, blasted) {
+    this.lockUi();
+    console.log("animateSwapBlast");
+
+    this.game.add.tween(jewel1.view)
+        .to({x: jewel2.view.x, y: jewel2.view.y}, this.SWAP_ANIMATION_DURATION)
+        .start();
+
+    this.game.add.tween(jewel2.view)
+        .to({x: jewel1.view.x, y: jewel1.view.y}, this.SWAP_ANIMATION_DURATION)
+        .start()
+        // только в конце, так onComplete.add как не возвращает ссылку на tween
+        .onComplete.add(function () {
+        this.blast(blasted);
+    }, this);
+    // this.unlockUi();
+};
+
+
 BejeweledGroup.prototype.blast = function (jewelModelArray) {
+    console.log("BejeweledGroup.prototype.blast");
     var tween, me = this;
     jewelModelArray.forEach(function (jewel) {
         tween = me.game.add.tween(jewel.view).to({alpha: 0}, me.BLAST_ANIMATION_DURATION).start();
     });
-    tween.onComplete.add(this.presenter.onBlastFinished, this.presenter);
+    tween.onComplete.add(this.refreshJewels, this);
 };
 
-BejeweledGroup.prototype.refreshJewels = function (jewels) {
-    var jewel, x, y, duration, col, row, tween, maxCol = jewels.length - 1, maxRow = jewels[0].length - 1;
-    for (col = 0; col <= maxCol; col++) {
-        for (row = 0; row <= maxRow; row++) {
-            jewel = jewels[col][row];
-            x = col * this.GRID_STEP;
-            y = row * this.GRID_STEP;
-            duration = Math.floor((y - jewel.view.y) / this.FALL_SPEED_PIXELS_PER_MS);
-            tween = this.game.add.tween(jewel.view).to({x: x, y: y}, duration).start();
-        }
+BejeweledGroup.prototype.refreshJewels = function () {
+    var i, x, y, jewel, duration, tween, length = this.group.children.length;
+    for (i = 0; i < length; i++) {
+        jewel = this.group.children[i];
+        x = jewel.model.column * this.GRID_STEP;
+        y = jewel.model.row * this.GRID_STEP;
+        duration = Math.floor((y - jewel.y) / this.FALL_SPEED_PIXELS_PER_MS);
+        tween = this.game.add.tween(jewel).to({x: x, y: y}, duration).start();
     }
-    // в последний твин пишем коллбэк презентер
-    tween.onComplete.add(this.presenter.onFallFinished, this.presenter);
+    tween.onComplete.add(function () {  // в последний твин пишем коллбэк презентер
+        this.unlockUi();
+        this.presenter.onFallFinished;
+    }, this);
+};
+
+BejeweledGroup.prototype.lockUi = function () {
+    this.isUiBlocked = true;
+};
+
+BejeweledGroup.prototype.unlockUi = function () {
+    this.isUiBlocked = false;
 };
