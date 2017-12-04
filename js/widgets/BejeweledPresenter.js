@@ -6,7 +6,7 @@ function BejeweledPresenter(view, cols, rows) {
     this.view = view;
 
     this.jewelLevel = new JewelLevel(cols, rows)
-        .fill(JewelType.getRandomCommon, JewelType) // заполняем модель всеми доступными общими типами
+        .fill(JewelType.getRandomCommon, JewelType); // заполняем модель всеми доступными общими типами
 
     // генерируем без начальных комбинаций
     // todo НУЖНА ПРОВЕРКА НА РЕШАЕМОСТЬ УРОВНЯ
