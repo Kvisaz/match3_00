@@ -89,7 +89,7 @@ BejeweledPresenter.prototype.tryNextFall = function () {
                 if (row == 0) { // если в первом ряду - генерируем и заказываем анимацию
                     hasAnimationDelay = true;
                     this.jewelLevel.jewels[col][row].type = JewelType.getRandomCommon();
-                    this.view.refreshJewelView(this.jewelLevel.jewels[col][row]); // обновляем вью для созданного камня (анимация)
+                    this.view.regenerateJewelView(this.jewelLevel.jewels[col][row]); // обновляем вью для созданного камня (анимация)
                 }
                 continue; // листаем дальше
             }

@@ -88,7 +88,7 @@ BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
 };
 
 // обновляем вьюху для сгенерированного камня
-BejeweledGroup.prototype.refreshJewelView = function (jewel) {
+BejeweledGroup.prototype.regenerateJewelView = function (jewel) {
     jewel.view.loadTexture(JewelGenerator.getJewelTexture(jewel.type));
     this.game.add.tween(jewel.view)
         .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // показываем новый камень быстро
