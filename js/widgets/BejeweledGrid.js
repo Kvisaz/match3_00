@@ -10,9 +10,7 @@ function BejeweledGroup(game, cols, rows) {
     this.SWAP_ANIMATION_DURATION = 200;
     this.GRID_STEP_FALL_DURATION = 65;
     this.BLAST_ANIMATION_DURATION = 150;
-
     this.GRID_STEP = 66;
-    this.COMBO_AMOUNT_MIN = 3;
 
     this.selectedJewel = undefined;
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов

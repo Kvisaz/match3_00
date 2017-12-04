@@ -2,19 +2,15 @@
  * Created by Work on 30.11.2017.
  */
 function BejeweledPresenter(view, cols, rows) {
-    this.JEWEL_SIZE = 64;
-    this.CURSOR_SIZE = 66;
-    this.GRID_STEP = 66;
     this.COMBO_AMOUNT_MIN = 3;
-    // запоминаем наше большое вью
     this.view = view;
-    // создаем модель уровня
+
     this.jewelLevel = new JewelLevel(cols, rows)
         .fill(JewelType.getCommonTypeArray()) // заполняем модель всеми доступными общими типами
         .forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
 
     this.selectedJewel = undefined;
-};
+}
 
 // передаем сюда модель
 BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
