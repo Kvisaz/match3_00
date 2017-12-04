@@ -118,18 +118,6 @@ BejeweledPresenter.prototype.tryNextFall = function () {
     }
 };
 
-// проходим верхний ряд и засовываем новые камушки
-BejeweledPresenter.prototype.tryGenerate = function () {
-    var generated = [];
-    this.jewelLevel.jewels.forEach(function (column) {
-        if (column[0].type === JewelType.NONE) {
-            column[0].type = JewelType.getRandomCommon();
-            generated.push(column[0]);
-        }
-    });
-    this.view.tryGenerate(generated); // генерируем
-};
-
 BejeweledPresenter.prototype.checkBlastedJewels = function (jewel1, jewel2) {
     // проверяем, есть ли комбо
     var hasCombo1 = this.markBlasted(jewel1);
