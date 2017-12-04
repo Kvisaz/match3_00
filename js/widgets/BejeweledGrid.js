@@ -10,8 +10,7 @@ function BejeweledGroup(game, cols, rows) {
     this.SWAP_ANIMATION_DURATION = 200;
     this.GRID_STEP_FALL_DURATION = 65;
     this.BLAST_ANIMATION_DURATION = 150;
-    this.JEWEL_SIZE = 64;
-    this.CURSOR_SIZE = 66;
+
     this.GRID_STEP = 66;
     this.COMBO_AMOUNT_MIN = 3;
 
@@ -19,9 +18,7 @@ function BejeweledGroup(game, cols, rows) {
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
     this.swipe = new Swipe(this.GRID_STEP);
 
-    this.cursor = ImageBuilder.strokeRect(0, 0,
-        this.CURSOR_SIZE, this.CURSOR_SIZE,
-        "#00ffff", 6);
+    this.cursor =JewelGenerator.getCursor();
     this.cursor.kill();
 
     this.group.onChildInputDown.add(this.onDown, this);
