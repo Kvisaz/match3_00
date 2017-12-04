@@ -69,13 +69,10 @@ BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
 };
 
 BejeweledPresenter.prototype.checkCombo = function (jewel1, jewel2) {
-    if (this.checkBlastedJewels(jewel1, jewel2)) this.blast(); // если были комбо - пометили и взорвали
+    if (this.checkBlastedJewels(jewel1, jewel2)) { // если сделаны / заказаны взрывы
+        this.view.callWithBlastDelay(this.tryNextFall, this); // то запускаем пробное падение с задержкой на анимацию взрыва
+    } // если были комбо - пометили и взорвали
     else this.undoSwap(jewel1, jewel2); // запускаем отмену свопа
-};
-
-BejeweledPresenter.prototype.blast = function () {
-    // пустые уже пометили, так что просто анимируем
-    this.view.blast(this.tryNextFall, this); // после анимации - начинаем падение
 };
 
 // осыпаем на 1 клетку
@@ -133,7 +130,6 @@ BejeweledPresenter.prototype.tryGenerate = function () {
     this.view.tryGenerate(generated); // генерируем
 };
 
-
 BejeweledPresenter.prototype.checkBlastedJewels = function (jewel1, jewel2) {
     // проверяем, есть ли комбо
     var hasCombo1 = this.markBlasted(jewel1);
@@ -150,6 +146,7 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
         hasCombo = true;
         for (i = 0; i < length; i++) {
             combo[i].type = JewelType.NONE;
+            this.view.requestBlastAnimation(combo[i]);  // и сразу заказываем анимацию
         }
     }
     return hasCombo;

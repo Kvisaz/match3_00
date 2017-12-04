@@ -107,21 +107,17 @@ BejeweledGroup.prototype.callWithFallStepDelay = function (callback, context) {
     this.game.time.events.add(this.GRID_STEP_FALL_DURATION, callback, context);
 };
 
-BejeweledGroup.prototype.blast = function (callback, callbackContext) {
-    console.log("BejeweledGroup.prototype.blast");
-    var i, x, y, jewel, duration, tween, length = this.group.children.length;
-    for (i = 0; i < length; i++) {
-        jewel = this.group.children[i];
-        if (jewel.model.type === JewelType.NONE) {
-            x = jewel.model.column * this.GRID_STEP;
-            y = 0;
-            tween = this.game.add.tween(jewel)
-                .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // взрываем
-                .to({x: x, y: y}, 1) // откатываем вьюху на первую свободную позицию
-                .start()
-        }
-    }
-    tween.onComplete.add(callback, callbackContext); // переходим к падению после последнего обновления
+// вызвать с задержкой. Метод здесь, потому что именно вью определяет задержку
+BejeweledGroup.prototype.callWithBlastDelay = function (callback, context) {
+    console.log("callWithBlastDelay");
+    this.game.time.events.add(this.BLAST_ANIMATION_DURATION, callback, context);
+};
+
+BejeweledGroup.prototype.requestBlastAnimation = function (jewelModel) {
+    this.game.add.tween(jewelModel.view)
+        .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // убираем
+        .to({y: 0}, 1) // откатываем вьюху на первую свободную позицию - иначе не будет падения
+        .start()
 };
 
 BejeweledGroup.prototype.lockUi = function () {
