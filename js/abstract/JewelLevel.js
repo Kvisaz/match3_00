@@ -27,12 +27,13 @@ function JewelLevel(cols, rows) {
 }
 
 // заполнить уровень случайным распределением значений из typeArray
-JewelLevel.prototype.fill = function (typeArray) {
+JewelLevel.prototype.fill = function (fn, context) {
     this.forEach(function (jewelModel) {
-        jewelModel.type = typeArray.getRandom();
+        jewelModel.type = fn.call(context);
     });
     return this;
 };
+
 
 JewelLevel.prototype.forEach = function (fn, context) {
     for (var i = 0; i < this.cols; i++) {
@@ -43,15 +44,6 @@ JewelLevel.prototype.forEach = function (fn, context) {
     return this;
 };
 
-// отсчет в каждом ряде - снизу
-JewelLevel.prototype.forEachFromDown = function (fn, context) {
-    for (var i = 0; i < this.cols; i++) {
-        for (var j = this.rows-1; j >= 0 ; j--) {
-            fn.call(context, this.jewels[i][j]);
-        }
-    }
-    return this;
-};
 
 // проверка на допустимых соседей (по вертикали и горизонтали)
 JewelLevel.prototype.isNear = function (jewel1, jewel2) {
@@ -72,7 +64,7 @@ JewelLevel.prototype.getNears = function (jewel) {
 
 // Поиск всех граничащих соседей одного типа
 JewelLevel.prototype.getSameNears = function (jewel) {
-    console.log("getSameNears started....");
+
     this.forEach(function (jewel) { // сбрасываем флаг обработки у всех камней
         jewel.isDispatched = false;
     });
@@ -126,28 +118,9 @@ JewelLevel.prototype.swap = function (jewel1, jewel2) {
 };
 
 // сбрасывает все пустые вниз
-JewelLevel.prototype.makeFall = function () {
-    var voidRow = -1;
-    this.jewels.forEach(function (column) {
-        column.sort(function (jewel1, jewel2) {
-            return jewel1.type === JewelType.NONE ? -1 : jewel2.type === JewelType.NONE ? 1 : 0;
-        }).forEach(function (jewel, row) {
-            jewel.row = row;
-        });
-    });
-};
-
-// сбрасывает все пустые вниз
 JewelLevel.prototype.selectNearByDirection = function (jewel, direction) {
     var column = jewel.column + this.directionsDelta[direction].column;
     var row = jewel.row + this.directionsDelta[direction].row;
     if (column < 0 || row < 0 || column >= this.cols || row >= this.rows) return undefined;
     return this.jewels[column][row];
-};
-
-// создаем новый и возвращаем его
-JewelLevel.prototype.getNewJewel = function (jewel) {
-    jewel.type = JewelType.getRandomCommon();
-    this.jewels[jewel.column][jewel.row] = jewel;
-    return jewel;
 };

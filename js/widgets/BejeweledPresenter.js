@@ -6,7 +6,7 @@ function BejeweledPresenter(view, cols, rows) {
     this.view = view;
 
     this.jewelLevel = new JewelLevel(cols, rows)
-        .fill(JewelType.getCommonTypeArray()) // заполняем модель всеми доступными общими типами
+        .fill(JewelType.getRandomCommon, JewelType) // заполняем модель всеми доступными общими типами
         .forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
 
     this.selectedJewel = undefined;
