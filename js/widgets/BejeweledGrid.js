@@ -82,7 +82,6 @@ BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model, callback, ca
 
 // катим вьюху на актуальные координаты
 BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
-    console.log("makeFallingJewelView");
     this.game.add.tween(jewel.view)
         .to({y: jewel.row * this.GRID_STEP}, this.GRID_STEP_FALL_DURATION)
         .start()
@@ -90,7 +89,6 @@ BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
 
 // обновляем вьюху для сгенерированного камня
 BejeweledGroup.prototype.refreshJewelView = function (jewel) {
-    console.log("refreshJewelView");
     jewel.view.loadTexture(JewelGenerator.getJewelTexture(jewel.type));
     this.game.add.tween(jewel.view)
         .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // показываем новый камень быстро

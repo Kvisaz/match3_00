@@ -33,7 +33,6 @@ BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
 
 // передаем сюда модель
 BejeweledPresenter.prototype.onSwipe = function (swipeDirection) {
-    console.log("presenter.onSwipe");
     if (!this.hasSelection()) return; // не выделили при нажатии - выходим
     var jewel = this.jewelLevel.selectNearByDirection(this.selectedJewel, swipeDirection);
     if (jewel === undefined) return;
@@ -78,7 +77,6 @@ BejeweledPresenter.prototype.checkCombo = function (jewel1, jewel2) {
 
 // осыпаем на 1 клетку
 BejeweledPresenter.prototype.tryNextFall = function () {
-    console.log("stepFall");
     this.view.lockUi();
     var hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
     var hasAnimationDelay = false;
@@ -135,6 +133,5 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
 };
 
 BejeweledPresenter.prototype.callWithDelay = function (callback, context, delay) {
-    console.log("callWithDelay");
     this.view.game.time.events.add(delay, callback, context);
 };
