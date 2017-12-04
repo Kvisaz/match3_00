@@ -8,9 +8,9 @@ function BejeweledGroup(game, cols, rows) {
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
     this.SWAP_ANIMATION_DURATION = 200;
+    this.GRID_STEP_FALL_DURATION = 65;
     this.BLAST_ANIMATION_DURATION = 150;
     this.JEWEL_SIZE = 64;
-    this.FALL_SPEED_PIXELS_PER_MS = 0.6;
     this.CURSOR_SIZE = 66;
     this.GRID_STEP = 66;
     this.COMBO_AMOUNT_MIN = 3;
@@ -72,38 +72,78 @@ BejeweledGroup.prototype.hideCursor = function () {
     this.cursor.kill();
 };
 
-// анимация своп и обратный своп
-BejeweledGroup.prototype.animateSwapUnswap = function (jewel1, jewel2) {
+BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model, callback, callbackContext) {
     this.lockUi();
-    this.game.add.tween(jewel1.view)
-        .to({x: jewel2.view.x, y: jewel2.view.y}, this.SWAP_ANIMATION_DURATION)
-        .yoyo(true)
+    this.game.add.tween(jewel1Model.view)
+        .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION)
         .start();
 
-    this.game.add.tween(jewel2.view)
-        .to({x: jewel1.view.x, y: jewel1.view.y}, this.SWAP_ANIMATION_DURATION)
-        .yoyo(true)
+    var me = this;
+    this.game.add.tween(jewel2Model.view)
+        .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION)
         .start()
-        .onComplete.add(this.unlockUi, this); // только в конце, так как не возвращает ссылку на tween
-};
-
-BejeweledGroup.prototype.animateSwapBlast = function (jewel1, jewel2) {
-    console.log("BejeweledGroup.prototype.animateSwapBlast");
-    this.lockUi();
-    this.game.add.tween(jewel1.view)
-        .to({x: jewel2.view.x, y: jewel2.view.y}, this.SWAP_ANIMATION_DURATION)
-        .start();
-
-    this.game.add.tween(jewel2.view)
-        .to({x: jewel1.view.x, y: jewel1.view.y}, this.SWAP_ANIMATION_DURATION)
-        .start()
-        // только в конце, так onComplete.add как не возвращает ссылку на tween
-        .onComplete.add(function () {
-        this.blastAndFall();
+        .onComplete.add(function () { // только в конце, так как не возвращает ссылку на tween
+        this.unlockUi();
+        if (callback) callback.call(callbackContext, jewel1Model, jewel2Model);
     }, this);
 };
 
-BejeweledGroup.prototype.blastAndFall = function () {
+// пробуем "упасть" на 1 камень - по сути просто освежить координаты у вьюх
+// если все координаты валидны - значит, падение завершено, изменений нет
+BejeweledGroup.prototype.tryNextFall = function () {
+    this.lockUi();
+    console.log("tryNextFall");
+    var i, y, jewel, tween, length = this.group.children.length;
+    for (i = 0; i < length; i++) {
+        jewel = this.group.children[i];
+        // если координаты не соответствуют ряду - обновляем
+        y = jewel.model.row * this.GRID_STEP;
+        if (y !== jewel.y) {
+            tween = this.game.add.tween(jewel)
+                .to({y: y}, this.GRID_STEP_FALL_DURATION) // катим вьюху на актуальные координаты
+                .start()
+        }
+    }
+
+    // в любом случае пробуем генерацию - вдруг пустота в первом ряду
+    if (tween) { // падение состоялось, пробуем генерацию
+        tween.onComplete.add(function () {
+            this.presenter.tryGenerate();
+        }, this);
+    } // переходим к падению после последнего обновления
+    else {
+        this.presenter.tryGenerate();
+    }
+};
+
+// генерируем новые камни (создаем вью)
+BejeweledGroup.prototype.tryGenerate = function (jewelModelArray) {
+    this.lockUi();
+    console.log("tryGenerate");
+    var i, y, jewelModel, duration, tween, length = jewelModelArray.length;
+    for (i = 0; i < length; i++) {
+        jewelModel = jewelModelArray[i];
+        // грузим новую текстуру
+        jewelModel.view.loadTexture(JewelGenerator.getJewelTexture(jewelModel.type));
+        tween = this.game.add.tween(jewelModel.view)
+            .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // катим вьюху на актуальные координаты
+            .start()
+    }
+
+
+    // именно отсутствие генерации является признаком окончания формирования уровня
+    if (tween) { // падение состоялось, возвращаемся и пробуем снова
+        tween.onComplete.add(function () {
+            this.presenter.tryNextFall();
+        }, this);
+    } // переходим к падению после последнего обновления
+    else {
+        this.unlockUi();
+        this.presenter.onFallFinished();
+    }
+};
+
+BejeweledGroup.prototype.blast = function (callback, callbackContext) {
     console.log("BejeweledGroup.prototype.blast");
     var i, x, y, jewel, duration, tween, length = this.group.children.length;
     for (i = 0; i < length; i++) {
@@ -117,31 +157,7 @@ BejeweledGroup.prototype.blastAndFall = function () {
                 .start()
         }
     }
-    tween.onComplete.add(this.newFall, this); // переходим к падению после последнего обновления
-};
-
-BejeweledGroup.prototype.newFall = function () {
-    console.log("BejeweledGroup.prototype.newFall");
-    var i, x, y, jewel, duration, tween, length = this.group.children.length;
-    for (i = 0; i < length; i++) {
-        jewel = this.group.children[i];
-        // todo ГЕНЕРАЦИЯ В VIEW???
-        if (jewel.model.type === JewelType.NONE) {
-            jewel.model = this.presenter.getNewJewel(jewel.model);
-            jewel.loadTexture(JewelGenerator.getJewelTexture(jewel.model.type)); // с false памяти жрется меньше
-            jewel.alpha = 1;
-        }
-        x = jewel.model.column * this.GRID_STEP;
-        y = jewel.model.row * this.GRID_STEP;
-        duration = Math.floor((y - jewel.y) / this.FALL_SPEED_PIXELS_PER_MS);
-        tween = this.game.add.tween(jewel).to({x: x, y: y}, duration).start();
-    }
-    // в последний твин пишем коллбэк презентер
-    var me = this;
-    tween.onComplete.add(function () {
-        me.unlockUi();
-        me.presenter.onFallFinished.call(me.presenter);
-    });
+    tween.onComplete.add(callback, callbackContext); // переходим к падению после последнего обновления
 };
 
 BejeweledGroup.prototype.lockUi = function () {

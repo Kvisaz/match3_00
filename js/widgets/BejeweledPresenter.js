@@ -14,7 +14,6 @@ function BejeweledPresenter(view, cols, rows) {
         .forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
 
     this.selectedJewel = undefined;
-
 };
 
 // передаем сюда модель
@@ -23,7 +22,7 @@ BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
     console.log("presenter.onJewelClickDown - jewel type: " + jewel.type);
 
     // снимаем выделение по щелчку на том же камне
-    if(jewel == this.selectedJewel) {
+    if (jewel == this.selectedJewel) {
         this.unselect();
         return;
     }
@@ -45,7 +44,7 @@ BejeweledPresenter.prototype.onSwipe = function (swipeDirection) {
     console.log("presenter.onSwipe");
     if (!this.hasSelection()) return; // не выделили при нажатии - выходим
     var jewel = this.jewelLevel.selectNearByDirection(this.selectedJewel, swipeDirection);
-    if(jewel === undefined) return;
+    if (jewel === undefined) return;
     console.log("presenter.onSwipe - jewel col: " + jewel.column + " row: " + jewel.row);
     this.onJewelClickDown(jewel); // да, будут лишние там проверки, зато меньше тут писать
 };
@@ -68,20 +67,66 @@ BejeweledPresenter.prototype.isSwapAllowed = function (jewel1, jewel2) {
     return jewel1.type !== jewel2.type; // запрет на своп одинакового цвета - упрощает вычисление групп
 };
 
-BejeweledPresenter.prototype.swap = function (jewel1, jewel2, undo) {
+BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
     this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
-    if (this.checkBlastedJewels(jewel1, jewel2)) { // взрывы есть
-        this.jewelLevel.makeFall();  // в модели выполняем падение пустых элементов, то есть сортировку
-        // затем показываем сложную анимацию
-        //      1. своп двух камней jewel1, jewel2
-        //      2. взрывы для blasted
-        //      3. падение для всех
-        this.view.animateSwapBlast(jewel1, jewel2);
+    this.view.swap(jewel1, jewel2, this.checkCombo, this);
+};
+
+BejeweledPresenter.prototype.checkCombo = function (jewel1, jewel2) {
+    if (this.checkBlastedJewels(jewel1, jewel2)) this.blast();
+    else this.undoSwap(jewel1, jewel2);
+};
+
+BejeweledPresenter.prototype.blast = function () {
+    this.view.blast(this.onBlastFinished, this);
+};
+
+BejeweledPresenter.prototype.onBlastFinished = function () {
+    console.log("onBlastFinished");
+    this.tryNextFall(); // пробуем сдвинуть на 1 шаг
+};
+
+// осыпаем на 1 шаг, если осыпание произошло - возврашает true, иначе false
+BejeweledPresenter.prototype.tryNextFall = function () {
+    console.log("stepFall");
+    var isLast = false, tmp, hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
+    // перебираем колонки, если находим пустые - сдвигаем следующие за ним на 1 ряд
+    for (col = 0; col <= colMax; col++) {
+        hasVoid = false; // пока пустые не обнаружены
+        for (row = rows - 1; row >= 0; row--) {
+            if (this.jewelLevel.jewels[col][row].type === JewelType.NONE) {
+                hasVoid = true; // обнаружили пустой
+                continue; // листаем дальше
+            }
+            if (hasVoid) {
+                // меняем местами камень с нижним
+                tmp = this.jewelLevel.jewels[col][row];
+                this.jewelLevel.jewels[col][row] = this.jewelLevel.jewels[col][row + 1];
+                this.jewelLevel.jewels[col][row + 1] = tmp;
+                // и освежаем внутренние данные о колонках
+                this.jewelLevel.jewels[col][row].row = row;
+                this.jewelLevel.jewels[col][row + 1].row = row + 1;
+            }
+        }
     }
-    else { // обратный своп
-        this.jewelLevel.swap(jewel1, jewel2); // возвращаем логику обратно
-        this.view.animateSwapUnswap(jewel1, jewel2); // показываем cанимацию
-    }
+    this.view.tryNextFall(); // пробуем сдвинуть на 1 шаг вьюхи
+};
+
+// проходим верхний ряд и засовываем новые камушки
+BejeweledPresenter.prototype.tryGenerate = function () {
+    var generated = [];
+    this.jewelLevel.jewels.forEach(function (column) {
+        if(column[0].type === JewelType.NONE){
+            column[0].type = JewelType.getRandomCommon();
+            generated.push(column[0]);
+        }
+    });
+    this.view.tryGenerate(generated); // генерируем
+};
+
+BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
+    this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
+    this.view.swap(jewel1, jewel2); // без коллбэка, просто разблокируем интерфейс
 };
 
 BejeweledPresenter.prototype.checkBlastedJewels = function (jewel1, jewel2) {
@@ -96,9 +141,9 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
     var hasCombo = false;
     var combo = this.jewelLevel.getSameNears(jewel);
     var i, length = combo.length;
-    if(length >= this.COMBO_AMOUNT_MIN){
+    if (length >= this.COMBO_AMOUNT_MIN) {
         hasCombo = true;
-        for(i=0;i<length;i++){
+        for (i = 0; i < length; i++) {
             combo[i].type = JewelType.NONE;
         }
     }
@@ -107,8 +152,4 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
 
 BejeweledPresenter.prototype.onFallFinished = function () {
     console.log("onFallFinished");
-};
-
-BejeweledPresenter.prototype.getNewJewel = function (jewelModel) {
-     return this.jewelLevel.getNewJewel(jewelModel);
 };

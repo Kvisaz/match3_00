@@ -37,10 +37,19 @@ JewelLevel.prototype.fill = function (typeArray) {
 JewelLevel.prototype.forEach = function (fn, context) {
     for (var i = 0; i < this.cols; i++) {
         for (var j = 0; j < this.rows; j++) {
-            fn(this.jewels[i][j]);
+            fn.call(context, this.jewels[i][j]);
         }
     }
+    return this;
+};
 
+// отсчет в каждом ряде - снизу
+JewelLevel.prototype.forEachFromDown = function (fn, context) {
+    for (var i = 0; i < this.cols; i++) {
+        for (var j = this.rows-1; j >= 0 ; j--) {
+            fn.call(context, this.jewels[i][j]);
+        }
+    }
     return this;
 };
 
