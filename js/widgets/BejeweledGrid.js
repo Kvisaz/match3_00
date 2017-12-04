@@ -16,7 +16,7 @@ function BejeweledGroup(game, cols, rows) {
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
     this.swipe = new Swipe(this.GRID_STEP);
 
-    this.cursor =JewelGenerator.getCursor();
+    this.cursor = JewelGenerator.getCursor();
     this.cursor.kill();
 
     this.group.onChildInputDown.add(this.onDown, this);
@@ -109,6 +109,30 @@ BejeweledGroup.prototype.tryNextFall = function () {
     else {
         this.presenter.tryGenerate();
     }
+};
+
+// катим вьюху на актуальные координаты
+BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
+    console.log("makeFallingJewelView");
+    this.game.add.tween(jewel.view)
+        .to({y: jewel.row * this.GRID_STEP}, this.GRID_STEP_FALL_DURATION)
+        .start()
+};
+
+// обновляем вьюху для сгенерированного камня
+BejeweledGroup.prototype.refreshJewelView = function (jewel) {
+    console.log("refreshJewelView");
+    jewel.view.loadTexture(JewelGenerator.getJewelTexture(jewel.type));
+    this.game.add.tween(jewel.view)
+        .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // показываем новый камень быстро
+        .delay(this.GRID_STEP_FALL_DURATION) // с задержкой, чтобы предыдущий успел упасть
+        .start()
+};
+
+// вызвать с задержкой. Метод здесь, потому что именно вью определяет задержку
+BejeweledGroup.prototype.callWithFallStepDelay = function (callback, context) {
+    console.log("callWithFallStepDelay");
+    this.game.time.events.add(this.GRID_STEP_FALL_DURATION, callback, context);
 };
 
 // генерируем новые камни (создаем вью)
