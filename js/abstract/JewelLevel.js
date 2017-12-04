@@ -4,6 +4,7 @@
  * модель уровня для Match-3
  */
 function JewelLevel(cols, rows) {
+    this.length = cols*rows;
     this.cols = cols;
     this.rows = rows;
     this.jewels = [];
@@ -64,10 +65,7 @@ JewelLevel.prototype.getNears = function (jewel) {
 
 // Поиск всех граничащих соседей одного типа
 JewelLevel.prototype.getSameNears = function (jewel) {
-
-    this.forEach(function (jewel) { // сбрасываем флаг обработки у всех камней
-        jewel.isDispatched = false;
-    });
+    this.resetDispatched();
     var sameJewels = []; // сюда будем сохранять результат
     sameJewels.push(jewel); // добавляем в кэш текущий
 
@@ -76,24 +74,28 @@ JewelLevel.prototype.getSameNears = function (jewel) {
     var nears; // соседи
     do {
         next = sameJewels[sameNearIndex];
-        console.log("current index : " + sameNearIndex);
+        //console.log("current index : " + sameNearIndex);
         nears = this.getNears(next); // берем всех соседей у очередного элемента
         nears.forEach(function (near) {
             // сосед есть && сосед не обработан && сосед того же цвета
             if (near && !(near.isDispatched) && near.type === jewel.type) {
-                console.log("near.type = " + near.type);
-                console.log("jewel.type = " + jewel.type);
+                //console.log("near.type = " + near.type);
+                //console.log("jewel.type = " + jewel.type);
+                next.isDispatched = true; // помечаем соседа обработанным
                 sameJewels.push(near); // добавляем соседа
             }
         });
-        next.isDispatched = true; // помечаем соседа обработанным
-        console.log("sameNearIndex = " + sameNearIndex + " sameJewels.length = " + sameJewels.length);
+
+        //console.log("sameNearIndex = " + sameNearIndex + " sameJewels.length = " + sameJewels.length);
         sameNearIndex++;
-        if (sameNearIndex > this.jewels.length) {
+
+
+        if (sameNearIndex > this.length) {
+            console.log("sameNearIndex = "+sameNearIndex);
+            console.log("this.jewels.length = "+this.length);
             console.log("NONSENSE SAME NEAR LENTGH, BREAK THE LOOP");
             break;
         }
-
     } while (sameNearIndex < sameJewels.length)
 
     return sameJewels;
@@ -123,4 +125,38 @@ JewelLevel.prototype.selectNearByDirection = function (jewel, direction) {
     var row = jewel.row + this.directionsDelta[direction].row;
     if (column < 0 || row < 0 || column >= this.cols || row >= this.rows) return undefined;
     return this.jewels[column][row];
+};
+
+// сбросить поле обработки
+JewelLevel.prototype.resetDispatched = function () {
+    var col, row;
+    for (col = 0; col < this.cols; col++) {
+        for (row = 0; row < this.rows; row++) {
+            this.jewels[col][row].isDispatched = false;
+        }
+    }
+};
+
+// TODO ПОИСК ВСЕХ ВЫИГРЫШНЫХ КОМБИНАЦИЙ - ВАЖНО ДЛЯ ЗАВЕРШЕНИЯ
+// найти, сколько выигрышных комбинаций на уровне сейчас, при заданном числе в группе
+JewelLevel.prototype.countGroups = function (minimalAmount) {
+    var time = Date.now();
+    this.resetDispatched();
+    var col, row, jewel, comboAmount = 0;
+    var groups = [];
+    var nextCombo = [];
+    for (col = 0; col < this.cols; col++) {
+        for (row = 0; row < this.rows; row++) {
+            jewel = this.jewels[col][row];
+            if (jewel.isDispatched) continue;
+            // ищем всех одного цвета
+            nextCombo = this.getSameNears(jewel); // помечает isDispatched для всех в комбо
+            if(nextCombo.length >= minimalAmount) {
+                groups.push(nextCombo);
+            }
+        }
+    }
+    var time2 = Date.now();
+    console.log("countGroups time = " + (time2-time) + " ms");
+    return groups;
 };

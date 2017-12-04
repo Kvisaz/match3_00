@@ -7,10 +7,25 @@ function BejeweledPresenter(view, cols, rows) {
 
     this.jewelLevel = new JewelLevel(cols, rows)
         .fill(JewelType.getRandomCommon, JewelType) // заполняем модель всеми доступными общими типами
-        .forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
 
+    // генерируем без начальных комбинаций
+    // todo НУЖНА ПРОВЕРКА НА РЕШАЕМОСТЬ УРОВНЯ
+    this.combos = [];
+    this.countAllCombos(); // массив массивов комбинаций
+    console.log("combos find = " + this.combos.length);
+
+    while (this.combos.length > 0) {
+        this.jewelLevel.fill(JewelType.getRandomCommon, JewelType); // генерим уровень, пока комбо не исчезнет
+        this.countAllCombos();
+        console.log("combos find = " + this.combos.length);
+    }
+    this.jewelLevel.forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
     this.selectedJewel = undefined;
 }
+
+BejeweledPresenter.prototype.countAllCombos = function () {
+    this.combos = this.jewelLevel.countGroups(this.COMBO_AMOUNT_MIN);
+};
 
 // передаем сюда модель
 BejeweledPresenter.prototype.onJewelClickDown = function (jewel) {
@@ -59,7 +74,18 @@ BejeweledPresenter.prototype.isSwapAllowed = function (jewel1, jewel2) {
 
 BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
     this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
-    this.view.swap(jewel1, jewel2, this.checkCombo, this); // после анимации проверяем комбо
+    this.countAllCombos(); // считаем комбы
+
+    if (this.combos.length == 0) {  // ничего нет, отменяем своп
+        this.jewelLevel.swap(jewel1, jewel2); // меняем логику
+        this.view.swapUnSwap(jewel1, jewel2); // после анимации проверяем комбо
+        this.view.unlockUi();
+    }
+    else {
+        this.view.swap(jewel1, jewel2); // свопаем
+        // заказываем взрыв после свопа
+        this.callWithDelay(this.blastCombos, this, this.view.SWAP_ANIMATION_DURATION);
+    }
 };
 
 BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
@@ -67,12 +93,27 @@ BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
     this.view.swap(jewel1, jewel2); // без коллбэка, просто разблокируем интерфейс
 };
 
-BejeweledPresenter.prototype.checkCombo = function (jewel1, jewel2) {
-    if (this.checkBlastedJewels(jewel1, jewel2)) { // если сделаны / заказаны взрывы
-        // то запускаем пробное падение с задержкой на анимацию взрыва
-        this.callWithDelay(this.tryNextFall, this, this.view.BLAST_ANIMATION_DURATION);
-    } // если были комбо - пометили и взорвали
-    else this.undoSwap(jewel1, jewel2); // запускаем отмену свопа
+BejeweledPresenter.prototype.checkCombos = function () {
+    this.countAllCombos();
+    if (this.combos.length > 0) {
+        this.blastCombos();
+    }
+    else { // комбо больше нет, выходим из анимаций
+        this.view.unlockUi(); // разблочить UI, типа все готово
+    }
+};
+
+BejeweledPresenter.prototype.blastCombos = function () {
+    var i, j, comboLength, combosAmount = this.combos.length;
+    for (i = 0; i < combosAmount; i++) {
+        comboLength = this.combos[i].length;
+        for (j = 0; j < comboLength; j++) {
+            this.combos[i][j].type = JewelType.NONE; // очищаем комбы
+            this.view.requestBlastAnimation(this.combos[i][j]);  // и сразу заказываем анимацию
+        }
+    }
+    //  запускаем пробное падение с задержкой на анимацию взрыва
+    this.callWithDelay(this.tryNextFall, this, this.view.BLAST_ANIMATION_DURATION);
 };
 
 // осыпаем на 1 клетку
@@ -94,7 +135,7 @@ BejeweledPresenter.prototype.tryNextFall = function () {
                 continue; // листаем дальше
             }
             if (hasVoid) {
-                this.jewelLevel.swap(this.jewelLevel.jewels[col][row], this.jewelLevel.jewels[col][row+1]);
+                this.jewelLevel.swap(this.jewelLevel.jewels[col][row], this.jewelLevel.jewels[col][row + 1]);
                 // обновляем вью для упавшего камня (анимация)
                 hasAnimationDelay = true;
                 this.view.makeFallingJewelView(this.jewelLevel.jewels[col][row + 1]);
@@ -105,33 +146,11 @@ BejeweledPresenter.prototype.tryNextFall = function () {
     if (hasAnimationDelay) {  // и если были падения - повторить этот шаг с задержкой
         this.callWithDelay(this.tryNextFall, this, this.view.GRID_STEP_FALL_DURATION);
     }
-    else {
-        this.view.unlockUi(); // разблочить UI, типа все готово
+    else { // все упало, проверяем с задержкой на комбо
+        this.callWithDelay(this.checkCombos, this, this.view.GRID_STEP_FALL_DURATION);
     }
 };
 
-BejeweledPresenter.prototype.checkBlastedJewels = function (jewel1, jewel2) {
-    // проверяем, есть ли комбо
-    var hasCombo1 = this.markBlasted(jewel1);
-    var hasCombo2 = this.markBlasted(jewel2);
-    return hasCombo1 || hasCombo2;
-};
-
-// пометить взорванными всех соседей того же цвета, если комбо выполняется
-BejeweledPresenter.prototype.markBlasted = function (jewel) {
-    var hasCombo = false;
-    var combo = this.jewelLevel.getSameNears(jewel);
-    var i, length = combo.length;
-    if (length >= this.COMBO_AMOUNT_MIN) {
-        hasCombo = true;
-        for (i = 0; i < length; i++) {
-            combo[i].type = JewelType.NONE;
-            this.view.requestBlastAnimation(combo[i]);  // и сразу заказываем анимацию
-        }
-    }
-    return hasCombo;
-};
-
-BejeweledPresenter.prototype.callWithDelay = function (callback, context, delay) {
-    this.view.game.time.events.add(delay, callback, context);
+BejeweledPresenter.prototype.callWithDelay = function (callback, context, delay, arg1, arg2, arg3) {
+    this.view.game.time.events.add(delay, callback, context, arg1, arg2, arg3);
 };
