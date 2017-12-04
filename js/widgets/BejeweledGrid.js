@@ -101,18 +101,6 @@ BejeweledGroup.prototype.refreshJewelView = function (jewel) {
         .start()
 };
 
-// вызвать с задержкой. Метод здесь, потому что именно вью определяет задержку
-BejeweledGroup.prototype.callWithFallStepDelay = function (callback, context) {
-    console.log("callWithFallStepDelay");
-    this.game.time.events.add(this.GRID_STEP_FALL_DURATION, callback, context);
-};
-
-// вызвать с задержкой. Метод здесь, потому что именно вью определяет задержку
-BejeweledGroup.prototype.callWithBlastDelay = function (callback, context) {
-    console.log("callWithBlastDelay");
-    this.game.time.events.add(this.BLAST_ANIMATION_DURATION, callback, context);
-};
-
 BejeweledGroup.prototype.requestBlastAnimation = function (jewelModel) {
     this.game.add.tween(jewelModel.view)
         .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // убираем

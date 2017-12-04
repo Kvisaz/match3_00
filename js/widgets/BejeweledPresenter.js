@@ -70,7 +70,8 @@ BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
 
 BejeweledPresenter.prototype.checkCombo = function (jewel1, jewel2) {
     if (this.checkBlastedJewels(jewel1, jewel2)) { // если сделаны / заказаны взрывы
-        this.view.callWithBlastDelay(this.tryNextFall, this); // то запускаем пробное падение с задержкой на анимацию взрыва
+        // то запускаем пробное падение с задержкой на анимацию взрыва
+        this.callWithDelay(this.tryNextFall, this, this.view.BLAST_ANIMATION_DURATION);
     } // если были комбо - пометили и взорвали
     else this.undoSwap(jewel1, jewel2); // запускаем отмену свопа
 };
@@ -104,7 +105,7 @@ BejeweledPresenter.prototype.tryNextFall = function () {
     }
 
     if (hasAnimationDelay) {  // и если были падения - повторить этот шаг с задержкой
-        this.view.callWithFallStepDelay(this.tryNextFall, this);
+        this.callWithDelay(this.tryNextFall, this, this.view.GRID_STEP_FALL_DURATION);
     }
     else {
         this.view.unlockUi(); // разблочить UI, типа все готово
@@ -131,4 +132,9 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
         }
     }
     return hasCombo;
+};
+
+BejeweledPresenter.prototype.callWithDelay = function (callback, context, delay) {
+    console.log("callWithDelay");
+    this.view.game.time.events.add(delay, callback, context);
 };
