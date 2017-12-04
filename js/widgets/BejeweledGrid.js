@@ -49,9 +49,6 @@ BejeweledGroup.prototype.addJewelView = function (jewelModel) {
     jewelImage.x = jewelModel.column * this.GRID_STEP;
     jewelImage.y = jewelModel.row * this.GRID_STEP;
     jewelImage.model = jewelModel;
-    jewelImage.tweenTarget = {x: 0, y: 0, alpha: 1};
-    jewelImage.tween = this.game.add.tween(jewelImage);
-    jewelImage.tween.to(jewelImage.tweenTarget, 250);
     jewelModel.view = jewelImage;
     this.group.add(jewelImage);
 };
