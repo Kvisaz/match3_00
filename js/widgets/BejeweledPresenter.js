@@ -90,7 +90,7 @@ BejeweledPresenter.prototype.tryNextFall = function () {
         for (row = rows - 1; row >= 0; row--) {
             if (this.jewelLevel.jewels[col][row].type === JewelType.NONE) {
                 hasVoid = true; // обнаружили пустой
-                if(row==0) { // если в первом ряду - генерируем и заказываем анимацию
+                if (row == 0) { // если в первом ряду - генерируем и заказываем анимацию
                     hasAnimationDelay = true;
                     this.jewelLevel.jewels[col][row].type = JewelType.getRandomCommon();
                     this.view.refreshJewelView(this.jewelLevel.jewels[col][row]); // обновляем вью для созданного камня (анимация)
@@ -113,13 +113,12 @@ BejeweledPresenter.prototype.tryNextFall = function () {
         }
     }
 
-    if(hasAnimationDelay){  // и если были падения - повторить этот шаг с задержкой
+    if (hasAnimationDelay) {  // и если были падения - повторить этот шаг с задержкой
         this.view.callWithFallStepDelay(this.tryNextFall, this);
     }
     else {
         this.view.unlockUi(); // разблочить UI, типа все готово
     }
-    // this.view.tryNextFall(falled); // сдвигаем на 1 вьюхи для передвинутых
 };
 
 // проходим верхний ряд и засовываем новые камушки
@@ -154,8 +153,4 @@ BejeweledPresenter.prototype.markBlasted = function (jewel) {
         }
     }
     return hasCombo;
-};
-
-BejeweledPresenter.prototype.onFallFinished = function () {
-    console.log("onFallFinished");
 };

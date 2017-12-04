@@ -83,34 +83,6 @@ BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model, callback, ca
     }, this);
 };
 
-// пробуем "упасть" на 1 камень - по сути просто освежить координаты у вьюх
-// если все координаты валидны - значит, падение завершено, изменений нет
-BejeweledGroup.prototype.tryNextFall = function () {
-    this.lockUi();
-    console.log("tryNextFall");
-    var i, y, jewel, tween, length = this.group.children.length;
-    for (i = 0; i < length; i++) {
-        jewel = this.group.children[i];
-        // если координаты не соответствуют ряду - обновляем
-        y = jewel.model.row * this.GRID_STEP;
-        if (y !== jewel.y) {
-            tween = this.game.add.tween(jewel)
-                .to({y: y}, this.GRID_STEP_FALL_DURATION) // катим вьюху на актуальные координаты
-                .start()
-        }
-    }
-
-    // в любом случае пробуем генерацию - вдруг пустота в первом ряду
-    if (tween) { // падение состоялось, пробуем генерацию
-        tween.onComplete.add(function () {
-            this.presenter.tryGenerate();
-        }, this);
-    } // переходим к падению после последнего обновления
-    else {
-        this.presenter.tryGenerate();
-    }
-};
-
 // катим вьюху на актуальные координаты
 BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
     console.log("makeFallingJewelView");
@@ -133,33 +105,6 @@ BejeweledGroup.prototype.refreshJewelView = function (jewel) {
 BejeweledGroup.prototype.callWithFallStepDelay = function (callback, context) {
     console.log("callWithFallStepDelay");
     this.game.time.events.add(this.GRID_STEP_FALL_DURATION, callback, context);
-};
-
-// генерируем новые камни (создаем вью)
-BejeweledGroup.prototype.tryGenerate = function (jewelModelArray) {
-    this.lockUi();
-    console.log("tryGenerate");
-    var i, y, jewelModel, duration, tween, length = jewelModelArray.length;
-    for (i = 0; i < length; i++) {
-        jewelModel = jewelModelArray[i];
-        // грузим новую текстуру
-        jewelModel.view.loadTexture(JewelGenerator.getJewelTexture(jewelModel.type));
-        tween = this.game.add.tween(jewelModel.view)
-            .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // катим вьюху на актуальные координаты
-            .start()
-    }
-
-
-    // именно отсутствие генерации является признаком окончания формирования уровня
-    if (tween) { // падение состоялось, возвращаемся и пробуем снова
-        tween.onComplete.add(function () {
-            this.presenter.tryNextFall();
-        }, this);
-    } // переходим к падению после последнего обновления
-    else {
-        this.unlockUi();
-        this.presenter.onFallFinished();
-    }
 };
 
 BejeweledGroup.prototype.blast = function (callback, callbackContext) {
