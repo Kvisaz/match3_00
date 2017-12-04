@@ -79,7 +79,7 @@ BejeweledPresenter.prototype.checkCombo = function (jewel1, jewel2) {
 BejeweledPresenter.prototype.tryNextFall = function () {
     console.log("stepFall");
     this.view.lockUi();
-    var tmp, hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
+    var hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
     var hasAnimationDelay = false;
     // перебираем колонки, если находим пустые - сдвигаем следующие за ним на 1 ряд
     for (col = 0; col <= colMax; col++) {
@@ -95,14 +95,7 @@ BejeweledPresenter.prototype.tryNextFall = function () {
                 continue; // листаем дальше
             }
             if (hasVoid) {
-                // меняем местами камень с нижним
-                tmp = this.jewelLevel.jewels[col][row];
-                this.jewelLevel.jewels[col][row] = this.jewelLevel.jewels[col][row + 1];
-                this.jewelLevel.jewels[col][row + 1] = tmp;
-                // и освежаем внутренние данные о колонках
-                this.jewelLevel.jewels[col][row].row = row;
-                this.jewelLevel.jewels[col][row + 1].row = row + 1;
-
+                this.jewelLevel.swap(this.jewelLevel.jewels[col][row], this.jewelLevel.jewels[col][row+1]);
                 // обновляем вью для упавшего камня (анимация)
                 hasAnimationDelay = true;
                 this.view.makeFallingJewelView(this.jewelLevel.jewels[col][row + 1]);
