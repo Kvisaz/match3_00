@@ -45,12 +45,25 @@ BejeweledGroup.prototype.onUp = function (pointer) {
 
 // ------------------- for presenter --------------------
 BejeweledGroup.prototype.addJewelView = function (jewelModel) {
-    var jewelImage = JewelGenerator.createJewel(jewelModel.type);
-    jewelImage.x = jewelModel.column * this.GRID_STEP;
-    jewelImage.y = jewelModel.row * this.GRID_STEP;
-    jewelImage.model = jewelModel;
-    jewelModel.view = jewelImage;
-    this.group.add(jewelImage);
+    jewelModel.view = JewelGenerator.createJewel(jewelModel.type);
+    jewelModel.view.x = jewelModel.column * this.GRID_STEP;
+    jewelModel.view.y = jewelModel.row * this.GRID_STEP;
+    jewelModel.view.model = jewelModel;
+    this.group.add(jewelModel.view);
+};
+
+// обновляем вьюху для сгенерированного камня
+BejeweledGroup.prototype.setJewelViewType = function (jewel) {
+    jewel.view.loadTexture(JewelGenerator.getJewelTexture(jewel.type));
+};
+
+// обновляем вьюху для сгенерированного камня
+BejeweledGroup.prototype.regenerateJewelView = function (jewel) {
+    this.setJewelViewType(jewel);
+    this.game.add.tween(jewel.view)
+        .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // показываем новый камень быстро
+        .delay(this.GRID_STEP_FALL_DURATION) // с задержкой, чтобы предыдущий успел упасть
+        .start()
 };
 
 BejeweledGroup.prototype.showCursor = function (jewelModel) {
@@ -94,14 +107,6 @@ BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
         .start()
 };
 
-// обновляем вьюху для сгенерированного камня
-BejeweledGroup.prototype.regenerateJewelView = function (jewel) {
-    jewel.view.loadTexture(JewelGenerator.getJewelTexture(jewel.type));
-    this.game.add.tween(jewel.view)
-        .to({alpha: 1}, this.GRID_STEP_FALL_DURATION) // показываем новый камень быстро
-        .delay(this.GRID_STEP_FALL_DURATION) // с задержкой, чтобы предыдущий успел упасть
-        .start()
-};
 
 BejeweledGroup.prototype.requestBlastAnimation = function (jewelModel) {
     this.game.add.tween(jewelModel.view)
