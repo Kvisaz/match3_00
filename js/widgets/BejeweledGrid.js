@@ -22,6 +22,18 @@ function BejeweledGroup(game, cols, rows) {
     this.group.onChildInputDown.add(this.onDown, this);
     this.game.input.onUp.add(this.onUp, this);
     this.presenter = new BejeweledPresenter(this, cols, rows);
+
+    this.callbacks = {
+        swap: function (jewel1, jewel2, hasCombo) {},
+        levelGenerated: function () {}, // уровень сгенерирован
+        hintShown: function (solution) {}, // показали подсказку {hint: jewel2, target: jewel1, length: comboLength}
+        singleBlastStart: function (jewel) {}, // начало взрыва камня
+        totalBlastFinish: function () {}, // конец взрыва всех камней
+        singleFallStart: function (jewel) {}, // начало падения камня
+        singleFallFinish: function (jewel) {},  // окончание падения камня
+        singleBornStart: function (jewel) {}, // генерация нового камня
+        noMoves: function () {}, // нет больше ходов
+    }
 }
 
 BejeweledGroup.prototype.setXY = function (x, y) {
@@ -109,6 +121,7 @@ BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
 
 
 BejeweledGroup.prototype.requestBlastAnimation = function (jewelModel) {
+    this.callbacks.singleBlastStart(jewelModel); // сообщаем, что взрыв
     this.game.add.tween(jewelModel.view)
         .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // убираем
         .to({y: 0}, 1) // откатываем вьюху на первую свободную позицию - иначе не будет падения
@@ -121,4 +134,26 @@ BejeweledGroup.prototype.lockUi = function () {
 
 BejeweledGroup.prototype.unlockUi = function () {
     this.isUiBlocked = false;
+};
+
+// ------------------- Интерфейс внешний --------------------
+
+// перегенерить уровень, раздать новые случайные типы для камней
+BejeweledGroup.prototype.restart = function () {
+    this.presenter.generateLevel();
+};
+
+// показать подсказку, если maximizeCombo = true - с максимальной длиной
+BejeweledGroup.prototype.showHint = function (maximizeCombo) {
+    this.presenter.showHint(maximizeCombo)
+};
+
+// убрать подсказку
+BejeweledGroup.prototype.hideHint = function () {
+    this.presenter.unselect();
+};
+
+// взять число решений
+BejeweledGroup.prototype.getSolutionsAmount = function () {
+    return this.presenter.solutions.length;
 };

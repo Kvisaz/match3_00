@@ -85,6 +85,8 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
     this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
     this.countAllCombos(); // считаем комбы
 
+    this.view.callbacks.swap(jewel1, jewel2, this.combos.length > 0);
+
     if (this.combos.length == 0) {  // ничего нет, отменяем своп
         this.jewelLevel.swap(jewel1, jewel2); // меняем логику
         this.view.swapUnSwap(jewel1, jewel2); // после анимации проверяем комбо
@@ -110,18 +112,24 @@ BejeweledPresenter.prototype.checkCombos = function () {
     else { // комбо больше нет, выходим из анимаций
         this.view.unlockUi(); // разблочить UI, типа все готово
 
-        // todo test
-        // check all variants and regenerate уровень
+        // проверка решаемости уровня
         this.solutions = this.jewelLevel.getSolutions(this.COMBO_AMOUNT_MIN);
-        if (this.solutions.length > 0) {
+        if (this.solutions.length == 0) { // решений нет, сообщаем, что все накрылось
+            this.view.callbacks.noMoves(); // коллбэк для глобальной логики, что нет ходов
+        }
+    }
+};
+
+BejeweledPresenter.prototype.showHint = function (maximizeCombo) {
+    this.solutions = this.jewelLevel.getSolutions(this.COMBO_AMOUNT_MIN);
+    if (this.solutions.length > 0) {
+        if (maximizeCombo) {
             this.solutions.sort(function (sol1, sol2) { // сортируем по мощности
                 return sol2.length - sol1.length;
             });
-            this.select(this.solutions[0].hint); // выделить подсказку
         }
-        else {
-            this.generateLevel(this.jewelLevel.cols, this.jewelLevel.rows);
-        }
+        this.select(this.solutions[0].hint); // выделить подсказку
+        this.view.callbacks.hintShown(this.solutions[0]);
     }
 };
 
@@ -135,32 +143,43 @@ BejeweledPresenter.prototype.blastCombos = function () {
         }
     }
     //  запускаем пробное падение с задержкой на анимацию взрыва
-    this.callWithDelay(this.tryNextFall, this, this.view.BLAST_ANIMATION_DURATION);
+    this.callWithDelay(function () {
+        this.view.callbacks.totalBlastFinish();
+        this.tryNextFall();
+    }, this, this.view.BLAST_ANIMATION_DURATION);
 };
 
 // осыпаем на 1 клетку
 BejeweledPresenter.prototype.tryNextFall = function () {
     this.view.lockUi();
-    var hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
+    var jewel, jewel2, hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
     var hasAnimationDelay = false;
     // перебираем колонки, если находим пустые - сдвигаем следующие за ним на 1 ряд
     for (col = 0; col <= colMax; col++) {
         hasVoid = false; // пока пустые не обнаружены
         for (row = rows - 1; row >= 0; row--) {
-            if (this.jewelLevel.jewels[col][row].type === JewelType.NONE) {
+            jewel = this.jewelLevel.jewels[col][row];
+
+            if (jewel.type === JewelType.NONE) {
                 hasVoid = true; // обнаружили пустой
-                if (row == 0) { // если в первом ряду - генерируем и заказываем анимацию
+                if (row == 0) { // ГЕНЕРАЦИЯ  если в первом ряду - генерируем и заказываем анимацию
                     hasAnimationDelay = true;
-                    this.jewelLevel.jewels[col][row].type = JewelType.getRandomCommon();
-                    this.view.regenerateJewelView(this.jewelLevel.jewels[col][row]); // обновляем вью для созданного камня (анимация)
+                    jewel.type = JewelType.getRandomCommon();
+                    this.view.regenerateJewelView(jewel); // обновляем вью для созданного камня (анимация)
+                    this.view.callbacks.singleBornStart(jewel); // коллбэк для глобальной логики
+                    this.callWithDelay(function () {
+                        this.view.callbacks.singleFallFinish(jewel); // коллбэк для глобальной логики
+                    }, this, this.view.GRID_STEP_FALL_DURATION);
                 }
                 continue; // листаем дальше
             }
-            if (hasVoid) {
-                this.jewelLevel.swap(this.jewelLevel.jewels[col][row], this.jewelLevel.jewels[col][row + 1]);
+            if (hasVoid) { // ПАДЕНИЕ
+                jewel2 = this.jewelLevel.jewels[col][row + 1];
+                this.jewelLevel.swap(jewel, jewel2);
                 // обновляем вью для упавшего камня (анимация)
                 hasAnimationDelay = true;
-                this.view.makeFallingJewelView(this.jewelLevel.jewels[col][row + 1]);
+                this.view.makeFallingJewelView(jewel);
+                this.view.callbacks.singleFallStart(jewel); // коллбэк для глобальной логики
             }
         }
     }
