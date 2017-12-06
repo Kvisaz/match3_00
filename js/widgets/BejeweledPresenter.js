@@ -4,24 +4,32 @@
 function BejeweledPresenter(view, cols, rows) {
     this.COMBO_AMOUNT_MIN = 3;
     this.view = view;
+    this.selectedJewel = undefined;
 
+    this.solutions = []; // массив решений в формате {hint: jewel2, target: jewel1, length: comboLength}
+    this.combos = []; // массив массивов комбинаций
+    this.generateLevel(cols, rows);
+}
+
+// генерируем уровень чистый, т.е. без начальных комбинаций, но с решениями
+BejeweledPresenter.prototype.generateLevel = function (cols, rows) {
     this.jewelLevel = new JewelLevel(cols, rows)
         .fill(JewelType.getRandomCommon, JewelType); // заполняем модель всеми доступными общими типами
 
-    // генерируем без начальных комбинаций
-    // todo НУЖНА ПРОВЕРКА НА РЕШАЕМОСТЬ УРОВНЯ
-    this.combos = [];
-    this.countAllCombos(); // массив массивов комбинаций
-    console.log("combos find = " + this.combos.length);
-
+    this.countAllCombos(); // считаем все комбы
     while (this.combos.length > 0) {
         this.jewelLevel.fill(JewelType.getRandomCommon, JewelType); // генерим уровень, пока комбо не исчезнет
-        this.countAllCombos();
-        console.log("combos find = " + this.combos.length);
+        this.countAllCombos(); // считаем комбо
+        if(this.combos.length == 0){ // если комбо очистили - проверяем, есть ли решения
+            this.solutions = this.jewelLevel.getSolutions(this.COMBO_AMOUNT_MIN);
+            if(this.solutions.length === 0) {
+                this.combos.length = 1; // на самом деле просто сбрасываем флаг, чтобы отгенерировать заново
+            }
+        }
     }
-    this.jewelLevel.forEach(view.addJewelView.bind(view)); // добавляем соответствующий камень на поле
-    this.selectedJewel = undefined;
-}
+    // обновить уровень
+    this.jewelLevel.forEach(this.view.addJewelView.bind(this.view)); // добавляем соответствующий камень на поле
+};
 
 BejeweledPresenter.prototype.countAllCombos = function () {
     this.combos = this.jewelLevel.countGroups(this.COMBO_AMOUNT_MIN);
@@ -100,6 +108,21 @@ BejeweledPresenter.prototype.checkCombos = function () {
     }
     else { // комбо больше нет, выходим из анимаций
         this.view.unlockUi(); // разблочить UI, типа все готово
+
+        // todo test
+        this.solutions = this.jewelLevel.getSolutions(this.COMBO_AMOUNT_MIN);
+        if(this.solutions.length > 0){
+            this.solutions.sort(function (sol1, sol2) { // сортируем по мощности
+                return sol2.length - sol1.length;
+            });
+            this.select(this.solutions[0].hint); // выделить подсказку
+            console.log(this.solutions);
+
+        }
+        else {
+
+        }
+
     }
 };
 

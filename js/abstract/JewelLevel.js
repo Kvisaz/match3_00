@@ -4,7 +4,7 @@
  * модель уровня для Match-3
  */
 function JewelLevel(cols, rows) {
-    this.length = cols*rows;
+    this.length = cols * rows;
     this.cols = cols;
     this.rows = rows;
     this.jewels = [];
@@ -91,8 +91,8 @@ JewelLevel.prototype.getSameNears = function (jewel) {
 
 
         if (sameNearIndex > this.length) {
-            console.log("sameNearIndex = "+sameNearIndex);
-            console.log("this.jewels.length = "+this.length);
+            console.log("sameNearIndex = " + sameNearIndex);
+            console.log("this.jewels.length = " + this.length);
             console.log("NONSENSE SAME NEAR LENTGH, BREAK THE LOOP");
             break;
         }
@@ -137,12 +137,10 @@ JewelLevel.prototype.resetDispatched = function () {
     }
 };
 
-// TODO ПОИСК ВСЕХ ВЫИГРЫШНЫХ КОМБИНАЦИЙ - ВАЖНО ДЛЯ ЗАВЕРШЕНИЯ
 // найти, сколько выигрышных комбинаций на уровне сейчас, при заданном числе в группе
 JewelLevel.prototype.countGroups = function (minimalAmount) {
-    var time = Date.now();
     this.resetDispatched();
-    var col, row, jewel, comboAmount = 0;
+    var col, row, jewel;
     var groups = [];
     var nextCombo = [];
     for (col = 0; col < this.cols; col++) {
@@ -151,12 +149,45 @@ JewelLevel.prototype.countGroups = function (minimalAmount) {
             if (jewel.isDispatched) continue;
             // ищем всех одного цвета
             nextCombo = this.getSameNears(jewel); // помечает isDispatched для всех в комбо
-            if(nextCombo.length >= minimalAmount) {
+            if (nextCombo.length >= minimalAmount) {
                 groups.push(nextCombo);
             }
         }
     }
-    var time2 = Date.now();
-    console.log("countGroups time = " + (time2-time) + " ms");
     return groups;
+};
+
+// поиск всех возможных решений, т.е. замен, при которых образуются выигрышные комбинации
+JewelLevel.prototype.getSolutions = function (minimalAmount) {
+    var col, row, colMax = this.cols - 1, rowMax = this.rows - 1;
+    var solutions = []; // массив пар, образующих замены
+    for (col = 0; col <= colMax; col++) {
+        for (row = 0; row <= rowMax; row++) {
+            //console.log("col = " + col + " colMax = " + colMax + "  / row = " + row + " rowMax = " + rowMax);
+            if (col < colMax) { // 1. свопаем с соседом справа и проверяем
+                this.checkSolution(this.jewels[col][row], this.jewels[col + 1][row], minimalAmount, solutions);
+            }
+            if (row < rowMax) { // 2. свопаем с соседом снизу и проверяем
+                this.checkSolution(this.jewels[col][row], this.jewels[col][row + 1], minimalAmount, solutions);
+            }
+        }
+    }
+    // проверка углового нижнего - его свопаем в обратном порядке
+    this.checkSolution(this.jewels[colMax][rowMax], this.jewels[colMax - 1][rowMax], minimalAmount, solutions);
+    this.checkSolution(this.jewels[colMax][rowMax], this.jewels[colMax][rowMax - 1], minimalAmount, solutions);
+    return solutions;
+};
+
+// временная функция
+// проверить наличие решений для пары камней (предполагается, что они соседи)
+JewelLevel.prototype.checkSolution = function (jewel1, jewel2, minimalAmount, solutions) {
+    this.swap(jewel1, jewel2); // меняем камни местами
+    var comboLength = this.getSameNears(jewel1).length;
+    if (comboLength >= minimalAmount) {
+        solutions.push({hint: jewel1, target: jewel2, length: comboLength});
+    } else {
+        comboLength = this.getSameNears(jewel2).length;
+        if (comboLength >= minimalAmount) solutions.push({hint: jewel2, target: jewel1, length: comboLength});
+    }
+    this.swap(jewel1, jewel2); // возвращаем все на место
 };
