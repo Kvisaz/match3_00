@@ -2,7 +2,7 @@
  * Created by Work on 28.11.2017.
  */
 
-function BejeweledGroup(game, cols, rows) {
+function BejeweledGroup(game, cols, rows, gridStep) {
     this.game = game;
     this.group = game.add.group();
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
@@ -10,7 +10,11 @@ function BejeweledGroup(game, cols, rows) {
     this.SWAP_ANIMATION_DURATION = 120;
     this.GRID_STEP_FALL_DURATION = 80;
     this.BLAST_ANIMATION_DURATION = 100;
-    this.GRID_STEP = 66;
+
+    this.GRID_STEP = gridStep || 66;
+
+    this.width = this.GRID_STEP * cols;
+    this.height = this.GRID_STEP * rows;
 
     this.selectedJewel = undefined;
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
@@ -82,6 +86,7 @@ BejeweledGroup.prototype.showCursor = function (jewelModel) {
     this.cursor.alignIn(jewelModel.view, Phaser.CENTER);
     this.cursor.x += this.group.x;
     this.cursor.y += this.group.y;
+    console.log("BejeweledGroup.prototype.showCursor = " + this.cursor.x + " / " + this.cursor.y);
     this.cursor.revive();
 };
 
@@ -140,12 +145,13 @@ BejeweledGroup.prototype.unlockUi = function () {
 
 // перегенерить уровень, раздать новые случайные типы для камней
 BejeweledGroup.prototype.restart = function () {
+    this.presenter.unselect();
     this.presenter.generateLevel();
 };
 
 // показать подсказку, если maximizeCombo = true - с максимальной длиной
 BejeweledGroup.prototype.showHint = function (maximizeCombo) {
-    this.presenter.showHint(maximizeCombo)
+    this.presenter.showHint(maximizeCombo);
 };
 
 // убрать подсказку
