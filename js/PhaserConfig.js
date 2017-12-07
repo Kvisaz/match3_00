@@ -7,8 +7,8 @@
 var PhaserConfig = {
     exe: function (game) {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; // для масштабирования во весь экран
-        /*game.scale.pageAlignHorizontally = true; // не нужно при выравнивании через CSS
-        game.scale.pageAlignVertically = true;*/
+        game.scale.pageAlignHorizontally = true; // не нужно при выравнивании через CSS
+        game.scale.pageAlignVertically = true;
         game.input.maxPointers = 1; // мультитач не интересует
         game.tweens.frameBased = false; // анимации на основе миллисекунд, а не фреймов, по умолчанию и так стоит false
         game.time.advancedTiming = true; // true - позволяет мерять  fps rate, fps min/max, suggestedFps and msMin/msMax. Недорого

@@ -2,8 +2,8 @@
  *  Конфигурация приложения
  */
 var AppConfig = {
-    width: 540,
+    width: 640,
     height: 960,
-    canvasId: "canvas",
+    minWidth: 540, // ориентироваться в дизайне на такую минимальную ширину
     preloaderId: "preloader"
 };
