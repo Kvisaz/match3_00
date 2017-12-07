@@ -15,30 +15,6 @@ function MainClickUiBuilder(game) {
     this.game = game;
 }
 
-MainClickUiBuilder.prototype.bg = function (x, y) {
-    return ImageBuilder.createRectangleImage(this.game, x, y, AppConfig.width, AppConfig.height, R.colors.BG_DARK);
-};
-
-MainClickUiBuilder.prototype.levelBar = function (x, y) {
-    return new UiLevelBar(this.game).setXY(x, y);
-};
-
-MainClickUiBuilder.prototype.healthPotions = function (x, y) {
-    return new UiHealthPotion(this.game).setXY(x, y);
-};
-
-MainClickUiBuilder.prototype.coins = function (x, y) {
-    return new UiCoin(this.game).setXY(x, y);
-};
-
-MainClickUiBuilder.prototype.healthBar = function (x, y) {
-    return new UiHealthBar(this.game).setXY(x, y);
-};
-
-MainClickUiBuilder.prototype.monsterButton = function (x, y) {
-    return new MonsterButton(this.game).setXY(x, y);
-};
-
-MainClickUiBuilder.prototype.monsterDeathEffect = function (x, y) {
-    return new MonsterDeathEffect(this.game, 516, 132).setXY(x, y);
+MainClickUiBuilder.prototype.settingsButton = function (x, y, callback, context) {
+    return this.game.add.button(x, y, R.images.buttons.settingsIdle.page, callback, context, R.images.buttons.settingsIdle.name, R.images.buttons.settingsIdle.name, R.images.buttons.settingsPressed.name, R.images.buttons.settingsIdle.name);
 };
