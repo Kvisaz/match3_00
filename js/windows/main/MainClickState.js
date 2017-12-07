@@ -24,16 +24,9 @@ function MainClickState() {
         }, this);
 
 
-        var level = new BejeweledGroup(this.game, 8, 8, 66);
+        var level = new BejeweledGroup(this.game, 8, 8, 68);
         level.group.alignIn(this.game.world, Phaser.CENTER);
 
-        var levelBg = ImageBuilder.rect(0, 0, level.width + 2, level.height + 2, "#181C23");
-        var levelFrame = ImageBuilder.strokeRect(0, 0, level.width + 2, level.height + 2, "#dedede", 2);
-
-        levelFrame.alignIn(level.group, Phaser.CENTER);
-        levelBg.alignIn(level.group, Phaser.CENTER);
-
-        this.game.world.sendToBack(levelBg);
         this.game.world.sendToBack(bg);
 
         var snow1 = this.game.add.image(0, 0, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
@@ -41,6 +34,7 @@ function MainClickState() {
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
 
 
+/*
         var hintButton = new UiTextButton(this.game, 132, 48, "Show Hint", "#FF9900", "#AE6800")
             .alignTo(levelBg, Phaser.BOTTOM_CENTER, -100, 20)
             .setCallback(level.showHint, level);
@@ -48,6 +42,7 @@ function MainClickState() {
         var restartButton = new UiTextButton(this.game, 132, 48, "RESTART", "#FF9900", "#AE6800")
             .alignTo(levelBg, Phaser.BOTTOM_CENTER, 100, 20)
             .setCallback(level.restart, level);
+*/
 
 
         var noMoreMoves = new UiTextButton(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")

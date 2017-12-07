@@ -7,8 +7,8 @@ function BejeweledGroup(game, cols, rows, gridStep) {
     this.group = game.add.group();
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
-    this.SWAP_ANIMATION_DURATION = 120;
-    this.GRID_STEP_FALL_DURATION = 80;
+    this.SWAP_ANIMATION_DURATION = 200;
+    this.GRID_STEP_FALL_DURATION = 140;
     this.BLAST_ANIMATION_DURATION = 100;
 
     this.GRID_STEP = gridStep || 66;
@@ -20,7 +20,10 @@ function BejeweledGroup(game, cols, rows, gridStep) {
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
     this.swipe = new Swipe(this.GRID_STEP);
 
-    this.cursor = JewelGenerator.getCursor();
+    this.jewelGenerator = CristmasJewelGenerator;
+    this.jewelGenerator.init(game);
+
+    this.cursor = this.jewelGenerator.getCursor();
     this.cursor.kill();
 
     this.group.onChildInputDown.add(this.onDown, this);
@@ -28,15 +31,24 @@ function BejeweledGroup(game, cols, rows, gridStep) {
     this.presenter = new BejeweledPresenter(this, cols, rows);
 
     this.callbacks = {
-        swap: function (jewel1, jewel2, hasCombo) {},
-        levelGenerated: function () {}, // уровень сгенерирован
-        hintShown: function (solution) {}, // показали подсказку {hint: jewel2, target: jewel1, length: comboLength}
-        singleBlastStart: function (jewel) {}, // начало взрыва камня
-        totalBlastFinish: function () {}, // конец взрыва всех камней
-        singleFallStart: function (jewel) {}, // начало падения камня
-        singleFallFinish: function (jewel) {},  // окончание падения камня
-        singleBornStart: function (jewel) {}, // генерация нового камня
-        noMoves: function () {}, // нет больше ходов
+        swap: function (jewel1, jewel2, hasCombo) {
+        },
+        levelGenerated: function () {
+        }, // уровень сгенерирован
+        hintShown: function (solution) {
+        }, // показали подсказку {hint: jewel2, target: jewel1, length: comboLength}
+        singleBlastStart: function (jewel) {
+        }, // начало взрыва камня
+        totalBlastFinish: function () {
+        }, // конец взрыва всех камней
+        singleFallStart: function (jewel) {
+        }, // начало падения камня
+        singleFallFinish: function (jewel) {
+        },  // окончание падения камня
+        singleBornStart: function (jewel) {
+        }, // генерация нового камня
+        noMoves: function () {
+        }, // нет больше ходов
     }
 }
 
@@ -61,7 +73,7 @@ BejeweledGroup.prototype.onUp = function (pointer) {
 
 // ------------------- for presenter --------------------
 BejeweledGroup.prototype.addJewelView = function (jewelModel) {
-    jewelModel.view = JewelGenerator.createJewel(jewelModel.type);
+    jewelModel.view = this.jewelGenerator.createJewel(jewelModel.type);
     jewelModel.view.x = jewelModel.column * this.GRID_STEP;
     jewelModel.view.y = jewelModel.row * this.GRID_STEP;
     jewelModel.view.model = jewelModel;
@@ -70,7 +82,7 @@ BejeweledGroup.prototype.addJewelView = function (jewelModel) {
 
 // обновляем вьюху для сгенерированного камня
 BejeweledGroup.prototype.setJewelViewType = function (jewel) {
-    jewel.view.loadTexture(JewelGenerator.getJewelTexture(jewel.type));
+    this.jewelGenerator.changeJewelTexture(jewel.view, jewel.type);
 };
 
 // обновляем вьюху для сгенерированного камня
@@ -86,7 +98,6 @@ BejeweledGroup.prototype.showCursor = function (jewelModel) {
     this.cursor.alignIn(jewelModel.view, Phaser.CENTER);
     this.cursor.x += this.group.x;
     this.cursor.y += this.group.y;
-    console.log("BejeweledGroup.prototype.showCursor = " + this.cursor.x + " / " + this.cursor.y);
     this.cursor.revive();
 };
 
@@ -96,23 +107,21 @@ BejeweledGroup.prototype.hideCursor = function () {
 
 BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model) {
     this.game.add.tween(jewel1Model.view)
-        .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION)
+        .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
         .start();
-
-    var me = this;
     this.game.add.tween(jewel2Model.view)
-        .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION)
+        .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
         .start();
 };
 
 BejeweledGroup.prototype.swapUnSwap = function (jewel1Model, jewel2Model) {
     this.game.add.tween(jewel1Model.view)
-        .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION)
+        .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
         .yoyo(true)
         .start();
 
     this.game.add.tween(jewel2Model.view)
-        .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION)
+        .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
         .yoyo(true)
         .start();
 };
@@ -120,7 +129,7 @@ BejeweledGroup.prototype.swapUnSwap = function (jewel1Model, jewel2Model) {
 // катим вьюху на актуальные координаты
 BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
     this.game.add.tween(jewel.view)
-        .to({y: jewel.row * this.GRID_STEP}, this.GRID_STEP_FALL_DURATION)
+        .to({y: jewel.row * this.GRID_STEP}, this.GRID_STEP_FALL_DURATION, Phaser.Easing.Cubic.InOut)
         .start()
 };
 

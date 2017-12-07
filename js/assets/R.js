@@ -28,6 +28,25 @@ var R = {
         buttons: {
             settingsIdle: {page: "cristmas_tiles", name: "buttons_r1_c1.png"},
             settingsPressed: {page: "cristmas_tiles", name: "buttons_r1_c2.png"},
+        },
+
+        jewels: {
+            snow: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c1.png"},
+            sockGreen: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c2.png"},
+            candyMan: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c3.png"},
+            blueBall: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c4.png"},
+            sockPink: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c5.png"},
+            boxGift: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c6.png"},
+            candyHeart: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c7.png"},
+            jewelOrange: {page: "cristmas_tiles", name: "chips_68x68_size_r1_c8.png"},
+            gloves: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c1.png"},
+            candyStick: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c2.png"},
+            candyRound: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c3.png"},
+            cap: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c4.png"},
+            star: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c5.png"},
+            snowFoot: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c6.png"},
+            ice: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c7.png"},
+            boxWood: {page: "cristmas_tiles", name: "chips_68x68_size_r2_c8.png"},
         }
     },
 
