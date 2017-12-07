@@ -46,7 +46,7 @@ function MainClickState() {
                 noMoreMoves.kill();
                 level.restart();
             });
-        noMoreMoves.kill();
+        //noMoreMoves.kill();
 
 
         // Связать логику компонента с нашим планом
