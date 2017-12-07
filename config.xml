@@ -25,13 +25,9 @@
     <platform name="android">
         <allow-intent href="market:*"/>
         <preference name="enabled" value="true"/>
+        <icon src="img/preloader_logo.png" />
+
     </platform>
-    <platform name="ios">
-        <allow-intent href="itms:*"/>
-        <allow-intent href="itms-apps:*"/>
-    </platform>
-    <plugin name="com.ludei.canvasplus.ios" spec="*"/>
-    <plugin name="com.ludei.canvasplus.android" spec="*"/>
     <preference name="Orientation" value="portrait"/>
     <preference name="fullscreen" value="true"/>
 
