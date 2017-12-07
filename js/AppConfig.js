@@ -4,6 +4,6 @@
 var AppConfig = {
     width: 640,
     height: 960,
-    minWidth: 540, // ориентироваться в дизайне на такую минимальную ширину
+    canvasId: "canvas",
     preloaderId: "preloader"
 };

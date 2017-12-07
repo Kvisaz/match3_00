@@ -7,6 +7,9 @@ body{
     background: #222222;
 }
 
+html, body, #canvas {height: 100%;}
+#canvas, canvas {  margin: 0 auto;}
+
 #preloader{
     position: absolute;
     top:0;
