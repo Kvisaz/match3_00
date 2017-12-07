@@ -4,19 +4,25 @@
         id          = "com.phonegap.example"
         versionCode = "10"
         version     = "1.0.0" >
+
     <!-- versionCode is optional and Android only -->
+
     <name>Simple Match 3</name>
+
     <description>
         Simple Match 3 game
     </description>
 
     <author email="sergey.zoomaster@gmail.com" href="https://zaxx.ru">Sergey Tokarev</author>
+    <plugin name="cordova-plugin-whitelist" version="1"/>
  
     <platform name="android">
         <allow-intent href="market:*"/>
         <preference name="enabled" value="true"/>
         <icon src="img/preloader_logo.png" />
+
     </platform>
     <preference name="Orientation" value="portrait"/>
     <preference name="fullscreen" value="true"/>
+
 </widget>
