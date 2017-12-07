@@ -13,8 +13,26 @@
         Simple Match 3 game
     </description>
 
-    <author href="https://zaxx.ru" email="sergey.zoomaster@gmail.com">
-        Sergey Tokarev
-    </author>
+    <author email="sergey.zoomaster@gmail.com" href="https://zaxx.ru">Sergey Tokarev</author>
+    <plugin name="cordova-plugin-whitelist" version="1"/>
+    <access origin="*"/>
+    <allow-intent href="http://*/*"/>
+    <allow-intent href="https://*/*"/>
+    <allow-intent href="tel:*"/>
+    <allow-intent href="sms:*"/>
+    <allow-intent href="mailto:*"/>
+    <allow-intent href="geo:*"/>
+    <platform name="android">
+        <allow-intent href="market:*"/>
+        <preference name="enabled" value="true"/>
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*"/>
+        <allow-intent href="itms-apps:*"/>
+    </platform>
+    <plugin name="com.ludei.canvasplus.ios" spec="*"/>
+    <plugin name="com.ludei.canvasplus.android" spec="*"/>
+    <preference name="Orientation" value="portrait"/>
+    <preference name="fullscreen" value="true"/>
 
 </widget>
