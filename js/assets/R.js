@@ -11,7 +11,11 @@ var R = {
     },
 
     sounds: {
-        winteryLoop: {name: "winteryLoop", files: ['sounds/winteryloop.mp3', 'sounds/winteryloop.ogg']}
+        winteryLoop: {name: "winteryLoop", files: ['sounds/winteryloop.mp3', 'sounds/winteryloop.ogg']},
+        click: {name: "click", files: ['sounds/click.mp3', 'sounds/click.ogg']},
+        fall: {name: "switch23", files: ['sounds/switch23.mp3', 'sounds/switch23.ogg']},
+        blast: {name: "blast", files: ['sounds/click.mp3', 'sounds/click.ogg']},
+        gameover: {name: "gameover", files: ['sounds/click.mp3', 'sounds/click.ogg']},
     },
 
     atlas: { // -------------------- атласы для загрузки -------------------------

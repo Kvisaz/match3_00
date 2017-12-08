@@ -31,4 +31,6 @@ AssetLoader.preload = function (game) {
     this.loadPages(R.atlas.common); // загрузка атласов
     this.loadImage(R.images.bg.cristmas);
     this.loadSound(R.sounds.winteryLoop);
+    this.loadSound(R.sounds.click);
+    this.loadSound(R.sounds.fall);
 };

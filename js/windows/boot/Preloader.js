@@ -13,6 +13,7 @@ function Preloader(assetLoader) {
     this.create = function () {
         console.log("Preloader create");
         document.getElementById(AppConfig.preloaderId).style.display = "none"; // убираем лого загрузчика
+        Sound.init(this.game); // инициализируем звуковую систему
         this.game.state.start(States.START_SCREEN);
     }
 };

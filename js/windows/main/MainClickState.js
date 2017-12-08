@@ -21,6 +21,7 @@ function MainClickState() {
         var settingsButton = uiBuilder.settingsButton(446, 34,
         function () {
             console.log("SettingsButton pressed!");
+            Sound.switchMusic();
         }, this);
 
 
@@ -35,10 +36,12 @@ function MainClickState() {
 
 
         // todo Make musicBox - with playlist, delays, volumes
-        var music = this.game.add.audio(R.sounds.winteryLoop.name);
+        Sound.playMusic();
+
+      /*  var music = this.game.add.audio(R.sounds.winteryLoop.name);
         music.loop = true;
         music.play();
-
+*/
         // todo Make Sound Effects
 
 
@@ -63,6 +66,11 @@ function MainClickState() {
 
 
         // Связать логику компонента с нашим планом
+
+        level.callbacks.select = function (jewel) {
+            console.log("level.callbacks.select / jewel = " + jewel.column + " / " + jewel.row);
+            Sound.playSound(Sound.SELECT);
+        };
 
         level.callbacks.swap = function (jewel1, jewel2, hasCombo) {
             console.log("level.callbacks.swap / jewel1 = " + jewel1.column + " / " + jewel1.row);
@@ -91,11 +99,13 @@ function MainClickState() {
         // начало падения камня
         level.callbacks.singleFallStart = function (jewel) {
             console.log("level.callbacks.singleFallStart");
+            Sound.playSound(Sound.FALL);
         };
 
         // окончание падения камня
         level.callbacks.singleFallFinish = function (jewel) {
             console.log("level.callbacks.singleFallFinish");
+
         };
         // генерация нового камня
         level.callbacks.singleBornStart = function (jewel) {

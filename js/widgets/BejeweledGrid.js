@@ -31,6 +31,8 @@ function BejeweledGroup(game, cols, rows, gridStep) {
     this.presenter = new BejeweledPresenter(this, cols, rows);
 
     this.callbacks = {
+        select: function (jewel) {
+        },
         swap: function (jewel1, jewel2, hasCombo) {
         },
         levelGenerated: function () {

@@ -66,6 +66,7 @@ BejeweledPresenter.prototype.onSwipe = function (swipeDirection) {
 BejeweledPresenter.prototype.select = function (jewel) {
     this.selectedJewel = jewel;
     this.view.showCursor(jewel);
+    this.view.callbacks.select(jewel);
 };
 
 BejeweledPresenter.prototype.unselect = function () {
