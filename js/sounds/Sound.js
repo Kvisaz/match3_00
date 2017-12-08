@@ -9,9 +9,10 @@ var Sound = {};
 
 Sound.init = function (game) {
     this.SELECT = 0;
-    this.FALL = 1;
-    this.BLAST = 2;
-    this.GAMEOVER = 3;
+    this.UNDO = 1;
+    this.FALL = 2;
+    this.BLAST = 3;
+    this.GAMEOVER = 4;
 
     this.game = game;
     this.music = game.add.sound(R.sounds.winteryLoop.name);
@@ -19,9 +20,10 @@ Sound.init = function (game) {
     this.sounds = [];
     // todo change to sounds
     this.sounds[this.SELECT] = game.add.sound(R.sounds.click.name);
+    this.sounds[this.UNDO] = game.add.sound(R.sounds.undoSwap.name);
     this.sounds[this.BLAST] = game.add.sound(R.sounds.blast.name);
     this.sounds[this.FALL] = game.add.sound(R.sounds.fall.name);
-    this.sounds[this.GAMEOVER] = game.add.sound(R.sounds.click.name);
+    this.sounds[this.GAMEOVER] = game.add.sound(R.sounds.gameover.name);
 
     this.isMute = {
         all: false,

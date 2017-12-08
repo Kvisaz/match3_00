@@ -21,7 +21,9 @@ function MainClickState() {
         var settingsButton = uiBuilder.settingsButton(446, 34,
         function () {
             console.log("SettingsButton pressed!");
-            Sound.switchMusic();
+            //Sound.switchMusic();
+            Sound.stopMusic();
+            Sound.playSound(Sound.GAMEOVER);
         }, this);
 
 
@@ -76,6 +78,8 @@ function MainClickState() {
             console.log("level.callbacks.swap / jewel1 = " + jewel1.column + " / " + jewel1.row);
             console.log("level.callbacks.swap / jewel2 = " + jewel2.column + " / " + jewel2.row);
             console.log("level.callbacks.swap / hasCombo = " + hasCombo);
+            if(!hasCombo) Sound.playSound(Sound.UNDO);
+
         };
         level.callbacks.levelGenerated = function () {
             console.log("level.callbacks.levelGenerated");

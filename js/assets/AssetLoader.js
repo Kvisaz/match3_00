@@ -34,4 +34,6 @@ AssetLoader.preload = function (game) {
     this.loadSound(R.sounds.click);
     this.loadSound(R.sounds.fall);
     this.loadSound(R.sounds.blast);
+    this.loadSound(R.sounds.undoSwap);
+    this.loadSound(R.sounds.gameover);
 };

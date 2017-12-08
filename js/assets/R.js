@@ -15,8 +15,8 @@ var R = {
         click: {name: "click", files: ['sounds/click.mp3', 'sounds/click.ogg']},
         fall: {name: "switch23", files: ['sounds/switch23.mp3', 'sounds/switch23.ogg']},
         blast: {name: "steamhiss", files: ['sounds/steamhiss.mp3', 'sounds/steamhiss.ogg']},
-        undoSwap: {name: "steamhiss", files: ['sounds/steamhiss.mp3', 'sounds/steamhiss.ogg']},
-        gameover: {name: "gameover", files: ['sounds/click.mp3', 'sounds/click.ogg']},
+        undoSwap: {name: "undowall", files: ['sounds/undowall.mp3', 'sounds/undowall.ogg']},
+        gameover: {name: "gameover", files: ['sounds/gameover.mp3', 'sounds/gameover.ogg']},
     },
 
     atlas: { // -------------------- атласы для загрузки -------------------------
