@@ -34,6 +34,14 @@ function MainClickState() {
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
 
 
+        // todo Make musicBox - with playlist, delays, volumes
+        var music = this.game.add.audio(R.sounds.winteryLoop.name);
+        music.loop = true;
+        music.play();
+
+        // todo Make Sound Effects
+
+
 /*
         var hintButton = new UiTextButton(this.game, 132, 48, "Show Hint", "#FF9900", "#AE6800")
             .alignTo(levelBg, Phaser.BOTTOM_CENTER, -100, 20)

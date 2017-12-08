@@ -3,11 +3,15 @@
  */
 var R = {
     dir: { // -------------------- пути к ресурсам -------------------------
-        atlas: "img"
+        images: "img",
     },
 
     fonts: { // -------------------- bitmap fonts -------------------------
-        fedoka: {name:"fedoka", png: "fedoka_one_numeric_0.png", xml: "fedoka_one_numeric.fnt" }
+        fedoka: {name: "fedoka", png: "fedoka_one_numeric_0.png", xml: "fedoka_one_numeric.fnt"}
+    },
+
+    sounds: {
+        winteryLoop: {name: "winteryLoop", files: ['sounds/winteryloop.mp3', 'sounds/winteryloop.ogg']}
     },
 
     atlas: { // -------------------- атласы для загрузки -------------------------
