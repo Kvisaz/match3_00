@@ -23,10 +23,17 @@ var R = {
         common: ["cristmas_tiles"/*"monsters", "buttons", "items"*/]
     },
 
+    effects: {
+        explosion: {name: "explosion", file: "img/exposions_match3_001.png",
+            frameWidth: 256, frameHeight: 256, frameMax: -1
+        }
+    },
+
     images: {
         bg: {
             cristmas: "bg_first.png"
         },
+
         overlay: {
             snowTop: {page: "cristmas_tiles", name: "snow_r1_c1.png"},
             snowBottom: {page: "cristmas_tiles", name: "snow_r3_c1.png"},

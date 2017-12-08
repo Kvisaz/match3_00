@@ -21,6 +21,10 @@ AssetLoader.loadImage = function (filename) {
     this.game.load.image(filename, R.dir.images + "/" +filename);
 };
 
+AssetLoader.loadEffect = function (effect) {
+    this.game.load.spritesheet(effect.name, effect.file, effect.frameWidth, effect.frameHeight, effect.frameMax);
+};
+
 AssetLoader.loadSound = function (fileResource) {
     this.game.load.audio(fileResource.name, fileResource.files);
 };
@@ -30,6 +34,9 @@ AssetLoader.preload = function (game) {
     this.loadBitmapFont(R.fonts.fedoka);
     this.loadPages(R.atlas.common); // загрузка атласов
     this.loadImage(R.images.bg.cristmas);
+
+    this.loadEffect(R.effects.explosion);
+
     this.loadSound(R.sounds.winteryLoop);
     this.loadSound(R.sounds.click);
     this.loadSound(R.sounds.fall);

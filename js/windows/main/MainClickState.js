@@ -36,6 +36,8 @@ function MainClickState() {
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
 
+        var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
+        effectImage.animations.add("blast");
 
         // todo Make musicBox - with playlist, delays, volumes
         Sound.playMusic();
@@ -92,6 +94,7 @@ function MainClickState() {
         };
         // начало взрыва камня
         level.callbacks.blastStart = function (blastedAmount) {
+            //effectImage.animations.play("blast", 60);
             console.log("level.callbacks.blastStart  / blastedAmount = " + blastedAmount);
             Sound.playSound(Sound.BLAST);
             score += SCORE_JEWEL*blastedAmount;
