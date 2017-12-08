@@ -36,17 +36,18 @@ function MainClickState() {
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
 
-        var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
-        effectImage.animations.add("blast");
+        // todo effect manager
+       // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
+        //effectImage.animations.add("blast");
 
-        // todo Make musicBox - with playlist, delays, volumes
+
         Sound.playMusic();
 
       /*  var music = this.game.add.audio(R.sounds.winteryLoop.name);
         music.loop = true;
         music.play();
 */
-        // todo Make Sound Effects
+
 
 
 /*

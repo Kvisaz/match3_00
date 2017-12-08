@@ -11,12 +11,12 @@ var R = {
     },
 
     sounds: {
-        winteryLoop: {name: "winteryLoop", files: ['sounds/winteryloop.ogg', 'sounds/winteryloop.mp3']},
-        click: {name: "click", files: ['sounds/click.ogg', 'sounds/click.mp3']},
-        fall: {name: "switch23", files: ['sounds/switch23.ogg', 'sounds/switch23.mp3']},
-        blast: {name: "steamhiss", files: ['sounds/steamhiss.ogg', 'sounds/steamhiss.mp3']},
-        undoSwap: {name: "undowall", files: ['sounds/undowall.ogg', 'sounds/undowall.mp3']},
-        gameover: {name: "gameover", files: ['sounds/gameover.ogg', 'sounds/gameover.mp3']},
+        winteryLoop: {name: "winteryLoop", files: ['sounds/winteryloop.mp3', 'sounds/winteryloop.ogg']},
+        click: {name: "click", files: ['sounds/click.mp3', 'sounds/click.ogg']},
+        fall: {name: "switch23", files: ['sounds/switch23.mp3', 'sounds/switch23.ogg']},
+        blast: {name: "steamhiss", files: ['sounds/steamhiss.mp3', 'sounds/steamhiss.ogg']},
+        undoSwap: {name: "undowall", files: ['sounds/undowall.mp3', 'sounds/undowall.ogg']},
+        gameover: {name: "gameover", files: ['sounds/gameover.mp3', 'sounds/gameover.ogg']},
     },
 
     atlas: { // -------------------- атласы для загрузки -------------------------
