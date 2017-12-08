@@ -87,9 +87,10 @@ function MainClickState() {
             scoreText.setText(""+score);
         };
         // начало взрыва камня
-        level.callbacks.singleBlastStart = function (jewel) {
-            console.log("level.callbacks.singleBlastStart  / jewel = " + jewel.column + "/ " + jewel.row);
-            score += SCORE_JEWEL;
+        level.callbacks.blastStart = function (blastedAmount) {
+            console.log("level.callbacks.blastStart  / blastedAmount = " + blastedAmount);
+            Sound.playSound(Sound.BLAST);
+            score += SCORE_JEWEL*blastedAmount;
             scoreText.setText(score);
         };
         // конец взрыва всех камней

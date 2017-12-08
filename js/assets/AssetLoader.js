@@ -33,4 +33,5 @@ AssetLoader.preload = function (game) {
     this.loadSound(R.sounds.winteryLoop);
     this.loadSound(R.sounds.click);
     this.loadSound(R.sounds.fall);
+    this.loadSound(R.sounds.blast);
 };

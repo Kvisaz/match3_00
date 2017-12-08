@@ -19,7 +19,7 @@ Sound.init = function (game) {
     this.sounds = [];
     // todo change to sounds
     this.sounds[this.SELECT] = game.add.sound(R.sounds.click.name);
-    this.sounds[this.BLAST] = game.add.sound(R.sounds.click.name);
+    this.sounds[this.BLAST] = game.add.sound(R.sounds.blast.name);
     this.sounds[this.FALL] = game.add.sound(R.sounds.fall.name);
     this.sounds[this.GAMEOVER] = game.add.sound(R.sounds.click.name);
 
@@ -47,6 +47,7 @@ Sound.playMusic = function () {
 
 Sound.playSound = function (soundTag) {
     if(this.isMute.sounds || this.isMute.all) return;
+    console.log("playSound " + soundTag);
     this.sounds[soundTag].play('', 0, this.volume.sounds);
 };
 

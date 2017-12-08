@@ -39,8 +39,10 @@ function BejeweledGroup(game, cols, rows, gridStep) {
         }, // уровень сгенерирован
         hintShown: function (solution) {
         }, // показали подсказку {hint: jewel2, target: jewel1, length: comboLength}
-        singleBlastStart: function (jewel) {
-        }, // начало взрыва камня
+
+        // начало взрыва всех камней
+        blastStart: function (blastedAmount) {
+        },
         totalBlastFinish: function () {
         }, // конец взрыва всех камней
         singleFallStart: function (jewel) {
@@ -137,7 +139,6 @@ BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
 
 
 BejeweledGroup.prototype.requestBlastAnimation = function (jewelModel) {
-    this.callbacks.singleBlastStart(jewelModel); // сообщаем, что взрыв
     this.game.add.tween(jewelModel.view)
         .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // убираем
         .to({y: 0}, 1) // откатываем вьюху на первую свободную позицию - иначе не будет падения
