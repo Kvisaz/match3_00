@@ -136,7 +136,7 @@ BejeweledPresenter.prototype.showHint = function (maximizeCombo) {
 
 BejeweledPresenter.prototype.blastCombos = function () {
     var i, j, comboLength, combosAmount = this.combos.length;
-    this.view.callbacks.blastStart(this.combos.length); // сообщаем, что взрыв
+    this.view.callbacks.blastStart(this.combos); // сообщаем, что взрыв
     for (i = 0; i < combosAmount; i++) {
         comboLength = this.combos[i].length;
         for (j = 0; j < comboLength; j++) {

@@ -38,11 +38,11 @@ function MainClickState() {
 
 
         // todo effect manager
+        var effectManager = new EffectManager(this.game, level);
         // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
         //effectImage.animations.add("blast");
 
-
-        Sound.playMusic();
+            Sound.playMusic();
 
         /*  var music = this.game.add.audio(R.sounds.winteryLoop.name);
          music.loop = true;
@@ -94,11 +94,11 @@ function MainClickState() {
             scoreText.setText("" + score);
         };
         // начало взрыва камня
-        level.callbacks.blastStart = function (blastedAmount) {
-            //effectImage.animations.play("blast", 60);
-            console.log("level.callbacks.blastStart  / blastedAmount = " + blastedAmount);
+        level.callbacks.blastStart = function (blastedJewels) {
+            effectManager.blast(blastedJewels);
+            console.log("level.callbacks.blastStart  / blastedAmount = " + blastedJewels.length);
             Sound.playSound(Sound.BLAST);
-            score += SCORE_JEWEL * blastedAmount;
+            score += SCORE_JEWEL * blastedJewels.length;
             scoreText.setText(score);
         };
         // конец взрыва всех камней

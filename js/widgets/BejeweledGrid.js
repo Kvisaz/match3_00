@@ -40,8 +40,8 @@ function BejeweledGroup(game, cols, rows, gridStep) {
         hintShown: function (solution) {
         }, // показали подсказку {hint: jewel2, target: jewel1, length: comboLength}
 
-        // начало взрыва всех камней
-        blastStart: function (blastedAmount) {
+        // начало взрыва всех камней, аргумент - массив камней
+        blastStart: function (blastedJewels) {
         },
         totalBlastFinish: function () {
         }, // конец взрыва всех камней
