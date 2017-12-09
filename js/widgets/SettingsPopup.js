@@ -49,6 +49,10 @@ function SettingsPopup(game) {
         Sound.setSoundsVolume(volume);
     }, this);
 
+    this.soundSlider.setCheckCallback(function (playing) {
+        Sound.muteSounds(!playing);
+    }, this);
+
 
     this.musicSlider = new VolumeSlider(this.game, Sound.volume.music, R.strings.en.musicOn, R.strings.en.musicOff);
     this.musicSlider.rootView.alignIn(this.bg, Phaser.CENTER, 0, 80);
@@ -57,6 +61,10 @@ function SettingsPopup(game) {
 
     this.musicSlider.setVolumeCallback(function (volume) {
         Sound.setMusicVolume(volume);
+    }, this);
+
+    this.musicSlider.setCheckCallback(function (playing) {
+        Sound.muteMusic(!playing);
     }, this);
 
 
