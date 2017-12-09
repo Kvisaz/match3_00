@@ -18,12 +18,21 @@ function MainClickState() {
         scoreText.anchor.set(0.5, 0.5);
         scoreText.alignIn(scoreBg, Phaser.CENTER);
 
+        var settingsPopup = new SettingsPopup(this.game)
+            .setXY(0, 160);
+
+        var isPopup = false;
         var settingsButton = uiBuilder.settingsButton(446, 34,
             function () {
                 console.log("SettingsButton pressed!");
+                isPopup = !isPopup;
+                console.log("isPopup = "+isPopup);
+                if(isPopup) level.lockUi();
+                else level.unlockUi();
+
                 //Sound.switchMusic();
-                Sound.stopMusic();
-                Sound.playSound(Sound.GAMEOVER);
+                //Sound.stopMusic();
+                settingsPopup.switch();
             }, this);
 
 

@@ -36,19 +36,41 @@ Sound.init = function (game) {
         sounds: 1
     };
 };
-// todo
+
+Sound.muteMusic = function (mute) {
+    this.music.mute = mute;
+};
+
+Sound.muteSounds = function (mute) {
+    this.sounds.forEach(function (sound) {
+        sound.mute = mute;
+    });
+};
+
+Sound.setMusicVolume = function (volume) {
+    this.volume.music = volume;
+    this.music.volume = volume;
+};
+
+Sound.setSoundsVolume = function (volume) {
+    this.volume.sounds = volume;
+    this.sounds.forEach(function (sound) {
+        sound.volume = volume;
+    });
+};
+
 Sound.mute = function () {
     this.isMute = true;
     this.game.sound.stopAll();
 };
 
 Sound.playMusic = function () {
-    if(this.isMute.music|| this.isMute.all) return;
+    if (this.isMute.music || this.isMute.all) return;
     this.music.loopFull(this.volume.music);
 };
 
 Sound.playSound = function (soundTag) {
-    if(this.isMute.sounds || this.isMute.all) return;
+    if (this.isMute.sounds || this.isMute.all) return;
     console.log("playSound " + soundTag);
     this.sounds[soundTag].play('', 0, this.volume.sounds);
 };
@@ -58,59 +80,7 @@ Sound.stopMusic = function () {
 };
 
 Sound.switchMusic = function () {
-    if(this.isMute.music|| this.isMute.all) return;
-    if(this.music.isPlaying) this.stopMusic();
+    if (this.isMute.music || this.isMute.all) return;
+    if (this.music.isPlaying) this.stopMusic();
     else this.playMusic();
 };
-
-// ----------------------------------- плейлист ------------
-/*
- // добавляет объекты музыки и выдает следующую
- function PlayList(game, musicNamesArray) {
- this.interval = 5000; // интервал между песнями в ms
- var list = [];
- var index = 0;
- var current = undefined;
- var isPlaying = false;
-
- musicNamesArray.forEach(function (music) {
- list.push(game.add.audio(music));
- });
-
- // позволяет циклично пролистывать цикл
- this.getNext = function () {
- current = list[index];
- index = (index + 1 ) % list.length;
- return current;
- };
-
- // воспроизводит следущую и готовит к запуску другую музыку
- this.playNext = function () {
- this.getNext(); // устанавливаем current
- current.play(); // запускаем его
- isPlaying = true;
- //console.log("current.isPlaying = "+current.isPlaying); // всегда фальзе!!!
- // после завершения вызываем себя с интервалом
- var interval = this.interval;
- current.onStop.addOnce(function () { // ВСЕГДА ADDONCE делай
- console.log("Hello onStop");
- isPlaying = false;
- this.playNext();
- }, this);
- };
-
- // стопим
- this.stop = function() {
- isPlaying = false;
- current.onStop.removeAll(); // убираем коллбэк перезапуска
- if(current && current.isPlaying) current.stop(); // стопим текущую музыку
- };
-
- // стопим
- this.switch = function() {
- if(isPlaying) this.stop(); // стопим текущую музыку
- else {
- this.getNext();
- }
- };
- }*/

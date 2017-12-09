@@ -7,7 +7,8 @@ var R = {
     },
 
     fonts: { // -------------------- bitmap fonts -------------------------
-        fedoka: {name: "fedoka", png: "fedoka_one_numeric_0.png", xml: "fedoka_one_numeric.fnt"}
+        fedoka: {name: "fedoka", png: "fedoka_one_numeric_0.png", xml: "fedoka_one_numeric.fnt"},
+        robotoBold: {name: "robotoBold", png: "robotoBold_0.png", xml: "robotoBold.fnt"}
     },
 
     sounds: {
@@ -40,10 +41,23 @@ var R = {
         },
         ui: {
             scoreBg: {page: "cristmas_tiles", name: "score_bg.png"},
+            popupBg: {page: "cristmas_tiles", name: "popup_bg.png"},
         },
+
+        slider: {
+            line: {page: "cristmas_tiles", name: "slider_r1_c1.png"},
+            pointer: {page: "cristmas_tiles", name: "slider_r3_c2.png"},
+        },
+
         buttons: {
             settingsIdle: {page: "cristmas_tiles", name: "buttons_r1_c1.png"},
-            settingsPressed: {page: "cristmas_tiles", name: "buttons_r1_c2.png"},
+            settingsPressed: {page: "cristmas_tiles", name: "buttons_r1_c3.png"},
+            newGameIdle: {page: "cristmas_tiles", name: "buttons_r3_c1.png"},
+            newGamePressed: {page: "cristmas_tiles", name: "buttons_r3_c10.png"},
+            scoreIdle: {page: "cristmas_tiles", name: "buttons_r5_c1.png"},
+            scorePressed: {page: "cristmas_tiles", name: "buttons_r5_c11.png"},
+            checkBox: {page: "cristmas_tiles", name: "buttons_r7_c2.png"},
+            checkMark: {page: "cristmas_tiles", name: "buttons_r8_c5.png"},
         },
 
         jewels: {
@@ -92,19 +106,20 @@ var R = {
 
     strings: { // -------------------- строковые переменные -------------------------
         en: {
-            levelBarLevel: "Level",
-            healthBarTitle: "Your health",
-            monsterLevelLabel: "Level",
-//            menuStartTitle: "GAME PAUSED",
-//            menuStartNewGameItem: "New Game",
+            newGame: "NEW GAME",
+            scoreTable: "SCORE TABLE",
+            musicOn: "Music On",
+            musicOff: "Music Off",
+            soundOn: "Sounds On",
+            soundOff: "Sounds Off",
         },
         ru: {
-            levelBarLevel: "Уровень",
-            healthBarTitle: "Твое здоровье",
-            monsterLevelLabel: "Уровень",
-//            menuStartTitle: "ПАУЗА",
-//            menuStartNewGameItem: "Новая игра",
-
+            newGame: "НОВАЯ ИГРА",
+            scoreTable: "РЕКОРДЫ",
+            musicOn: "Музыка",
+            musicOff: "Музыка",
+            soundOn: "Звуки",
+            soundOff: "Звуки",
         },
     }
 };
