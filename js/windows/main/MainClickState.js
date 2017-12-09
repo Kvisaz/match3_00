@@ -13,18 +13,18 @@ function MainClickState() {
 
         var scoreBg = this.addImage(51, 50, R.images.ui.scoreBg);
         var score = 0;
-        var scoreText = this.game.add.bitmapText(200, 100, R.fonts.fedoka.name, ""+score, 48);
+        var scoreText = this.game.add.bitmapText(200, 100, R.fonts.fedoka.name, "" + score, 48);
         scoreText.tint = "0xF9DC07";
         scoreText.anchor.set(0.5, 0.5);
         scoreText.alignIn(scoreBg, Phaser.CENTER);
 
         var settingsButton = uiBuilder.settingsButton(446, 34,
-        function () {
-            console.log("SettingsButton pressed!");
-            //Sound.switchMusic();
-            Sound.stopMusic();
-            Sound.playSound(Sound.GAMEOVER);
-        }, this);
+            function () {
+                console.log("SettingsButton pressed!");
+                //Sound.switchMusic();
+                Sound.stopMusic();
+                Sound.playSound(Sound.GAMEOVER);
+            }, this);
 
 
         var level = new BejeweledGroup(this.game, 8, 8, 68);
@@ -36,29 +36,29 @@ function MainClickState() {
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
 
+
         // todo effect manager
-       // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
+        // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
         //effectImage.animations.add("blast");
 
 
         Sound.playMusic();
 
-      /*  var music = this.game.add.audio(R.sounds.winteryLoop.name);
-        music.loop = true;
-        music.play();
-*/
+        /*  var music = this.game.add.audio(R.sounds.winteryLoop.name);
+         music.loop = true;
+         music.play();
+         */
 
 
+        /*
+         var hintButton = new UiTextButton(this.game, 132, 48, "Show Hint", "#FF9900", "#AE6800")
+         .alignTo(levelBg, Phaser.BOTTOM_CENTER, -100, 20)
+         .setCallback(level.showHint, level);
 
-/*
-        var hintButton = new UiTextButton(this.game, 132, 48, "Show Hint", "#FF9900", "#AE6800")
-            .alignTo(levelBg, Phaser.BOTTOM_CENTER, -100, 20)
-            .setCallback(level.showHint, level);
-
-        var restartButton = new UiTextButton(this.game, 132, 48, "RESTART", "#FF9900", "#AE6800")
-            .alignTo(levelBg, Phaser.BOTTOM_CENTER, 100, 20)
-            .setCallback(level.restart, level);
-*/
+         var restartButton = new UiTextButton(this.game, 132, 48, "RESTART", "#FF9900", "#AE6800")
+         .alignTo(levelBg, Phaser.BOTTOM_CENTER, 100, 20)
+         .setCallback(level.restart, level);
+         */
 
 
         var noMoreMoves = new UiTextButton(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")
@@ -81,7 +81,7 @@ function MainClickState() {
             console.log("level.callbacks.swap / jewel1 = " + jewel1.column + " / " + jewel1.row);
             console.log("level.callbacks.swap / jewel2 = " + jewel2.column + " / " + jewel2.row);
             console.log("level.callbacks.swap / hasCombo = " + hasCombo);
-            if(!hasCombo) Sound.playSound(Sound.UNDO);
+            if (!hasCombo) Sound.playSound(Sound.UNDO);
 
         };
         level.callbacks.levelGenerated = function () {
@@ -91,14 +91,14 @@ function MainClickState() {
         level.callbacks.hintShown = function (solution) {
             console.log("level.callbacks.hintShown");
             score -= HINT_SCORE_PRICE;
-            scoreText.setText(""+score);
+            scoreText.setText("" + score);
         };
         // начало взрыва камня
         level.callbacks.blastStart = function (blastedAmount) {
             //effectImage.animations.play("blast", 60);
             console.log("level.callbacks.blastStart  / blastedAmount = " + blastedAmount);
             Sound.playSound(Sound.BLAST);
-            score += SCORE_JEWEL*blastedAmount;
+            score += SCORE_JEWEL * blastedAmount;
             scoreText.setText(score);
         };
         // конец взрыва всех камней
