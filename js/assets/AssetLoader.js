@@ -31,6 +31,16 @@ AssetLoader.loadSound = function (fileResource) {
 
 AssetLoader.preload = function (game) {
     this.game = game;
+
+    // debug
+ /*   this.game.load.onFileStart.add(function (fileKey, file) {
+        alert("game.load onFileStart = " + file);
+    });
+
+    this.game.load.onFileError.add(function (fileKey, file) {
+        alert("game.load onFileError = " + file);
+    });*/
+
     this.loadBitmapFont(R.fonts.fedoka);
     this.loadBitmapFont(R.fonts.robotoBold);
     this.loadPages(R.atlas.common); // загрузка атласов

@@ -24,10 +24,8 @@ function MainClickState() {
         var isPopup = false;
         var settingsButton = uiBuilder.settingsButton(446, 34,
             function () {
-                console.log("SettingsButton pressed!");
                 isPopup = !isPopup;
-                console.log("isPopup = "+isPopup);
-                if(isPopup) level.lockUi();
+                if (isPopup) level.lockUi();
                 else level.unlockUi();
 
                 //Sound.switchMusic();
@@ -39,7 +37,7 @@ function MainClickState() {
         var level = new BejeweledGroup(this.game, 8, 8, 68);
         level.group.alignIn(this.game.world, Phaser.CENTER);
 
-        this.game.world.sendToBack(bg);
+
 
         var snow1 = this.game.add.image(0, 0, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
@@ -51,13 +49,7 @@ function MainClickState() {
         // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
         //effectImage.animations.add("blast");
 
-            Sound.playMusic();
-
-        /*  var music = this.game.add.audio(R.sounds.winteryLoop.name);
-         music.loop = true;
-         music.play();
-         */
-
+        Sound.playMusic();
 
         /*
          var hintButton = new UiTextButton(this.game, 132, 48, "Show Hint", "#FF9900", "#AE6800")
