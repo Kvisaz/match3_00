@@ -109,24 +109,15 @@ BejeweledGroup.prototype.hideCursor = function () {
     this.cursor.kill();
 };
 
-BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model) {
+BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model, makeUndoSwap) {
+    if(makeUndoSwap==undefined) makeUndoSwap = false;
     this.game.add.tween(jewel1Model.view)
         .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
+        .yoyo(makeUndoSwap)
         .start();
     this.game.add.tween(jewel2Model.view)
         .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
-        .start();
-};
-
-BejeweledGroup.prototype.swapUnSwap = function (jewel1Model, jewel2Model) {
-    this.game.add.tween(jewel1Model.view)
-        .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
-        .yoyo(true)
-        .start();
-
-    this.game.add.tween(jewel2Model.view)
-        .to({x: jewel1Model.view.x, y: jewel1Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
-        .yoyo(true)
+        .yoyo(makeUndoSwap)
         .start();
 };
 

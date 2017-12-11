@@ -91,13 +91,13 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
 
     if (this.combos.length == 0) {  // ничего нет, отменяем своп
         this.jewelLevel.swap(jewel1, jewel2); // меняем логику
-        this.view.swapUnSwap(jewel1, jewel2); // после анимации проверяем комбо
+        this.view.swap(jewel1, jewel2, true); // заказываем анимацию свопа с отменой
         this.callWithDelay(function () {
             this.view.unlockUi(); // BLOCK UI FINISH только после завершения анимации
         }, this, this.view.SWAP_ANIMATION_DURATION*2);
     }
     else {
-        this.view.swap(jewel1, jewel2); // свопаем
+        this.view.swap(jewel1, jewel2); // заказываем анимацию свопа без отмены
         // заказываем взрыв после свопа
         this.callWithDelay(this.blastCombos, this, this.view.SWAP_ANIMATION_DURATION);
     }
