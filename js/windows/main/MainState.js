@@ -51,9 +51,6 @@ function MainState() {
 
         // todo effect manager
         var effectManager = new EffectManager(this.game, bejeweledComponent);
-        // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
-        //effectImage.animations.add("blast");
-
         Sound.playMusic();
 
 

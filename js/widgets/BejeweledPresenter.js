@@ -103,11 +103,6 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
     }
 };
 
-/*BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
-    this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
-    this.view.makeSwapAnimation(jewel1, jewel2); // без коллбэка, просто разблокируем интерфейс
-};*/
-
 BejeweledPresenter.prototype.checkCombos = function () {
     this.countAllCombos();
     if (this.combos.length > 0) {
