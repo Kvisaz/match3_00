@@ -23,5 +23,5 @@ var App = function (states) {
 
 new App([
     {name: States.PRELOADER, state: new Preloader(AssetLoader)}, // загрузчик всех остальных картинок
-    {name: States.START_SCREEN, state: new MainClickState() } // запуск нашей игры
+    {name: States.START_SCREEN, state: new MainState() } // запуск нашей игры
 ]);

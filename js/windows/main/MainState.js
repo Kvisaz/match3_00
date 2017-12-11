@@ -2,7 +2,7 @@
  * Created by Work on 16.11.2017.
  */
 
-function MainClickState() {
+function MainState() {
     this.create = function () {
         var SCORE_JEWEL = 10;
         var HINT_SCORE_PRICE = 100;
