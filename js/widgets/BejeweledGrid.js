@@ -118,7 +118,6 @@ BejeweledGroup.prototype.unlockUi = function () {
 };
 
 // ------------------- Анимации --------------------
-
 BejeweledGroup.prototype.makeSwapAnimation = function (jewel1Model, jewel2Model, makeUndoSwap) {
     if (makeUndoSwap == undefined) makeUndoSwap = false;
     this.game.add.tween(jewel1Model.view)
