@@ -19,7 +19,13 @@ function MainClickState() {
         scoreText.alignIn(scoreBg, Phaser.CENTER);
 
         var settingsPopup = new SettingsPopup(this.game)
-            .setXY(0, 160);
+            .setNewGameCallBack(function () {
+                settingsPopup.hide();
+                level.restart();
+                level.unlockUi();
+            }, this);
+
+        settingsPopup.rootView.alignIn(this.game.world, Phaser.CENTER);
 
         var isPopup = false;
         var settingsButton = uiBuilder.settingsButton(446, 34,
@@ -38,7 +44,6 @@ function MainClickState() {
         level.group.alignIn(this.game.world, Phaser.CENTER);
 
 
-
         var snow1 = this.game.add.image(0, 0, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
@@ -55,7 +60,7 @@ function MainClickState() {
         var hintButton = new UiTextButton(this.game, 200, 58, "Show Hint", "#FF9900", "#AE6800")
             .alignIn(this.game.world, Phaser.BOTTOM_CENTER)
             .setCallback(function () {
-                if(level.isUiBlocked) return;
+                if (level.isUiBlocked) return;
                 level.showHint();
             }, this);
 
