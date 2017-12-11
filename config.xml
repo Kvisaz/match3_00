@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
+        xmlns:cdv="http://cordova.apache.org/ns/1.0"
         id          = "ru.zaxx.match3"
         versionCode = "10"
         version     = "1.0.0" >
@@ -14,19 +15,29 @@
     </description>
 
     <author email="sergey.zoomaster@gmail.com" href="https://zaxx.ru">Sergey Tokarev</author>
-    <plugin name="cordova-plugin-whitelist" version="1"/>
+	
+	<plugin name="cordova-plugin-crosswalk-webview" version="2.3.0" />
 
- 
+    <content src="index.html" />
+    <plugin name="cordova-plugin-whitelist" version="1"/>	
+    <access origin="*"/>
+
+    <allow-intent href="http://*/*"/>
+    <allow-intent href="https://*/*"/>
+    <allow-intent href="tel:*"/>
+    <allow-intent href="sms:*"/>
+    <allow-intent href="mailto:*"/>
+    <allow-intent href="geo:*"/>
+
     <platform name="android">
         <allow-intent href="market:*"/>
         <preference name="enabled" value="true"/>
         <icon src="img/preloader_logo.png" />
     </platform>
 
-    <content src="index.html" />
+
     <access origin="*"/>
 
     <preference name="Orientation" value="portrait" />
-    <preference name="Fullscreen" value="true" />
-    <cocoon:plugin name="com.ludei.canvasplus.android" />
+    <preference name="Fullscreen" value="true" />    
 </widget>
