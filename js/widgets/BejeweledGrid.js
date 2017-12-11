@@ -109,7 +109,17 @@ BejeweledGroup.prototype.hideCursor = function () {
     this.cursor.kill();
 };
 
-BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model, makeUndoSwap) {
+BejeweledGroup.prototype.lockUi = function () {
+    this.isUiBlocked = true;
+};
+
+BejeweledGroup.prototype.unlockUi = function () {
+    this.isUiBlocked = false;
+};
+
+// ------------------- Анимации --------------------
+
+BejeweledGroup.prototype.makeSwapAnimation = function (jewel1Model, jewel2Model, makeUndoSwap) {
     if (makeUndoSwap == undefined) makeUndoSwap = false;
     this.game.add.tween(jewel1Model.view)
         .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
@@ -129,19 +139,11 @@ BejeweledGroup.prototype.makeFallingJewelView = function (jewel) {
 };
 
 
-BejeweledGroup.prototype.requestBlastAnimation = function (jewelModel) {
+BejeweledGroup.prototype.makeBlastAnimation = function (jewelModel) {
     this.game.add.tween(jewelModel.view)
         .to({alpha: 0}, this.BLAST_ANIMATION_DURATION) // убираем
         .to({y: 0}, 1) // откатываем вьюху на первую свободную позицию - иначе не будет падения
         .start()
-};
-
-BejeweledGroup.prototype.lockUi = function () {
-    this.isUiBlocked = true;
-};
-
-BejeweledGroup.prototype.unlockUi = function () {
-    this.isUiBlocked = false;
 };
 
 BejeweledGroup.prototype.makeHintAnimation = function (hintJewel, targetJewel) {

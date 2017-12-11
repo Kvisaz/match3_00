@@ -91,22 +91,22 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
 
     if (this.combos.length == 0) {  // ничего нет, отменяем своп
         this.jewelLevel.swap(jewel1, jewel2); // меняем логику
-        this.view.swap(jewel1, jewel2, true); // заказываем анимацию свопа с отменой
+        this.view.makeSwapAnimation(jewel1, jewel2, true); // заказываем анимацию свопа с отменой
         this.callWithDelay(function () {
             this.view.unlockUi(); // BLOCK UI FINISH только после завершения анимации
         }, this, this.view.SWAP_ANIMATION_DURATION * 2);
     }
     else {
-        this.view.swap(jewel1, jewel2); // заказываем анимацию свопа без отмены
+        this.view.makeSwapAnimation(jewel1, jewel2); // заказываем анимацию свопа без отмены
         // заказываем взрыв после свопа
         this.callWithDelay(this.blastCombos, this, this.view.SWAP_ANIMATION_DURATION);
     }
 };
 
-BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
+/*BejeweledPresenter.prototype.undoSwap = function (jewel1, jewel2) {
     this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
-    this.view.swap(jewel1, jewel2); // без коллбэка, просто разблокируем интерфейс
-};
+    this.view.makeSwapAnimation(jewel1, jewel2); // без коллбэка, просто разблокируем интерфейс
+};*/
 
 BejeweledPresenter.prototype.checkCombos = function () {
     this.countAllCombos();
@@ -144,7 +144,7 @@ BejeweledPresenter.prototype.blastCombos = function () {
         comboLength = this.combos[i].length;
         for (j = 0; j < comboLength; j++) {
             this.combos[i][j].type = JewelType.NONE; // очищаем комбы
-            this.view.requestBlastAnimation(this.combos[i][j]);  // и сразу заказываем анимацию
+            this.view.makeBlastAnimation(this.combos[i][j]);  // и сразу заказываем анимацию
         }
     }
     //  запускаем пробное падение с задержкой на анимацию взрыва
