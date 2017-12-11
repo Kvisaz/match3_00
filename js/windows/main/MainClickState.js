@@ -21,8 +21,8 @@ function MainClickState() {
         var settingsPopup = new SettingsPopup(this.game)
             .setNewGameCallBack(function () {
                 settingsPopup.hide();
-                level.restart();
-                level.unlockUi();
+                bejeweledComponent.restart();
+                bejeweledComponent.unlockUi();
             }, this);
 
         settingsPopup.rootView.alignIn(this.game.world, Phaser.CENTER);
@@ -31,8 +31,8 @@ function MainClickState() {
         var settingsButton = uiBuilder.settingsButton(446, 34,
             function () {
                 isPopup = !isPopup;
-                if (isPopup) level.lockUi();
-                else level.unlockUi();
+                if (isPopup) bejeweledComponent.lockUi();
+                else bejeweledComponent.unlockUi();
 
                 //Sound.switchMusic();
                 //Sound.stopMusic();
@@ -40,8 +40,8 @@ function MainClickState() {
             }, this);
 
 
-        var level = new BejeweledGroup(this.game, 8, 8, 68);
-        level.group.alignIn(this.game.world, Phaser.CENTER);
+        var bejeweledComponent = new BejeweledGroup(this.game, 8, 8, 68);
+        bejeweledComponent.group.alignIn(this.game.world, Phaser.CENTER);
 
 
         var snow1 = this.game.add.image(0, 0, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
@@ -50,7 +50,7 @@ function MainClickState() {
 
 
         // todo effect manager
-        var effectManager = new EffectManager(this.game, level);
+        var effectManager = new EffectManager(this.game, bejeweledComponent);
         // var effectImage = this.game.add.image(100,100, R.effects.explosion.name);
         //effectImage.animations.add("blast");
 
@@ -60,8 +60,8 @@ function MainClickState() {
         var hintButton = new UiTextButton(this.game, 200, 58, "Show Hint", "#FF9900", "#AE6800")
             .alignIn(this.game.world, Phaser.BOTTOM_CENTER)
             .setCallback(function () {
-                if (level.isUiBlocked) return;
-                level.showHint();
+                if (bejeweledComponent.isUiBlocked) return;
+                bejeweledComponent.showHint();
             }, this);
 
         var fps = new PhaserUtils.Fps(this.game, 0, 0);
@@ -79,36 +79,36 @@ function MainClickState() {
             .alignIn(this.game.world, Phaser.CENTER)
             .setCallback(function () {
                 noMoreMoves.kill();
-                level.restart();
+                bejeweledComponent.restart();
             });
         //noMoreMoves.kill();
 
 
         // Связать логику компонента с нашим планом
 
-        level.callbacks.select = function (jewel) {
+        bejeweledComponent.callbacks.select = function (jewel) {
             console.log("level.callbacks.select / jewel = " + jewel.column + " / " + jewel.row);
             Sound.playSound(Sound.SELECT);
         };
 
-        level.callbacks.swap = function (jewel1, jewel2, hasCombo) {
+        bejeweledComponent.callbacks.swap = function (jewel1, jewel2, hasCombo) {
             console.log("level.callbacks.swap / jewel1 = " + jewel1.column + " / " + jewel1.row);
             console.log("level.callbacks.swap / jewel2 = " + jewel2.column + " / " + jewel2.row);
             console.log("level.callbacks.swap / hasCombo = " + hasCombo);
             if (!hasCombo) Sound.playSound(Sound.UNDO);
 
         };
-        level.callbacks.levelGenerated = function () {
+        bejeweledComponent.callbacks.levelGenerated = function () {
             console.log("level.callbacks.levelGenerated");
         };
         // показали подсказку {hint: jewel2, target: jewel1, length: comboLength}
-        level.callbacks.hintShown = function (solution) {
+        bejeweledComponent.callbacks.hintShown = function (solution) {
             console.log("level.callbacks.hintShown");
             score -= HINT_SCORE_PRICE;
             scoreText.setText("" + score);
         };
         // начало взрыва камня
-        level.callbacks.blastStart = function (blastedJewels) {
+        bejeweledComponent.callbacks.blastStart = function (blastedJewels) {
             effectManager.blast(blastedJewels);
             console.log("level.callbacks.blastStart  / blastedAmount = " + blastedJewels.length);
             Sound.playSound(Sound.BLAST);
@@ -116,26 +116,26 @@ function MainClickState() {
             scoreText.setText(score);
         };
         // конец взрыва всех камней
-        level.callbacks.totalBlastFinish = function () {
+        bejeweledComponent.callbacks.totalBlastFinish = function () {
             console.log("level.callbacks.totalBlastFinish");
         };
         // начало падения камня
-        level.callbacks.singleFallStart = function (jewel) {
+        bejeweledComponent.callbacks.singleFallStart = function (jewel) {
             console.log("level.callbacks.singleFallStart");
             Sound.playSound(Sound.FALL);
         };
 
         // окончание падения камня
-        level.callbacks.singleFallFinish = function (jewel) {
+        bejeweledComponent.callbacks.singleFallFinish = function (jewel) {
             console.log("level.callbacks.singleFallFinish");
 
         };
         // генерация нового камня
-        level.callbacks.singleBornStart = function (jewel) {
+        bejeweledComponent.callbacks.singleBornStart = function (jewel) {
             console.log("level.callbacks.singleBornStart");
         };
         // нет больше ходов
-        level.callbacks.noMoves = function () {
+        bejeweledComponent.callbacks.noMoves = function () {
             console.log("level.callbacks.noMoves");
             noMoreMoves.revive();
         };
