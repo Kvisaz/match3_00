@@ -8,7 +8,8 @@
  *   каждый аргумент = { name: "boot", state: new BootState() } - к примеру
  */
 var App = function (states) {
-    var game = new Phaser.Game(AppConfig.width, AppConfig.height, Phaser.CANVAS, AppConfig.canvasId);
+    var defaultRenderingMode = Phaser.Device.isAndroidStockBrowser() ? Phaser.CANVAS : Phaser.AUTO;
+    var game = new Phaser.Game(AppConfig.width, AppConfig.height, defaultRenderingMode, AppConfig.canvasId);
 
     var current, next, i = 0, length = states.length;
     for (i = 0; i < length; i++) {
