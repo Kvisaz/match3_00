@@ -83,6 +83,7 @@ BejeweledPresenter.prototype.isSwapAllowed = function (jewel1, jewel2) {
 };
 
 BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
+    this.view.lockUi(); // BLOCK UI START
     this.jewelLevel.swap(jewel1, jewel2); // меняем местами два разных цвета в модели
     this.countAllCombos(); // считаем комбы
 
@@ -91,7 +92,9 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
     if (this.combos.length == 0) {  // ничего нет, отменяем своп
         this.jewelLevel.swap(jewel1, jewel2); // меняем логику
         this.view.swapUnSwap(jewel1, jewel2); // после анимации проверяем комбо
-        this.view.unlockUi();
+        this.callWithDelay(function () {
+            this.view.unlockUi(); // BLOCK UI FINISH только после завершения анимации
+        }, this, this.view.SWAP_ANIMATION_DURATION*2);
     }
     else {
         this.view.swap(jewel1, jewel2); // свопаем
@@ -111,7 +114,7 @@ BejeweledPresenter.prototype.checkCombos = function () {
         this.blastCombos();
     }
     else { // комбо больше нет, выходим из анимаций
-        this.view.unlockUi(); // разблочить UI, типа все готово
+        this.view.unlockUi(); // BLOCK UI FINISH  разблочить UI, типа все готово
 
         // проверка решаемости уровня
         this.solutions = this.jewelLevel.getSolutions(this.COMBO_AMOUNT_MIN);
@@ -153,7 +156,6 @@ BejeweledPresenter.prototype.blastCombos = function () {
 
 // осыпаем на 1 клетку
 BejeweledPresenter.prototype.tryNextFall = function () {
-    this.view.lockUi();
     var jewel, jewel2, hasVoid, row, col, colMax = this.jewelLevel.cols - 1, rows = this.jewelLevel.rows;
     var hasAnimationDelay = false;
     // перебираем колонки, если находим пустые - сдвигаем следующие за ним на 1 ряд
