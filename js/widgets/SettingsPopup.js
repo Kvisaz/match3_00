@@ -41,7 +41,10 @@ function SettingsPopup(game) {
     this.bg.addChild(this.scoreButton);
     this.bg.addChild(scoreBtLabel);
 
-    this.soundSlider = new VolumeSlider(this.game, Sound.volume.sounds, R.strings.en.soundOn, R.strings.en.soundOff);
+    this.soundSlider = new VolumeSlider(this.game,
+        Sound.settings.volume.sounds,
+        Sound.settings.mute.sounds,
+        R.strings.en.soundOn, R.strings.en.soundOff);
     this.soundSlider.rootView.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, -52);
     this.bg.addChild(this.soundSlider.rootView);
 
@@ -54,7 +57,11 @@ function SettingsPopup(game) {
     }, this);
 
 
-    this.musicSlider = new VolumeSlider(this.game, Sound.volume.music, R.strings.en.musicOn, R.strings.en.musicOff);
+    this.musicSlider = new VolumeSlider(this.game,
+        Sound.settings.volume.music,
+        Sound.settings.mute.music,
+        R.strings.en.musicOn,
+        R.strings.en.musicOff);
     this.musicSlider.rootView.alignIn(this.bg, Phaser.CENTER, 0, 80);
     this.bg.addChild(this.musicSlider.rootView);
 
@@ -84,7 +91,8 @@ SettingsPopup.prototype.switch = function () {
 };
 
 SettingsPopup.prototype.hide = function () {
-   // this.game.paused = false;
+    // Настройки звука сохраняем здесь, а не при изменении слайдера, чтобы не дергать файловую систему
+    Sound.saveSettings();
     this.rootView.kill();
 };
 

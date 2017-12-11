@@ -5,9 +5,9 @@
  * value 0...1
  */
 
-function VolumeSlider(game, value, labelOn, labelOff) {
+function VolumeSlider(game, value, mute, labelOn, labelOff) {
     this.game = game;
-    this.isOn = true;
+    this.isOn = !mute;
     this.value = value;
 
     var sliderLine = game.add.image(0, 0, R.images.slider.line.page, R.images.slider.line.name);
@@ -19,13 +19,14 @@ function VolumeSlider(game, value, labelOn, labelOff) {
     this.checkMarkImage.alignIn(this.checkBoxImage, Phaser.CENTER);
     this.checkBoxImage.addChild(this.checkMarkImage);
 
+    this.checkMarkImage.alpha = this.isOn ? 1 : 0;
+
     this.checkBoxImage.inputEnabled = true;
     this.checkBoxImage.events.onInputDown.add(function () {
-        if (this.checkMarkImage.alive) this.checkMarkImage.kill();
-        else this.checkMarkImage.revive();
-        this.isOn = this.checkMarkImage.alive;
+        this.checkMarkImage.alpha = this.checkMarkImage.alpha == 0 ? 1 : 0;
+        this.isOn = !this.isOn;
         this.text.setText(this.isOn ? labelOn : labelOff);
-        if(this.checkCallback){
+        if (this.checkCallback) {
             this.checkCallback.call(this.checkCallbackContext, this.isOn);
         }
     }, this);

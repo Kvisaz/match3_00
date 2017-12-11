@@ -5,82 +5,92 @@
  *
  */
 
-var Sound = {};
+var Sound = {
+    SELECT: 0,
+    UNDO: 1,
+    FALL: 2,
+    BLAST: 3,
+    GAMEOVER: 4,
 
-Sound.init = function (game) {
-    this.SELECT = 0;
-    this.UNDO = 1;
-    this.FALL = 2;
-    this.BLAST = 3;
-    this.GAMEOVER = 4;
+    REPO_SETTINGS_TAG: "sound"
+};
 
+Sound.init = function (game, repository) {
     this.game = game;
+    this.repository = repository; // сохранение и восстановление настроек
+
     this.music = game.add.sound(R.sounds.winteryLoop.name);
 
     this.sounds = [];
-    // todo change to sounds
     this.sounds[this.SELECT] = game.add.sound(R.sounds.click.name);
     this.sounds[this.UNDO] = game.add.sound(R.sounds.undoSwap.name);
     this.sounds[this.BLAST] = game.add.sound(R.sounds.blast.name);
     this.sounds[this.FALL] = game.add.sound(R.sounds.fall.name);
     this.sounds[this.GAMEOVER] = game.add.sound(R.sounds.gameover.name);
 
-    this.isMute = {
-        all: false,
-        music: false,
-        sounds: false
+    this.settings = {
+        mute: {
+            all: false,
+            music: false,
+            sounds: false
+        },
+        volume: {
+            music: 0.3,
+            sounds: 1
+        }
     };
 
-    this.volume = {
-        music: 0.3,
-        sounds: 1
-    };
+    this.loadSettings(); // Загрузка предыдущих настроек, если есть
+};
+
+Sound.loadSettings = function () {
+    var savedSettings = this.repository.load(this.REPO_SETTINGS_TAG);
+    if (savedSettings) {
+        this.settings = savedSettings;
+    }
+};
+
+Sound.saveSettings = function () {
+    this.repository.save(this.REPO_SETTINGS_TAG, this.settings);
 };
 
 Sound.muteMusic = function (mute) {
     this.music.mute = mute;
+    this.settings.mute.music = mute;
 };
 
 Sound.muteSounds = function (mute) {
+    this.settings.mute.sounds = mute;
     this.sounds.forEach(function (sound) {
         sound.mute = mute;
     });
 };
 
 Sound.setMusicVolume = function (volume) {
-    this.volume.music = volume;
+    this.settings.volume.music = volume;
     this.music.volume = volume;
 };
 
 Sound.setSoundsVolume = function (volume) {
-    this.volume.sounds = volume;
+    this.settings.volume.sounds = volume;
     this.sounds.forEach(function (sound) {
         sound.volume = volume;
     });
 };
 
-Sound.mute = function () {
-    this.isMute = true;
-    this.game.sound.stopAll();
+Sound.mute = function (isMuted) {
+    this.game.sound.mute = isMuted;
+    this.settings.mute.all = isMuted;
+
+    this.playMusic(); // чтобы включить музыку если ее не включали
 };
 
 Sound.playMusic = function () {
-    if (this.isMute.music || this.isMute.all) return;
-    this.music.loopFull(this.volume.music);
+    if (this.settings.mute.music || this.settings.mute.all) return;
+    this.music.loopFull(this.settings.volume.music);
 };
 
 Sound.playSound = function (soundTag) {
-    if (this.isMute.sounds || this.isMute.all) return;
-    console.log("playSound " + soundTag);
-    this.sounds[soundTag].play('', 0, this.volume.sounds);
-};
-
-Sound.stopMusic = function () {
-    this.music.stop();
-};
-
-Sound.switchMusic = function () {
-    if (this.isMute.music || this.isMute.all) return;
-    if (this.music.isPlaying) this.stopMusic();
-    else this.playMusic();
+    if (this.settings.mute.sounds || this.settings.mute.all) return;
+    this.sounds[soundTag].play('', 0, this.settings.volume.sounds);
 };
