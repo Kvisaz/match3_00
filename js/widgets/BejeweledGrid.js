@@ -110,7 +110,7 @@ BejeweledGroup.prototype.hideCursor = function () {
 };
 
 BejeweledGroup.prototype.swap = function (jewel1Model, jewel2Model, makeUndoSwap) {
-    if(makeUndoSwap==undefined) makeUndoSwap = false;
+    if (makeUndoSwap == undefined) makeUndoSwap = false;
     this.game.add.tween(jewel1Model.view)
         .to({x: jewel2Model.view.x, y: jewel2Model.view.y}, this.SWAP_ANIMATION_DURATION, Phaser.Easing.Cubic.InOut)
         .yoyo(makeUndoSwap)
@@ -142,6 +142,26 @@ BejeweledGroup.prototype.lockUi = function () {
 
 BejeweledGroup.prototype.unlockUi = function () {
     this.isUiBlocked = false;
+};
+
+BejeweledGroup.prototype.makeHintAnimation = function (hintJewel, targetJewel) {
+    if(this.isUiBlocked) return;
+    this.lockUi();
+    this.game.add.tween(hintJewel.view)
+        .to({y: hintJewel.view.y - 10}, 50)
+        .to({y: hintJewel.view.y + 10}, 80)
+        .to({y: hintJewel.view.y}, 80)
+        .start();
+
+    this.game.add.tween(targetJewel.view)
+        .to({y: targetJewel.view.y - 10}, 50)
+        .to({y: targetJewel.view.y + 10}, 80)
+        .to({y: targetJewel.view.y}, 80)
+        .delay(225)
+        .start()
+        .onComplete.add(function () {
+            this.unlockUi();
+    }, this);
 };
 
 // ------------------- Интерфейс внешний --------------------

@@ -51,11 +51,19 @@ function MainClickState() {
 
         Sound.playMusic();
 
-        /*
-         var hintButton = new UiTextButton(this.game, 132, 48, "Show Hint", "#FF9900", "#AE6800")
-         .alignTo(levelBg, Phaser.BOTTOM_CENTER, -100, 20)
-         .setCallback(level.showHint, level);
 
+        var hintButton = new UiTextButton(this.game, 200, 58, "Show Hint", "#FF9900", "#AE6800")
+            .alignIn(this.game.world, Phaser.BOTTOM_CENTER)
+            .setCallback(function () {
+                if(level.isUiBlocked) return;
+                level.showHint();
+            }, this);
+
+        var fps = new PhaserUtils.Fps(this.game, 0, 0);
+        fps.alignIn(this.game.world, Phaser.BOTTOM_LEFT, -100, -20);
+
+
+        /*
          var restartButton = new UiTextButton(this.game, 132, 48, "RESTART", "#FF9900", "#AE6800")
          .alignTo(levelBg, Phaser.BOTTOM_CENTER, 100, 20)
          .setCallback(level.restart, level);

@@ -94,7 +94,7 @@ BejeweledPresenter.prototype.swap = function (jewel1, jewel2) {
         this.view.swap(jewel1, jewel2, true); // заказываем анимацию свопа с отменой
         this.callWithDelay(function () {
             this.view.unlockUi(); // BLOCK UI FINISH только после завершения анимации
-        }, this, this.view.SWAP_ANIMATION_DURATION*2);
+        }, this, this.view.SWAP_ANIMATION_DURATION * 2);
     }
     else {
         this.view.swap(jewel1, jewel2); // заказываем анимацию свопа без отмены
@@ -132,7 +132,7 @@ BejeweledPresenter.prototype.showHint = function (maximizeCombo) {
                 return sol2.length - sol1.length;
             });
         }
-        this.select(this.solutions[0].hint); // выделить подсказку
+        this.view.makeHintAnimation(this.solutions[0].hint, this.solutions[0].target);
         this.view.callbacks.hintShown(this.solutions[0]);
     }
 };
