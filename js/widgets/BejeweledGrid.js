@@ -5,6 +5,7 @@
 function BejeweledGroup(game, cols, rows, gridStep) {
     this.game = game;
     this.group = game.add.group();
+    this.rootView = this.group;
     this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
     this.SWAP_ANIMATION_DURATION = 200;
@@ -63,14 +64,14 @@ BejeweledGroup.prototype.setXY = function (x, y) {
 };
 
 BejeweledGroup.prototype.onDown = function (jewel, pointer) {
-    if (this.isUiBlocked || jewel.model.type == JewelType.NONE) return;
+    if (this.isUiBlocked  || this.isUiGlobalBlocked || jewel.model.type == JewelType.NONE) return;
     this.swipe.start(pointer.x, pointer.y); // для проверки свайпа
     this.presenter.onJewelClickDown(jewel.model);
 };
 
 // проверяем  на свайп
 BejeweledGroup.prototype.onUp = function (pointer) {
-    if (this.isUiBlocked) return;
+    if (this.isUiBlocked || this.isUiGlobalBlocked ) return;
     if (this.swipe.check(pointer.x, pointer.y) == false) return; // меньше допустимого значения - выходим
     this.presenter.onSwipe(this.swipe.direction);
 };
@@ -115,6 +116,10 @@ BejeweledGroup.prototype.lockUi = function () {
 
 BejeweledGroup.prototype.unlockUi = function () {
     this.isUiBlocked = false;
+};
+
+BejeweledGroup.prototype.lockUiGlobal = function (lock) {
+    this.isUiGlobalBlocked = lock; // для блокировки со стороны родителя
 };
 
 // ------------------- Анимации --------------------
@@ -175,6 +180,7 @@ BejeweledGroup.prototype.restart = function () {
 
 // показать подсказку, если maximizeCombo = true - с максимальной длиной
 BejeweledGroup.prototype.showHint = function (maximizeCombo) {
+    if(this.isUiGlobalBlocked || this.isUiBlocked) return;
     this.presenter.showHint(maximizeCombo);
 };
 

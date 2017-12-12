@@ -54,13 +54,6 @@ function MainState() {
         return this.game.add.image(x, y, image.page, image.name);
     };
 
-    this.lockUi = function (lock) {
-        this.game.paused = lock;
-        /*this.isUiLocked = lock;
-         if (lock) this.bejeweledComponent.lockUi();
-         else  this.bejeweledComponent.unlockUi();*/
-    };
-
     this.showStart = function () {
         this.lockUi(true);
         var startPopup = new StartPopup(this.game).setNewGameCallBack(this.onResumeClick, this).show();
@@ -125,7 +118,7 @@ function MainState() {
     };
 
     this.onSettingsClick = function () {
-        if (this.game.paused) return;
+        if (this.isUiLocked) return;
         this.lockUi(true);
         this.settingsPopup.show();
     };
@@ -135,8 +128,7 @@ function MainState() {
     };
 
     this.onHintButtonClick = function () {
-        if (this.game.paused) return;
-        if (this.bejeweledComponent.isUiBlocked) return;
+        if (this.isUiLocked) return;
         this.bejeweledComponent.showHint();
     };
 
@@ -152,5 +144,12 @@ function MainState() {
 
     this.onResumeClick = function () {
         this.lockUi(false);
+    };
+
+
+    this.lockUi = function (lock) {
+        //   this.game.paused = lock; // при этом перестают работать и кнопки и слайдеры
+        this.isUiLocked = lock;
+        this.bejeweledComponent.lockUiGlobal(lock);
     };
 }
