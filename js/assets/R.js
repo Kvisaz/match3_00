@@ -21,7 +21,7 @@ var R = {
     },
 
     atlas: { // -------------------- атласы для загрузки -------------------------
-        common: ["cristmas_tiles"/*"monsters", "buttons", "items"*/]
+        common: ["cristmas_tiles", "start-screen"/*"monsters", "buttons", "items"*/]
     },
 
     effects: {
@@ -41,7 +41,11 @@ var R = {
         },
         ui: {
             scoreBg: {page: "cristmas_tiles", name: "score_bg"},
-            popupBg: {page: "cristmas_tiles", name: "popup-bg"},
+            popupBg: {page: "start-screen", name: "popup-bg"},
+            santa: {page: "start-screen", name: "santa"},
+            snowTopping: {page: "start-screen", name: "snow-pop-topping"},
+            tutorial01: {page: "start-screen", name: "tutorial-01"},
+            titleLogo: {page: "start-screen", name: "titlelogo"},
         },
 
         slider: {
@@ -54,12 +58,10 @@ var R = {
             settingsPressed: {page: "cristmas_tiles", name: "buttons-settings-pressed"},
             bigGreenIdle: {page: "cristmas_tiles", name: "button-green-big-idle"},
             bigGreenPressed: {page: "cristmas_tiles", name: "button-green-big-pressed"},
-            midGreenIdle: {page: "cristmas_tiles", name: "button-green-240-idle"},
-            midGreenPressed: {page: "cristmas_tiles", name: "button-green-240-pressed"},
-            midBlueIdle: {page: "cristmas_tiles", name: "button-blue-240-idle"},
-            midBluePressed: {page: "cristmas_tiles", name: "button-blue-240-pressed"},
-            midRedIdle: {page: "cristmas_tiles", name: "button-red-240-idle"},
-            midRedPressed: {page: "cristmas_tiles", name: "button-red-240-pressed"},
+            midGreenIdle: {page: "cristmas_tiles", name: "button-green-mid-idle"},
+            midGreenPressed: {page: "cristmas_tiles", name: "button-green-mid-pressed"},
+            midBlueIdle: {page: "cristmas_tiles", name: "button-blue-mid-idle"},
+            midBluePressed: {page: "cristmas_tiles", name: "button-blue-mid-pressed"},
             checkBox: {page: "cristmas_tiles", name: "buttons-checkbox"},
             checkMark: {page: "cristmas_tiles", name: "buttons-checkmark"},
         },
@@ -117,6 +119,8 @@ var R = {
             musicOff: "Music Off",
             soundOn: "Sounds On",
             soundOff: "Sounds Off",
+            tutorial1text1: "Tap to select\nor swipe items\nto match 3\nin row or group",
+            tutorial1text2: "Christmas ball\ncan go left or up",
         },
         ru: {
             backSettings: "ПРОДОЛЖИТЬ",
@@ -126,6 +130,8 @@ var R = {
             musicOff: "Музыка",
             soundOn: "Звуки",
             soundOff: "Звуки",
+            tutorial1text1: "Собирай\nподарки\nпо 3 в ряд\n или в группе",
+            tutorial1text2: "Елочный шар\nможет пойти влево и вверх",
         },
     }
 };

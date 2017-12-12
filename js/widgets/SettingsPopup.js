@@ -23,7 +23,7 @@ function SettingsPopup(game) {
     this.newGameCallback = undefined;
     this.newGameCallbackContext = undefined;
     this.newGameButton = this.game.add.button(0, 0, R.images.buttons.midGreenIdle.page,
-        this.onNewGamePressed, this,
+        function(){this.onNewGamePressed();}, this,
         R.images.buttons.midGreenIdle.name,
         R.images.buttons.midGreenIdle.name,
         R.images.buttons.midGreenPressed.name,
@@ -62,7 +62,6 @@ function SettingsPopup(game) {
         R.strings.en.musicOff);
     this.musicSlider.rootView.alignTo(this.scoreButton, Phaser.BOTTOM_CENTER, 0, 102);
     this.bg.addChild(this.musicSlider.rootView);
-
 
     this.musicSlider.setVolumeCallback(function (volume) {
         Sound.setMusicVolume(volume);
@@ -110,6 +109,7 @@ SettingsPopup.prototype.hide = function () {
     // Настройки звука сохраняем здесь, а не при изменении слайдера, чтобы не дергать файловую систему
     Sound.saveSettings();
     this.rootView.kill();
+    this.onHide();
 };
 
 SettingsPopup.prototype.setXY = function (x, y) {
@@ -119,6 +119,7 @@ SettingsPopup.prototype.setXY = function (x, y) {
 };
 
 SettingsPopup.prototype.onNewGamePressed = function () {
+    this.hide();
     if(this.newGameCallback) {
         this.newGameCallback.call(this.newGameCallbackContext);
     }
@@ -140,5 +141,17 @@ SettingsPopup.prototype.onScoreButtonPressed = function () {
 SettingsPopup.prototype.setScoreTableCallBack = function (callback, context) {
     this.scoreCallback = callback;
     this.scoreCallbackContext = context;
+    return this;
+};
+
+SettingsPopup.prototype.onHide = function () {
+    if(this.onHideCallback) {
+        this.onHideCallback.call(this.onHideCallbackContext);
+    }
+};
+
+SettingsPopup.prototype.setOnHideCallback = function (callback, context) {
+    this.onHideCallback = callback;
+    this.onHideCallbackContext = context;
     return this;
 };

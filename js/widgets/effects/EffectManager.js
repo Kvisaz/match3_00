@@ -31,7 +31,6 @@ EffectManager.prototype.blast = function (blastedCombos) {
         length = blastedJewelModels.length;
         for (j = 0; j < length; j++) {
             jewelModel = blastedJewelModels[j];
-            console.log("jewelModel = " + jewelModel.column + " / " + jewelModel.row);
             this.explosions[jewelModel.column][jewelModel.row].play();
         }
     }

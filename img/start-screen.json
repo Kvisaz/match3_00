@@ -1,0 +1,52 @@
+{"frames": [
+
+{
+	"filename": "popup-bg",
+	"frame": {"x":3,"y":3,"w":509,"h":589},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":509,"h":589},
+	"sourceSize": {"w":509,"h":589}
+},
+{
+	"filename": "santa",
+	"frame": {"x":3,"y":596,"w":213,"h":266},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":213,"h":266},
+	"sourceSize": {"w":213,"h":266}
+},
+{
+	"filename": "snow-pop-topping",
+	"frame": {"x":3,"y":866,"w":532,"h":89},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":532,"h":89},
+	"sourceSize": {"w":532,"h":89}
+},
+{
+	"filename": "titlelogo",
+	"frame": {"x":516,"y":3,"w":478,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":478,"h":158},
+	"sourceSize": {"w":478,"h":158}
+},
+{
+	"filename": "tutorial-01",
+	"frame": {"x":220,"y":596,"w":252,"h":263},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":263},
+	"sourceSize": {"w":252,"h":263}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "start-screen.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:27c4679369fa5939f2f469837dc15ad7:e5443028d2ab1495a4bbaa8b0efe4a71:34c651691b46b86836f1e0ea9c065251$"
+}
+}
