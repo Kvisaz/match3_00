@@ -57,6 +57,8 @@ Sound.saveSettings = function () {
 Sound.muteMusic = function (mute) {
     this.music.mute = mute;
     this.settings.mute.music = mute;
+    if (this.music.isPlaying) this.music.stop();
+    else this.playMusic();
 };
 
 Sound.muteSounds = function (mute) {
@@ -78,12 +80,10 @@ Sound.setSoundsVolume = function (volume) {
     });
 };
 
-Sound.mute = function (isMuted) {
-    this.game.sound.mute = isMuted;
-    this.settings.mute.all = isMuted;
-
-    this.playMusic(); // чтобы включить музыку если ее не включали
-};
+/*Sound.mute = function (isMuted) {
+ this.game.sound.mute = isMuted;
+ this.settings.mute.all = isMuted;
+ };*/
 
 Sound.playMusic = function () {
     if (this.settings.mute.music || this.settings.mute.all) return;
