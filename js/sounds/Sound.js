@@ -80,11 +80,6 @@ Sound.setSoundsVolume = function (volume) {
     });
 };
 
-/*Sound.mute = function (isMuted) {
- this.game.sound.mute = isMuted;
- this.settings.mute.all = isMuted;
- };*/
-
 Sound.playMusic = function () {
     if (this.settings.mute.music || this.settings.mute.all) return;
     this.music.loopFull(this.settings.volume.music);
