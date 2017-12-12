@@ -22,12 +22,12 @@ function SettingsPopup(game) {
 
     this.newGameCallback = undefined;
     this.newGameCallbackContext = undefined;
-    this.newGameButton = this.game.add.button(0, 0, R.images.buttons.midRedIdle.page,
+    this.newGameButton = this.game.add.button(0, 0, R.images.buttons.midGreenIdle.page,
         this.onNewGamePressed, this,
-        R.images.buttons.midRedIdle.name,
-        R.images.buttons.midRedIdle.name,
-        R.images.buttons.midRedPressed.name,
-        R.images.buttons.midRedIdle.name);
+        R.images.buttons.midGreenIdle.name,
+        R.images.buttons.midGreenIdle.name,
+        R.images.buttons.midGreenPressed.name,
+        R.images.buttons.midGreenIdle.name);
     this.newGameButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
     var newGameBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.newGame, 36);
