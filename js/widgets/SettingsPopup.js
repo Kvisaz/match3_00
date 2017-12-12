@@ -6,17 +6,31 @@ function SettingsPopup(game) {
     this.game = game;
     this.bg = game.add.image(0, 0, R.images.ui.popupBg.page, R.images.ui.popupBg.name);
 
+    this.closeButton = this.game.add.button(0, 0, R.images.buttons.midGreenIdle.page,
+        this.hide, this,
+        R.images.buttons.midGreenIdle.name,
+        R.images.buttons.midGreenIdle.name,
+        R.images.buttons.midGreenPressed.name,
+        R.images.buttons.midGreenIdle.name);
+    this.closeButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, 32);
+
+    var closeLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.backSettings, 36);
+    closeLabel.alignIn(this.closeButton, Phaser.CENTER, 0, -8);
+
+    this.bg.addChild(this.closeButton);
+    this.bg.addChild(closeLabel);
+
     this.newGameCallback = undefined;
     this.newGameCallbackContext = undefined;
-    this.newGameButton = this.game.add.button(0, 0, R.images.buttons.newGameIdle.page,
+    this.newGameButton = this.game.add.button(0, 0, R.images.buttons.midRedIdle.page,
         this.onNewGamePressed, this,
-        R.images.buttons.newGameIdle.name,
-        R.images.buttons.newGameIdle.name,
-        R.images.buttons.newGamePressed.name,
-        R.images.buttons.newGameIdle.name);
-    this.newGameButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -48);
+        R.images.buttons.midRedIdle.name,
+        R.images.buttons.midRedIdle.name,
+        R.images.buttons.midRedPressed.name,
+        R.images.buttons.midRedIdle.name);
+    this.newGameButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
-    var newGameBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.newGame, 42);
+    var newGameBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.newGame, 36);
     // newGameBtLabel.tint = "0xffffff"; // для белого не нужно
     newGameBtLabel.alignIn(this.newGameButton, Phaser.CENTER, 0, -8);
 
@@ -26,13 +40,13 @@ function SettingsPopup(game) {
 
     this.scoreCallback = undefined;
     this.scoreCallbackContext = undefined;
-    this.scoreButton = this.game.add.button(0, 0, R.images.buttons.scoreIdle.page,
-        this.onScoreButtonPressed, this,
-        R.images.buttons.scoreIdle.name,
-        R.images.buttons.scoreIdle.name,
-        R.images.buttons.scorePressed.name,
-        R.images.buttons.scoreIdle.name);
-    this.scoreButton.alignTo(this.newGameButton, Phaser.BOTTOM_CENTER, 0, 24);
+    this.scoreButton = this.game.add.button(0, 0, R.images.buttons.midBlueIdle.page,
+        this.onNewGamePressed, this,
+        R.images.buttons.midBlueIdle.name,
+        R.images.buttons.midBlueIdle.name,
+        R.images.buttons.midBluePressed.name,
+        R.images.buttons.midBlueIdle.name);
+    this.scoreButton.alignTo(this.newGameButton, Phaser.BOTTOM_CENTER, 0, 12);
 
     var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.scoreTable, 36);
     // scoreBtLabel.tint = "0xffffff"; // для белого не нужно
@@ -40,6 +54,23 @@ function SettingsPopup(game) {
 
     this.bg.addChild(this.scoreButton);
     this.bg.addChild(scoreBtLabel);
+
+    this.musicSlider = new VolumeSlider(this.game,
+        Sound.settings.volume.music,
+        Sound.settings.mute.music,
+        R.strings.en.musicOn,
+        R.strings.en.musicOff);
+    this.musicSlider.rootView.alignTo(this.scoreButton, Phaser.BOTTOM_CENTER, 0, 102);
+    this.bg.addChild(this.musicSlider.rootView);
+
+
+    this.musicSlider.setVolumeCallback(function (volume) {
+        Sound.setMusicVolume(volume);
+    }, this);
+
+    this.musicSlider.setCheckCallback(function (playing) {
+        Sound.muteMusic(!playing);
+    }, this);
 
     this.soundSlider = new VolumeSlider(this.game,
         Sound.settings.volume.sounds,
@@ -57,22 +88,7 @@ function SettingsPopup(game) {
     }, this);
 
 
-    this.musicSlider = new VolumeSlider(this.game,
-        Sound.settings.volume.music,
-        Sound.settings.mute.music,
-        R.strings.en.musicOn,
-        R.strings.en.musicOff);
-    this.musicSlider.rootView.alignIn(this.bg, Phaser.CENTER, 0, 80);
-    this.bg.addChild(this.musicSlider.rootView);
 
-
-    this.musicSlider.setVolumeCallback(function (volume) {
-        Sound.setMusicVolume(volume);
-    }, this);
-
-    this.musicSlider.setCheckCallback(function (playing) {
-        Sound.muteMusic(!playing);
-    }, this);
 
 
     this.rootView = this.bg; // для ссылки снаружи
