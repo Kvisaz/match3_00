@@ -34,7 +34,6 @@ CristmasJewelGenerator.init  = function (game) {
 CristmasJewelGenerator.createJewel = function (type) {
     type = Math.abs(type % this.images.length); // защита от выхода за пределы
     var image = this.images[type];
-    console.log("image " + image);
     return this.game.add.image(100, 100, this.imagePage, image);
 };
 
