@@ -2,7 +2,8 @@
  * Created by Work on 09.12.2017.
  */
 
-function GameOverPopup(game) {
+function GameOverPopup(game, scoreRepository) {
+    this.scoreRepository = scoreRepository;
     this.score = 0;
     this.scorePostText = 0;
 
@@ -31,7 +32,10 @@ GameOverPopup.prototype.show = function (score) {
     this.scoreText.setText(this.score);
     this.rootView.revive();
     this.game.world.bringToTop(this.rootView);
-    // this.game.paused = true;
+    // типа для асинхронности вызываем запись через таймер
+    this.game.time.events.add(0, function () {
+        this.scoreRepository.saveScore(score);
+    }, this);
     return this;
 };
 
@@ -102,7 +106,7 @@ GameOverPopup.prototype.addLayout = function () {
     this.bg.addChild(this.titleText);
 
     var buttonBuilder = ButtonBuilder;
-    this.startButton = buttonBuilder.restartGameOverButton(0,0, this.onNewGamePressed, this);
+    this.startButton = buttonBuilder.restartGameOverButton(0, 0, this.onNewGamePressed, this);
     this.startButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, -32);
     this.bg.addChild(this.startButton);
 };

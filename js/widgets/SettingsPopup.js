@@ -5,48 +5,23 @@
 function SettingsPopup(game) {
     this.game = game;
     this.bg = game.add.image(0, 0, R.images.ui.popupBg.page, R.images.ui.popupBg.name);
+    this.buttonBuilder = ButtonBuilder;
 
-    this.closeButton = this.game.add.button(0, 0, R.images.buttons.midGreenIdle.page,
-        this.hide, this,
-        R.images.buttons.midGreenIdle.name,
-        R.images.buttons.midGreenIdle.name,
-        R.images.buttons.midGreenPressed.name,
-        R.images.buttons.midGreenIdle.name);
+    this.closeButton = this.buttonBuilder.backButton(0, 0, this.hide, this);
     this.closeButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, 32);
-
-    var closeLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.backSettings, 36);
-    closeLabel.alignIn(this.closeButton, Phaser.CENTER, 0, -8);
-
     this.bg.addChild(this.closeButton);
-    this.bg.addChild(closeLabel);
-
-    this.newGameCallback = undefined;
-    this.newGameCallbackContext = undefined;
-    this.newGameButton = this.game.add.button(0, 0, R.images.buttons.midGreenIdle.page,
-        function(){this.onNewGamePressed();}, this,
-        R.images.buttons.midGreenIdle.name,
-        R.images.buttons.midGreenIdle.name,
-        R.images.buttons.midGreenPressed.name,
-        R.images.buttons.midGreenIdle.name);
-    this.newGameButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
-
-    var newGameBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.newGame, 36);
-    // newGameBtLabel.tint = "0xffffff"; // для белого не нужно
-    newGameBtLabel.alignIn(this.newGameButton, Phaser.CENTER, 0, -8);
-
-    this.bg.addChild(this.newGameButton);
-    this.bg.addChild(newGameBtLabel);
-
 
     this.scoreCallback = undefined;
     this.scoreCallbackContext = undefined;
     this.scoreButton = this.game.add.button(0, 0, R.images.buttons.midBlueIdle.page,
-        this.onNewGamePressed, this,
+        function () {
+            this.onScoreButtonPressed();
+        }, this,
         R.images.buttons.midBlueIdle.name,
         R.images.buttons.midBlueIdle.name,
         R.images.buttons.midBluePressed.name,
         R.images.buttons.midBlueIdle.name);
-    this.scoreButton.alignTo(this.newGameButton, Phaser.BOTTOM_CENTER, 0, 12);
+    this.scoreButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
     var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.scoreTable, 36);
     // scoreBtLabel.tint = "0xffffff"; // для белого не нужно
@@ -60,7 +35,7 @@ function SettingsPopup(game) {
         Sound.settings.mute.music,
         R.strings.en.musicOn,
         R.strings.en.musicOff);
-    this.musicSlider.rootView.alignTo(this.scoreButton, Phaser.BOTTOM_CENTER, 0, 102);
+    this.musicSlider.rootView.alignTo(this.scoreButton, Phaser.BOTTOM_CENTER, 0, 120);
     this.bg.addChild(this.musicSlider.rootView);
 
     this.musicSlider.setVolumeCallback(function (volume) {
@@ -75,7 +50,7 @@ function SettingsPopup(game) {
         Sound.settings.volume.sounds,
         Sound.settings.mute.sounds,
         R.strings.en.soundOn, R.strings.en.soundOff);
-    this.soundSlider.rootView.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, -52);
+    this.soundSlider.rootView.alignTo(this.musicSlider.rootView, Phaser.BOTTOM_CENTER, 0, 120);
     this.bg.addChild(this.soundSlider.rootView);
 
     this.soundSlider.setVolumeCallback(function (volume) {
@@ -86,10 +61,6 @@ function SettingsPopup(game) {
         Sound.muteSounds(!playing);
     }, this);
 
-
-
-
-
     this.rootView = this.bg; // для ссылки снаружи
     this.hide(); // по умолчанию не показываем
 }
@@ -97,11 +68,11 @@ function SettingsPopup(game) {
 SettingsPopup.prototype.show = function () {
     this.rootView.revive();
     this.game.world.bringToTop(this.rootView);
-   // this.game.paused = true;
+    // this.game.paused = true;
 };
 
 SettingsPopup.prototype.switch = function () {
-    if(this.rootView.alive) this.hide();
+    if (this.rootView.alive) this.hide();
     else this.show();
 };
 
@@ -120,7 +91,7 @@ SettingsPopup.prototype.setXY = function (x, y) {
 
 SettingsPopup.prototype.onNewGamePressed = function () {
     this.hide();
-    if(this.newGameCallback) {
+    if (this.newGameCallback) {
         this.newGameCallback.call(this.newGameCallbackContext);
     }
 };
@@ -133,7 +104,8 @@ SettingsPopup.prototype.setNewGameCallBack = function (callback, context) {
 
 
 SettingsPopup.prototype.onScoreButtonPressed = function () {
-    if(this.scoreCallback) {
+    this.hide();
+    if (this.scoreCallback) {
         this.scoreCallback.call(this.scoreCallbackContext);
     }
 };
@@ -145,7 +117,7 @@ SettingsPopup.prototype.setScoreTableCallBack = function (callback, context) {
 };
 
 SettingsPopup.prototype.onHide = function () {
-    if(this.onHideCallback) {
+    if (this.onHideCallback) {
         this.onHideCallback.call(this.onHideCallbackContext);
     }
 };

@@ -15,9 +15,6 @@ var App = function (states) {
         current = states[i];
         game.state.add(current.name, current.state);
     }
-
-
-    ImageBuilder.init(game); // передаем ссылку нашей библиотеке для построения картинок
     game.state.start(States.PRELOADER); // запускаем загрузчик
 };
 

@@ -4,24 +4,37 @@
 
 function MainState() {
     this.create = function () {
-        this.COLUMNS = 8;
-        this.ROWS = 8;
+        //this.COLUMNS = 8;
+        //this.ROWS = 8;
+        this.COLUMNS = 4;
+        this.ROWS = 4;
         this.GRIDSTEP = 70;
 
         this.SCORE_JEWEL = 10;
         this.HINT_SCORE_PRICE = 30;
         this.score = 0;
+        this.bestScore = 0;
 
         var buttonBuilder = ButtonBuilder;
+        this.scoreRepository = new ScoreRepository(Repository);
+        this.bestScore = this.scoreRepository.getBest(); // и будет обновляться при onNewGameClick
+
 
         var bg = this.game.add.image(0, 0, R.images.bg.cristmas); // bg
 
-        var scoreBg = this.addImage(51, 50, R.images.ui.scoreBg);
+        var scoreBg = this.addImage(0, 0, R.images.ui.scoreBg);
         scoreBg.alignIn(this.game.world, Phaser.TOP_CENTER, 0, -36);
-        this.scoreText = this.game.add.bitmapText(200, 100, R.fonts.fedoka.name, "" + this.score, 48);
+        this.scoreText = this.game.add.bitmapText(0, 0, R.fonts.fedoka.name, "" + this.score, 48);
         this.scoreText.tint = "0xF9DC07";
         this.scoreText.anchor.set(0.5, 0.5);
         this.scoreText.alignIn(scoreBg, Phaser.CENTER);
+
+        this.bestScoreText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name,
+            R.strings.en.bestScorePrefix + this.bestScore, 24);
+        this.bestScoreText.tint = "0xF9DC07";
+        this.bestScoreText.align = "center";
+        this.bestScoreText.anchor.setTo(0.5, 0.5); // если так не делать - при обновлении текста сместится выравнивание
+        this.bestScoreText.alignTo(scoreBg, Phaser.BOTTOM_CENTER, 0, 4);
 
         this.settingsButton = buttonBuilder.settingsButton(0, 0, this.onSettingsClick, this);
         this.settingsButton.alignTo(scoreBg, Phaser.RIGHT_CENTER, 12, 0);
@@ -40,13 +53,13 @@ function MainState() {
         this.effectManager = new EffectManager(this.game, this.bejeweledComponent);
 
         //this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
-        // gameover popup test todo remove after test
-        this.hintButton = buttonBuilder.hintButton(0, 0, this.onGameOver, this);
+        this.hintButton = buttonBuilder.hintButton(0, 0, this.onScoreButtonClick, this);
         this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
         this.hintButton.kill(); // прячем до начала игры
 
         this.addSettingsPopup();
         this.addGameOverPopup();
+        this.addScoreTablePopup();
 
         // todo delete
         var fps = new MyPhaser.Fps(this.game, 0, 0);
@@ -68,21 +81,26 @@ function MainState() {
     this.addSettingsPopup = function () {
         this.settingsPopup = new SettingsPopup(this.game)
             .setNewGameCallBack(this.onNewGameClick, this)
+            .setScoreTableCallBack(this.onScoreButtonClick, this)
             .setOnHideCallback(this.onSettingsHide, this);
         this.settingsPopup.rootView.alignIn(this.game.world, Phaser.CENTER);
     };
 
     this.addGameOverPopup = function () {
-       /* this.gameOverPopup = new GameOverPopup(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")
+        this.gameOverPopup = new GameOverPopup(this.game, this.scoreRepository)
+            .setNewGameCallBack(this.onNewGameClick, this)
             .alignIn(this.game.world, Phaser.CENTER)
-            .setCallback(this.onNewGameClick, this);
-        this.gameOverPopup.kill();*/
-
-       this.gameOverPopup = new GameOverPopup(this.game)
-           .setNewGameCallBack(this.onNewGameClick, this)
-           .alignIn(this.game.world, Phaser.CENTER)
-           .hide();
+            .hide();
     };
+
+    this.addScoreTablePopup = function () {
+        this.scoreTablePopup = new ScoreTablePopup(this.game, this.scoreRepository)
+            .setBackCallBack(this.onResumeClick, this)
+            .alignIn(this.game.world, Phaser.CENTER)
+            .hide();
+    };
+
+
 
     this.addBejeweled = function () {
         var bejeweledComponent = new BejeweledGroup(this.game, this.COLUMNS, this.ROWS, this.GRIDSTEP);
@@ -104,6 +122,7 @@ function MainState() {
 
         bejeweledComponent.callbacks.hintShown = function (solution) {
             me.score -= me.HINT_SCORE_PRICE;
+            if(me.score < 0) me.score = 0;
             me.scoreText.setText(me.score);
         };
         // начало взрыва камня
@@ -150,6 +169,11 @@ function MainState() {
         this.onResumeClick();
     };
 
+    this.onScoreButtonClick = function () {
+        this.lockUi(true);
+        this.scoreTablePopup.show(); // показываем кнопку подсказки
+    };
+
     this.onHintButtonClick = function () {
         if (this.isUiLocked) return;
         this.bejeweledComponent.showHint();
@@ -159,6 +183,11 @@ function MainState() {
         this.lockUi(false);
         this.score = 0;
         this.scoreText.setText(this.score);
+
+        this.bestScore = this.scoreRepository.getBest();
+        this.bestScoreText.setText(R.strings.en.bestScorePrefix + this.bestScore);
+
+
         if (this.gameOverPopup.alive) this.gameOverPopup.kill();
         this.bejeweledComponent.restart();
     };
@@ -171,11 +200,10 @@ function MainState() {
         this.lockUi(false);
     };
 
-
     this.lockUi = function (lock) {
         //   this.game.paused = lock; // при этом перестают работать и кнопки и слайдеры
         this.isUiLocked = lock;
-        if(lock) this.hintButton.kill(); else this.hintButton.revive();
+        if (lock) this.hintButton.kill(); else this.hintButton.revive();
         this.bejeweledComponent.lockUiGlobal(lock);
     };
 }

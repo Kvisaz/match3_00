@@ -8,21 +8,11 @@ function StartPopup(game) {
 
     this.addTitleLayout();
     this.addTutorialLayout();
+    this.buttonBuilder = ButtonBuilder;
+    this.startButton = this.buttonBuilder.bigGreenButton(this.onNewGamePressed, this, R.strings.en.newGame);
 
-    this.startButton = this.game.add.button(0, 0, R.images.buttons.bigGreenIdle.page,
-        this.onNewGamePressed, this,
-        R.images.buttons.bigGreenIdle.name,
-        R.images.buttons.bigGreenIdle.name,
-        R.images.buttons.bigGreenPressed.name,
-        R.images.buttons.bigGreenIdle.name);
     this.startButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, 32);
-
-    var startLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.newGame, 36);
-    startLabel.alignIn(this.startButton, Phaser.CENTER, 0, -8);
-
     this.bg.addChild(this.startButton);
-    this.bg.addChild(startLabel);
-
 
 
     this.rootView = this.bg; // для ссылки снаружи

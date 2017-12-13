@@ -25,6 +25,20 @@ ButtonBuilder.newButton = function (x, y, callback, context, idleFramePage, idle
         idleFrameName);
 };
 
+ButtonBuilder.newTextButton = function (x, y, callback, context,
+                                        idleFramePage, idleFrameName, pressedFrameName,
+                                        text, fontSize) {
+
+    var button = this.newButton(x, y, callback, context,
+        idleFramePage, idleFrameName, pressedFrameName);
+
+    var text = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, text, fontSize);
+    text.anchor.setTo(0.5, 0.5);
+    text.alignIn(button, Phaser.CENTER);
+    button.addChild(text);
+    return button;
+};
+
 ButtonBuilder.settingsButton = function (x, y, callback, context) {
     return this.newButton(x, y, callback, context,
         R.images.buttons.settingsIdle.page,
@@ -39,28 +53,47 @@ ButtonBuilder.newGameButton = function (x, y, callback, context) {
         R.images.buttons.replayPressed.name);
 };
 
+
 ButtonBuilder.hintButton = function (x, y, callback, context) {
-    var button = this.newButton(x, y, callback, context,
+    var button = this.newTextButton(x, y, callback, context,
         R.images.buttons.midGreenIdle.page,
         R.images.buttons.midGreenIdle.name,
-        R.images.buttons.midGreenPressed.name);
-
-    var text = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.hintButton, 32);
-    text.anchor.setTo(0.5, 0.5);
-    text.alignIn(button, Phaser.CENTER);
-    button.addChild(text);
+        R.images.buttons.midGreenPressed.name,
+        R.strings.en.hintButton,
+        32
+    );
     return button;
 };
 
 ButtonBuilder.restartGameOverButton = function (x, y, callback, context) {
-    var button = this.newButton(x, y, callback, context,
+    var button = this.newTextButton(x, y, callback, context,
         R.images.buttons.bigGreenIdle.page,
         R.images.buttons.bigGreenIdle.name,
-        R.images.buttons.bigGreenPressed.name);
+        R.images.buttons.bigGreenPressed.name,
+        R.strings.en.gameoverRestartButton,
+        32
+    );
+    return button;
+};
 
-    var text = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.gameoverRestartButton, 32);
-    text.anchor.setTo(0.5, 0.5);
-    text.alignIn(button, Phaser.CENTER);
-    button.addChild(text);
+ButtonBuilder.bigGreenButton = function (callback, context, text) {
+    var button = this.newTextButton(0, 0, callback, context,
+        R.images.buttons.bigGreenIdle.page,
+        R.images.buttons.bigGreenIdle.name,
+        R.images.buttons.bigGreenPressed.name,
+        text,
+        32
+    );
+    return button;
+};
+
+ButtonBuilder.backButton = function (x, y, callback, context) {
+    var button = this.newTextButton(x, y, callback, context,
+        R.images.buttons.bigGreenIdle.page,
+        R.images.buttons.bigGreenIdle.name,
+        R.images.buttons.bigGreenPressed.name,
+        R.strings.en.scoreBackButton,
+        32
+    );
     return button;
 };
