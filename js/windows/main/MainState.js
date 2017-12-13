@@ -4,12 +4,15 @@
 
 function MainState() {
     this.create = function () {
-        this.SCORE_JEWEL = 10;
-        this.HINT_SCORE_PRICE = 100;
+        this.COLUMNS = 8;
+        this.ROWS = 8;
+        this.GRIDSTEP = 70;
 
+        this.SCORE_JEWEL = 10;
+        this.HINT_SCORE_PRICE = 30;
         this.score = 0;
 
-        var uiBuilder = new MainClickUiBuilder(this.game);
+        var buttonBuilder = new ButtonBuilder(this.game);
 
         var bg = this.game.add.image(0, 0, R.images.bg.cristmas); // bg
 
@@ -20,16 +23,15 @@ function MainState() {
         this.scoreText.anchor.set(0.5, 0.5);
         this.scoreText.alignIn(scoreBg, Phaser.CENTER);
 
-        this.settingsButton = uiBuilder.settingsButton(0, 0, this.onSettingsClick, this);
+        this.settingsButton = buttonBuilder.settingsButton(0, 0, this.onSettingsClick, this);
         this.settingsButton.alignTo(scoreBg, Phaser.RIGHT_CENTER, 12, 0);
 
-        this.newgameButton = uiBuilder.newGameButton(0, 0, this.onNewGameClick, this);
+        this.newgameButton = buttonBuilder.newGameButton(0, 0, this.onNewGameClick, this);
         this.newgameButton.alignTo(scoreBg, Phaser.LEFT_CENTER, 12, 0);
 
 
         this.bejeweledComponent = this.addBejeweled();
         this.addBejeweledLogic(this.bejeweledComponent);
-
 
         var snow1 = this.game.add.image(0, -10, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
@@ -37,14 +39,12 @@ function MainState() {
 
         this.effectManager = new EffectManager(this.game, this.bejeweledComponent);
 
-        var hintButton = new UiTextButton(this.game, 200, 58, "Show Hint", "#FF9900", "#AE6800")
-            .alignIn(this.game.world, Phaser.BOTTOM_CENTER)
-            .setCallback(this.onHintButtonClick, this);
+        this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
+        this.hintButton.kill(); // прячем до начала игры
 
         this.addSettingsPopup();
         this.addGameOverPopup();
-
-
 
         // todo delete
         var fps = new MyPhaser.Fps(this.game, 0, 0);
@@ -60,7 +60,7 @@ function MainState() {
 
     this.showStart = function () {
         this.lockUi(true);
-        var startPopup = new StartPopup(this.game).setNewGameCallBack(this.onResumeClick, this).show();
+        var startPopup = new StartPopup(this.game).setNewGameCallBack(this.onStartGameClick, this).show();
     };
 
     this.addSettingsPopup = function () {
@@ -78,7 +78,7 @@ function MainState() {
     };
 
     this.addBejeweled = function () {
-        var bejeweledComponent = new BejeweledGroup(this.game, 4, 4, 70);
+        var bejeweledComponent = new BejeweledGroup(this.game, this.COLUMNS, this.ROWS, this.GRIDSTEP);
         bejeweledComponent.alignIn(this.game.world, Phaser.CENTER);
         return bejeweledComponent;
     };
@@ -135,6 +135,7 @@ function MainState() {
     };
 
     this.onStartGameClick = function () {
+        this.hintButton.revive(); // показываем кнопку подсказки
         this.onResumeClick();
     };
 
