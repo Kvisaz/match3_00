@@ -18,3 +18,7 @@ function MainClickUiBuilder(game) {
 MainClickUiBuilder.prototype.settingsButton = function (x, y, callback, context) {
     return this.game.add.button(x, y, R.images.buttons.settingsIdle.page, callback, context, R.images.buttons.settingsIdle.name, R.images.buttons.settingsIdle.name, R.images.buttons.settingsPressed.name, R.images.buttons.settingsIdle.name);
 };
+
+MainClickUiBuilder.prototype.newGameButton = function (x, y, callback, context) {
+    return this.game.add.button(x, y, R.images.buttons.replayIdle.page, callback, context, R.images.buttons.replayIdle.name, R.images.buttons.replayIdle.name, R.images.buttons.replayPressed.name, R.images.buttons.replayIdle.name);
+};

@@ -14,20 +14,24 @@ function MainState() {
         var bg = this.game.add.image(0, 0, R.images.bg.cristmas); // bg
 
         var scoreBg = this.addImage(51, 50, R.images.ui.scoreBg);
-
+        scoreBg.alignIn(this.game.world, Phaser.TOP_CENTER, 0, -36);
         this.scoreText = this.game.add.bitmapText(200, 100, R.fonts.fedoka.name, "" + this.score, 48);
         this.scoreText.tint = "0xF9DC07";
         this.scoreText.anchor.set(0.5, 0.5);
         this.scoreText.alignIn(scoreBg, Phaser.CENTER);
 
-        this.addSettingsButton();
-        var settingsButton = uiBuilder.settingsButton(446, 34, this.onSettingsClick, this);
+        this.settingsButton = uiBuilder.settingsButton(0, 0, this.onSettingsClick, this);
+        this.settingsButton.alignTo(scoreBg, Phaser.RIGHT_CENTER, 12, 0);
+
+        this.newgameButton = uiBuilder.newGameButton(0, 0, this.onNewGameClick, this);
+        this.newgameButton.alignTo(scoreBg, Phaser.LEFT_CENTER, 12, 0);
+
 
         this.bejeweledComponent = this.addBejeweled();
         this.addBejeweledLogic(this.bejeweledComponent);
 
 
-        var snow1 = this.game.add.image(0, 0, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
+        var snow1 = this.game.add.image(0, -10, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
         var snow2 = this.game.add.image(0, 0, R.images.overlay.snowBottom.page, R.images.overlay.snowBottom.name);
         snow2.alignIn(bg, Phaser.BOTTOM_CENTER);
 
@@ -37,10 +41,10 @@ function MainState() {
             .alignIn(this.game.world, Phaser.BOTTOM_CENTER)
             .setCallback(this.onHintButtonClick, this);
 
-        this.gameOverPopup = new UiTextButton(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")
-            .alignIn(this.game.world, Phaser.CENTER)
-            .setCallback(this.onNewGameClick, this);
-        this.gameOverPopup.kill();
+        this.addSettingsPopup();
+        this.addGameOverPopup();
+
+
 
         // todo delete
         var fps = new PhaserUtils.Fps(this.game, 0, 0);
@@ -59,11 +63,18 @@ function MainState() {
         var startPopup = new StartPopup(this.game).setNewGameCallBack(this.onResumeClick, this).show();
     };
 
-    this.addSettingsButton = function () {
+    this.addSettingsPopup = function () {
         this.settingsPopup = new SettingsPopup(this.game)
             .setNewGameCallBack(this.onNewGameClick, this)
             .setOnHideCallback(this.onSettingsHide, this);
         this.settingsPopup.rootView.alignIn(this.game.world, Phaser.CENTER);
+    };
+
+    this.addGameOverPopup = function () {
+        this.gameOverPopup = new UiTextButton(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")
+            .alignIn(this.game.world, Phaser.CENTER)
+            .setCallback(this.onNewGameClick, this);
+        this.gameOverPopup.kill();
     };
 
     this.addBejeweled = function () {
@@ -134,6 +145,8 @@ function MainState() {
 
     this.onNewGameClick = function () {
         this.lockUi(false);
+        this.score = 0;
+        this.scoreText.setText(this.score);
         if (this.gameOverPopup.alive) this.gameOverPopup.kill();
         this.bejeweledComponent.restart();
     };

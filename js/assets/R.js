@@ -54,6 +54,8 @@ var R = {
         },
 
         buttons: {
+            replayIdle: {page: "cristmas_tiles", name: "buttons-replay-idle"},
+            replayPressed: {page: "cristmas_tiles", name: "buttons-replay-pressed"},
             settingsIdle: {page: "cristmas_tiles", name: "buttons-settings-idle"},
             settingsPressed: {page: "cristmas_tiles", name: "buttons-settings-pressed"},
             bigGreenIdle: {page: "cristmas_tiles", name: "button-green-big-idle"},
