@@ -32,7 +32,12 @@ var R = {
 
     images: {
         bg: {
-            cristmas: "bg_first.png"
+            cristmas: "bg_first.png",
+        },
+
+        field: {
+            bg9: {page: "cristmas_tiles", name: "fieldbg.16.16.16.16.9"},
+            tileBg: {page: "cristmas_tiles", name: "tile-bg"},
         },
 
         overlay: {

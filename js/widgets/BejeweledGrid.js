@@ -3,19 +3,31 @@
  */
 
 function BejeweledGroup(game, cols, rows, gridStep) {
-    this.game = game;
-    this.group = game.add.group();
-    this.rootView = this.group;
-    this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
-
     this.SWAP_ANIMATION_DURATION = 200;
     this.GRID_STEP_FALL_DURATION = 140;
     this.BLAST_ANIMATION_DURATION = 100;
 
-    this.GRID_STEP = gridStep || 66;
+    this.FIELD_BG_PADDING = 8;
 
+    this.game = game;
+    this.GRID_STEP = gridStep || 66;
     this.width = this.GRID_STEP * cols;
     this.height = this.GRID_STEP * rows;
+
+
+    // растягивающийся бэк.
+    //  используй R.images.field.bg9.name формата popup.10.20.30.40
+    //  где цифры означают отступы в .9 формате
+    // для обновления размера, вызови функцию
+    this.bgImage = game.add.image(0, 0, R.images.field.bg9.page, R.images.field.bg9.name);
+    this.refreshBgSize();
+
+    this.bgTilesGroup = game.add.group(); // фон для плиток
+
+    this.group = game.add.group();
+    this.rootView = this.group;
+
+    this.group.inputEnableChildren = true; // имеет значение ДО добавления в группу
 
     this.selectedJewel = undefined;
     this.isUiBlocked = false; // блокировка на случай анимаций и эффектов
@@ -57,21 +69,43 @@ function BejeweledGroup(game, cols, rows, gridStep) {
     }
 }
 
+BejeweledGroup.prototype.refreshBgSize = function () {
+    var bgWidth = this.width + this.FIELD_BG_PADDING + this.FIELD_BG_PADDING;
+    var bgHeight = this.height + this.FIELD_BG_PADDING + this.FIELD_BG_PADDING;
+    this.bgImage.refresh9slice(bgWidth, bgHeight);
+};
+
 BejeweledGroup.prototype.setXY = function (x, y) {
     this.group.x = x;
     this.group.y = y;
+    this.bgTilesGroup.alignIn(this.group, Phaser.CENTER);
+    this.bgImage.alignIn(this.group, Phaser.CENTER);
+    return this;
+};
+
+
+BejeweledGroup.prototype.alignIn = function (t, e, s, n) {
+    this.group.alignIn(t, e, s, n);
+    this.bgTilesGroup.alignIn(this.group, Phaser.CENTER);
+    this.bgImage.alignIn(this.group, Phaser.CENTER);
+    return this;
+};
+
+BejeweledGroup.prototype.alignTo = function (t, e, s, n) {
+    this.group.alignTo(t, e, s, n);
+    this.bgImage.alignIn(this.group, Phaser.CENTER);
     return this;
 };
 
 BejeweledGroup.prototype.onDown = function (jewel, pointer) {
-    if (this.isUiBlocked  || this.isUiGlobalBlocked || jewel.model.type == JewelType.NONE) return;
+    if (this.isUiBlocked || this.isUiGlobalBlocked || jewel.model.type == JewelType.NONE) return;
     this.swipe.start(pointer.x, pointer.y); // для проверки свайпа
     this.presenter.onJewelClickDown(jewel.model);
 };
 
 // проверяем  на свайп
 BejeweledGroup.prototype.onUp = function (pointer) {
-    if (this.isUiBlocked || this.isUiGlobalBlocked ) return;
+    if (this.isUiBlocked || this.isUiGlobalBlocked) return;
     if (this.swipe.check(pointer.x, pointer.y) == false) return; // меньше допустимого значения - выходим
     this.presenter.onSwipe(this.swipe.direction);
 };
@@ -82,6 +116,13 @@ BejeweledGroup.prototype.addJewelView = function (jewelModel) {
     jewelModel.view.x = jewelModel.column * this.GRID_STEP;
     jewelModel.view.y = jewelModel.row * this.GRID_STEP;
     jewelModel.view.model = jewelModel;
+
+    this.bgTilesGroup.add( // создаем плитки под подарками
+        this.game.add.image(jewelModel.view.x, jewelModel.view.y,
+            R.images.field.tileBg.page,
+            R.images.field.tileBg.name)
+    );
+
     this.group.add(jewelModel.view);
 };
 
@@ -151,7 +192,7 @@ BejeweledGroup.prototype.makeBlastAnimation = function (jewelModel) {
 };
 
 BejeweledGroup.prototype.makeHintAnimation = function (hintJewel, targetJewel) {
-    if(this.isUiBlocked) return;
+    if (this.isUiBlocked) return;
     this.lockUi();
     this.game.add.tween(hintJewel.view)
         .to({y: hintJewel.view.y - 10}, 50)
@@ -166,7 +207,7 @@ BejeweledGroup.prototype.makeHintAnimation = function (hintJewel, targetJewel) {
         .delay(225)
         .start()
         .onComplete.add(function () {
-            this.unlockUi();
+        this.unlockUi();
     }, this);
 };
 
@@ -180,7 +221,7 @@ BejeweledGroup.prototype.restart = function () {
 
 // показать подсказку, если maximizeCombo = true - с максимальной длиной
 BejeweledGroup.prototype.showHint = function (maximizeCombo) {
-    if(this.isUiGlobalBlocked || this.isUiBlocked) return;
+    if (this.isUiGlobalBlocked || this.isUiBlocked) return;
     this.presenter.showHint(maximizeCombo);
 };
 

@@ -47,7 +47,7 @@ function MainState() {
 
 
         // todo delete
-        var fps = new PhaserUtils.Fps(this.game, 0, 0);
+        var fps = new MyPhaser.Fps(this.game, 0, 0);
         fps.alignIn(this.game.world, Phaser.BOTTOM_LEFT, -100, -20);
 
         this.showStart();
@@ -78,8 +78,8 @@ function MainState() {
     };
 
     this.addBejeweled = function () {
-        var bejeweledComponent = new BejeweledGroup(this.game, 8, 8, 68);
-        bejeweledComponent.group.alignIn(this.game.world, Phaser.CENTER);
+        var bejeweledComponent = new BejeweledGroup(this.game, 4, 4, 70);
+        bejeweledComponent.alignIn(this.game.world, Phaser.CENTER);
         return bejeweledComponent;
     };
 
