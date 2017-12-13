@@ -12,7 +12,7 @@ function MainState() {
         this.HINT_SCORE_PRICE = 30;
         this.score = 0;
 
-        var buttonBuilder = new ButtonBuilder(this.game);
+        var buttonBuilder = ButtonBuilder;
 
         var bg = this.game.add.image(0, 0, R.images.bg.cristmas); // bg
 
@@ -39,7 +39,9 @@ function MainState() {
 
         this.effectManager = new EffectManager(this.game, this.bejeweledComponent);
 
-        this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        //this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        // gameover popup test todo remove after test
+        this.hintButton = buttonBuilder.hintButton(0, 0, this.onGameOver, this);
         this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
         this.hintButton.kill(); // прячем до начала игры
 
@@ -71,10 +73,15 @@ function MainState() {
     };
 
     this.addGameOverPopup = function () {
-        this.gameOverPopup = new UiTextButton(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")
+       /* this.gameOverPopup = new GameOverPopup(this.game, 328, 256, "GAME OVER \n restart?", "#FF9900", "#AE6800")
             .alignIn(this.game.world, Phaser.CENTER)
             .setCallback(this.onNewGameClick, this);
-        this.gameOverPopup.kill();
+        this.gameOverPopup.kill();*/
+
+       this.gameOverPopup = new GameOverPopup(this.game)
+           .setNewGameCallBack(this.onNewGameClick, this)
+           .alignIn(this.game.world, Phaser.CENTER)
+           .hide();
     };
 
     this.addBejeweled = function () {
@@ -123,9 +130,13 @@ function MainState() {
 
         // нет больше ходов
         bejeweledComponent.callbacks.noMoves = function () {
-            me.lockUi(true);
-            me.gameOverPopup.revive();
+            me.onGameOver();
         };
+    };
+
+    this.onGameOver = function () {
+        this.lockUi(true);
+        this.gameOverPopup.show(this.score);
     };
 
     this.onSettingsClick = function () {
@@ -164,6 +175,7 @@ function MainState() {
     this.lockUi = function (lock) {
         //   this.game.paused = lock; // при этом перестают работать и кнопки и слайдеры
         this.isUiLocked = lock;
+        if(lock) this.hintButton.kill(); else this.hintButton.revive();
         this.bejeweledComponent.lockUiGlobal(lock);
     };
 }

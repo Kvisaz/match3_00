@@ -1,6 +1,14 @@
 {"frames": [
 
 {
+	"filename": "elka-bg",
+	"frame": {"x":516,"y":165,"w":476,"h":141},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":476,"h":141},
+	"sourceSize": {"w":476,"h":141}
+},
+{
 	"filename": "popup-bg",
 	"frame": {"x":3,"y":3,"w":509,"h":589},
 	"rotated": false,
@@ -47,6 +55,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1024,"h":1024},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:27c4679369fa5939f2f469837dc15ad7:e5443028d2ab1495a4bbaa8b0efe4a71:34c651691b46b86836f1e0ea9c065251$"
+	"smartupdate": "$TexturePacker:SmartUpdate:e91397e0304a5772a86d3761f2dd559d:e7785e37079059cb1ac9ed71da29b9ab:34c651691b46b86836f1e0ea9c065251$"
 }
 }
