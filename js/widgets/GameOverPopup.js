@@ -89,7 +89,7 @@ GameOverPopup.prototype.addLayout = function () {
     this.scorePrefixText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverScorePrefix, 38);
     this.scorePrefixText.tint = "0x1E396C";
     this.scorePrefixText.anchor.set(0.5, 0);
-    this.scorePrefixText.alignTo(scoreBg, Phaser.TOP_CENTER);
+    this.scorePrefixText.alignTo(scoreBg, Phaser.TOP_CENTER, 0, 24);
     this.bg.addChild(this.scorePrefixText);
 
     this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverTitle, 48);
