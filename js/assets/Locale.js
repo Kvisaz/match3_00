@@ -18,5 +18,6 @@ var Locale = {
 Locale.setLocale = function (locale) {
     if(locale){
         this.strings = locale.strings;
+        document.title = this.strings.indexTitle;
     }
 };
