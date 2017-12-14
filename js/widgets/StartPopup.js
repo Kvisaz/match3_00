@@ -9,7 +9,7 @@ function StartPopup(game) {
     this.addTitleLayout();
     this.addTutorialLayout();
     this.buttonBuilder = ButtonBuilder;
-    this.startButton = this.buttonBuilder.bigGreenButton(this.onNewGamePressed, this, R.strings.en.newGame);
+    this.startButton = this.buttonBuilder.bigGreenButton(this.onNewGamePressed, this, Locale.strings.newGame);
 
     this.startButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, 32);
     this.bg.addChild(this.startButton);
@@ -75,12 +75,12 @@ StartPopup.prototype.addTutorialLayout = function () {
     tutorial01.alignIn(this.bg, Phaser.RIGHT_CENTER, -28, 0);
     this.bg.addChild(tutorial01);
 
-    var text1 = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.tutorial1text1, 28);
+    var text1 = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.tutorial1text1, 28);
     text1.tint = "0x112B00";
     text1.alignTo(tutorial01, Phaser.LEFT_TOP, 24, -12);
     this.bg.addChild(text1);
 
-    var text2 = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.tutorial1text2, 28);
+    var text2 = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.tutorial1text2, 28);
     text2.tint = "0x112B00";
     text2.alignTo(tutorial01, Phaser.BOTTOM_RIGHT, -12, 12);
     this.bg.addChild(text2);

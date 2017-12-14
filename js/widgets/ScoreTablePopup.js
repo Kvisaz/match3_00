@@ -94,7 +94,7 @@ ScoreTablePopup.prototype.addLayout = function () {
     this.scoreText.alignIn(this.bg, Phaser.TOP_CENTER, 0, -100);
     this.bg.addChild(this.scoreText);
 
-    this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.scoreTitle, 48);
+    this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.scoreTitle, 48);
     this.titleText.alignIn(this.bg, Phaser.TOP_CENTER, 0, -46);
     this.bg.addChild(this.titleText);
 

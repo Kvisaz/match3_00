@@ -59,7 +59,7 @@ ButtonBuilder.hintButton = function (x, y, callback, context) {
         R.images.buttons.midGreenIdle.page,
         R.images.buttons.midGreenIdle.name,
         R.images.buttons.midGreenPressed.name,
-        R.strings.en.hintButton,
+        Locale.strings.hintButton,
         32
     );
     return button;
@@ -70,7 +70,7 @@ ButtonBuilder.restartGameOverButton = function (x, y, callback, context) {
         R.images.buttons.bigGreenIdle.page,
         R.images.buttons.bigGreenIdle.name,
         R.images.buttons.bigGreenPressed.name,
-        R.strings.en.gameoverRestartButton,
+        Locale.strings.gameoverRestartButton,
         32
     );
     return button;
@@ -92,7 +92,7 @@ ButtonBuilder.backButton = function (x, y, callback, context) {
         R.images.buttons.bigGreenIdle.page,
         R.images.buttons.bigGreenIdle.name,
         R.images.buttons.bigGreenPressed.name,
-        R.strings.en.scoreBackButton,
+        Locale.strings.scoreBackButton,
         32
     );
     return button;

@@ -87,20 +87,20 @@ GameOverPopup.prototype.addLayout = function () {
     this.scoreText.alignIn(scoreBg, Phaser.CENTER);
     this.bg.addChild(this.scoreText);
 
-    this.scorePrefixText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.gameoverScorePrefix, 38);
+    this.scorePrefixText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverScorePrefix, 38);
     this.scorePrefixText.tint = "0x1E396C";
     this.scorePrefixText.anchor.set(0.5, 0);
     this.scorePrefixText.alignTo(scoreBg, Phaser.TOP_CENTER);
     this.bg.addChild(this.scorePrefixText);
 
-    this.scorePostText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.gameoverScorePostfix, 26);
+    this.scorePostText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverScorePostfix, 26);
     this.scorePostText.tint = "0x1E396C";
     this.scorePostText.align = "center";
     this.scorePostText.anchor.set(0.5, 0);
     this.scorePostText.alignTo(scoreBg, Phaser.BOTTOM_CENTER);
     this.bg.addChild(this.scorePostText);
 
-    this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.gameoverTitle, 48);
+    this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverTitle, 48);
     this.titleText.align = "center";
     this.titleText.alignIn(this.bg, Phaser.TOP_CENTER, 0, -46);
     this.bg.addChild(this.titleText);

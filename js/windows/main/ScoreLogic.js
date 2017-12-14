@@ -36,7 +36,7 @@ ScoreLogic.prototype.onCombo = function (comboJewels) {
 };
 
 ScoreLogic.prototype.getBestScoreText = function () {
-    return R.strings.en.bestScorePrefix + this.bestScore;
+    return Locale.strings.bestScorePrefix + this.bestScore;
 };
 
 

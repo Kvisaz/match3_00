@@ -23,7 +23,7 @@ function SettingsPopup(game) {
         R.images.buttons.midBlueIdle.name);
     this.scoreButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
-    var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, R.strings.en.scoreTable, 36);
+    var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.scoreTable, 36);
     // scoreBtLabel.tint = "0xffffff"; // для белого не нужно
     scoreBtLabel.alignIn(this.scoreButton, Phaser.CENTER, 0, -5);
 
@@ -33,8 +33,8 @@ function SettingsPopup(game) {
     this.musicSlider = new VolumeSlider(this.game,
         Sound.settings.volume.music,
         Sound.settings.mute.music,
-        R.strings.en.musicOn,
-        R.strings.en.musicOff);
+        Locale.strings.musicOn,
+        Locale.strings.musicOff);
     this.musicSlider.rootView.alignTo(this.scoreButton, Phaser.BOTTOM_CENTER, 0, 120);
     this.bg.addChild(this.musicSlider.rootView);
 
@@ -49,7 +49,7 @@ function SettingsPopup(game) {
     this.soundSlider = new VolumeSlider(this.game,
         Sound.settings.volume.sounds,
         Sound.settings.mute.sounds,
-        R.strings.en.soundOn, R.strings.en.soundOff);
+        Locale.strings.soundOn, Locale.strings.soundOff);
     this.soundSlider.rootView.alignTo(this.musicSlider.rootView, Phaser.BOTTOM_CENTER, 0, 120);
     this.bg.addChild(this.soundSlider.rootView);
 

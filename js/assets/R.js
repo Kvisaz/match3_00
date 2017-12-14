@@ -154,8 +154,8 @@ var R = {
             bestScorePrefix: "лучший рекорд: ",
             scoreTitle: "РЕКОРДЫ",
             scoreBackButton: "ЗАКРЫТЬ",
-            tutorial1text1: "Собирай\nподарки\nпо 3 в ряд\n или в группе",
-            tutorial1text2: "Елочный шар\nможет пойти влево и вверх",
+            tutorial1text1: "Собирай\nподарки\nпо 3 в ряд\nили в группе",
+            tutorial1text2: "Шар можно сдвинуть\nвлево и вверх",
         },
     }
 };
