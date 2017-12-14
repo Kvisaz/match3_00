@@ -36,8 +36,10 @@ function VolumeSlider(game, value, mute, labelOn, labelOff) {
 
     this.text = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, labelOn, 42);
     this.text.tint = "0x4DA61B";
+    this.text.align  = "right";
+    this.text.anchor.setTo(1, 0);
 
-    this.text.alignTo(this.checkBoxImage, Phaser.LEFT_CENTER, 24, 0);
+    this.text.alignTo(this.checkBoxImage, Phaser.LEFT_CENTER, 8, 0);
     this.slider.rootView.addChild(this.text);
 
     this.rootView = this.slider.rootView;
