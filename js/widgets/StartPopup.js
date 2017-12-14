@@ -76,12 +76,13 @@ StartPopup.prototype.addTutorialLayout = function () {
     this.bg.addChild(tutorial01);
 
     var text1 = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.tutorial1text1, 28);
-    text1.tint = "0x112B00";
+    text1.tint = "0x1E396C";
     text1.alignTo(tutorial01, Phaser.LEFT_TOP, 24, -12);
     this.bg.addChild(text1);
 
     var text2 = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.tutorial1text2, 28);
-    text2.tint = "0x112B00";
+    text2.tint = "0x1E396C";
+    text2.align = "right";
     text2.alignTo(tutorial01, Phaser.BOTTOM_RIGHT, -12, 12);
     this.bg.addChild(text2);
 };
