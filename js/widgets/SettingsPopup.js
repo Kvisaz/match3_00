@@ -23,7 +23,7 @@ function SettingsPopup(game) {
         R.images.buttons.midBlueIdle.name);
     this.scoreButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
-    var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.scoreTable, 36);
+    var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.scoreTable, 28);
     // scoreBtLabel.tint = "0xffffff"; // для белого не нужно
     scoreBtLabel.alignIn(this.scoreButton, Phaser.CENTER, 0, -5);
 
