@@ -21,7 +21,7 @@ ScoreLogic.prototype.onNewGame = function () {
 };
 
 ScoreLogic.prototype.onHint = function (solution) {
-    this.score -= me.HINT_SCORE_PRICE;
+    this.score -= this.HINT_SCORE_PRICE;
     if(this.score < 0) this.score = 0;
 };
 
