@@ -8,6 +8,7 @@ var Locale = {
     DE: { strings: R.strings.de },
     TR: { strings: R.strings.tr },
     NL: { strings: R.strings.nl },
+    ES: { strings: R.strings.es },
     strings: R.strings.en // this.EN.strings is undefined
 };
 
