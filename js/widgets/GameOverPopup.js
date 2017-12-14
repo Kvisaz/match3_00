@@ -5,7 +5,6 @@
 function GameOverPopup(game, scoreRepository) {
     this.scoreRepository = scoreRepository;
     this.score = 0;
-    this.scorePostText = 0;
 
     this.game = game;
     this.bg = game.add.image(0, 0, R.images.ui.popupBg.page, R.images.ui.popupBg.name);
@@ -92,13 +91,6 @@ GameOverPopup.prototype.addLayout = function () {
     this.scorePrefixText.anchor.set(0.5, 0);
     this.scorePrefixText.alignTo(scoreBg, Phaser.TOP_CENTER);
     this.bg.addChild(this.scorePrefixText);
-
-    this.scorePostText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverScorePostfix, 26);
-    this.scorePostText.tint = "0x1E396C";
-    this.scorePostText.align = "center";
-    this.scorePostText.anchor.set(0.5, 0);
-    this.scorePostText.alignTo(scoreBg, Phaser.BOTTOM_CENTER);
-    this.bg.addChild(this.scorePostText);
 
     this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameoverTitle, 48);
     this.titleText.align = "center";
