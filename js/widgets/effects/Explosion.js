@@ -19,7 +19,6 @@ function Explosion(game) {
     this.animation = this.rootView.animations.add(this.ANIMATION_TAG);
     this.animation.onComplete.add(function () {
         this.rootView.kill();
-        console.log('animation complete');
     }, this);
     this.rootView.kill();
 }

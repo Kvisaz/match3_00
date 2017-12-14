@@ -6,8 +6,8 @@ function MainState() {
     this.create = function () {
         //this.COLUMNS = 8;
         //this.ROWS = 8;
-        this.COLUMNS = 4;
-        this.ROWS = 4;
+        this.COLUMNS = 8;
+        this.ROWS = 8;
         this.GRIDSTEP = 70;
 
         this.SCORE_JEWEL = 10;
@@ -59,10 +59,6 @@ function MainState() {
         this.addSettingsPopup();
         this.addGameOverPopup();
         this.addScoreTablePopup();
-
-        // todo delete
-        var fps = new MyPhaser.Fps(this.game, 0, 0);
-        fps.alignIn(this.game.world, Phaser.BOTTOM_LEFT, -100, -20);
 
         this.showStart();
         Sound.playMusic();

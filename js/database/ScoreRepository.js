@@ -43,7 +43,6 @@ ScoreRepository.prototype.load = function () {
 ScoreRepository.prototype.save = function () {
     try {
         this.repository.save(this.REPO_SCORE_TAG, this.scores);
-        console.log("ScoreRepository.prototype.save.... SUCCESS");
     }
     catch (e) {
         console.log("ScoreRepository.save Exception: " + e);
@@ -84,7 +83,6 @@ ScoreRepository.prototype.saveScore = function (score) {
         table.splice(this.BEST_SCORE_AMOUNT, table.length - this.BEST_SCORE_AMOUNT);
     }
 
-    console.log("ScoreRepository.prototype.saveScore.... ");
     // сохраняем все
     this.save();
 };

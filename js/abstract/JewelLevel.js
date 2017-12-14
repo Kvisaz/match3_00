@@ -74,21 +74,16 @@ JewelLevel.prototype.getSameNears = function (jewel) {
     var nears; // соседи
     do {
         next = sameJewels[sameNearIndex];
-        //console.log("current index : " + sameNearIndex);
         nears = this.getNears(next); // берем всех соседей у очередного элемента
         nears.forEach(function (near) {
             // сосед есть && сосед не обработан && сосед того же цвета
             if (near && !(near.isDispatched) && near.type === jewel.type) {
-                //console.log("near.type = " + near.type);
-                //console.log("jewel.type = " + jewel.type);
                 next.isDispatched = true; // помечаем соседа обработанным
                 sameJewels.push(near); // добавляем соседа
             }
         });
 
-        //console.log("sameNearIndex = " + sameNearIndex + " sameJewels.length = " + sameJewels.length);
         sameNearIndex++;
-
 
         if (sameNearIndex > this.length) {
             console.log("sameNearIndex = " + sameNearIndex);
@@ -163,7 +158,6 @@ JewelLevel.prototype.getSolutions = function (minimalAmount) {
     var solutions = []; // массив пар, образующих замены
     for (col = 0; col <= colMax; col++) {
         for (row = 0; row <= rowMax; row++) {
-            //console.log("col = " + col + " colMax = " + colMax + "  / row = " + row + " rowMax = " + rowMax);
             if (col < colMax) { // 1. свопаем с соседом справа и проверяем
                 this.checkSolution(this.jewels[col][row], this.jewels[col + 1][row], minimalAmount, solutions);
             }
