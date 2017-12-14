@@ -12,12 +12,13 @@ function PreloaderImage(game){
     var BG_COLOR = "#112140";
     var FILL_COLOR = "#58B000";
     var GLOW_COLOR = "#7EFD00";
+    var GLOW_HEIGHT = 4;
 
     this.percent = 5;
 
     this.rootView = ImageBuilder.rect(0,0, WIDTH, HEIGHT, BG_COLOR);
     this.progressImage = ImageBuilder.rect(0,0, WIDTH, HEIGHT, FILL_COLOR);
-    this.progressGlowImage = ImageBuilder.rect(0,0, WIDTH, HEIGHT, GLOW_COLOR);
+    this.progressGlowImage = ImageBuilder.rect(0,8, WIDTH, GLOW_HEIGHT, GLOW_COLOR);
     this.frameImage = ImageBuilder.strokeRect(0,0,WIDTH, HEIGHT, STROKE_COLOR, STROKE);
 
     this.rootView.addChild(this.progressImage);
