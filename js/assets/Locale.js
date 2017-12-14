@@ -1,5 +1,6 @@
 /**
  * Created by Work on 14.12.2017.
+  Локаль
  */
 
 var Locale = {

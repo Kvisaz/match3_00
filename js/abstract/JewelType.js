@@ -1,5 +1,6 @@
 /**
  * Created by Work on 29.11.2017.
+   хелло
  */
 
 var JewelType = {
