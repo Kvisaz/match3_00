@@ -10,27 +10,21 @@ function MainState() {
         this.ROWS = 8;
         this.GRIDSTEP = 70;
 
-        this.SCORE_JEWEL = 10;
-        this.HINT_SCORE_PRICE = 30;
-        this.score = 0;
-        this.bestScore = 0;
-
         var buttonBuilder = ButtonBuilder;
         this.scoreRepository = new ScoreRepository(Repository);
-        this.bestScore = this.scoreRepository.getBest(); // и будет обновляться при onNewGameClick
-
+        this.scoreLogic = new ScoreLogic(this.scoreRepository);
 
         var bg = this.game.add.image(0, 0, R.images.bg.cristmas); // bg
 
         var scoreBg = this.addImage(0, 0, R.images.ui.scoreBg);
         scoreBg.alignIn(this.game.world, Phaser.TOP_CENTER, 0, -36);
-        this.scoreText = this.game.add.bitmapText(0, 0, R.fonts.fedoka.name, "" + this.score, 48);
+        this.scoreText = this.game.add.bitmapText(0, 0, R.fonts.fedoka.name, "" + this.scoreLogic.score, 48);
         this.scoreText.tint = "0xF9DC07";
         this.scoreText.anchor.set(0.5, 0.5);
         this.scoreText.alignIn(scoreBg, Phaser.CENTER);
 
         this.bestScoreText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name,
-            R.strings.en.bestScorePrefix + this.bestScore, 24);
+            this.scoreLogic.getBestScoreText(), 24);
         this.bestScoreText.tint = "0xF9DC07";
         this.bestScoreText.align = "center";
         this.bestScoreText.anchor.setTo(0.5, 0.5); // если так не делать - при обновлении текста сместится выравнивание
@@ -116,17 +110,16 @@ function MainState() {
         };
 
         bejeweledComponent.callbacks.hintShown = function (solution) {
-            me.score -= me.HINT_SCORE_PRICE;
-            if(me.score < 0) me.score = 0;
-            me.scoreText.setText(me.score);
+            me.scoreLogic.onHint(solution);
+            me.scoreText.setText(me.scoreLogic.score);
         };
         // начало взрыва камня
         bejeweledComponent.callbacks.blastStart = function (blastedJewels) {
             me.effectManager.blast(blastedJewels);
 
             Sound.playSound(Sound.BLAST);
-            me.score += me.SCORE_JEWEL * blastedJewels.length;
-            me.scoreText.setText(me.score);
+            me.scoreLogic.onCombo(blastedJewels);
+            me.scoreText.setText(me.scoreLogic.score);
         };
         // конец взрыва всех камней
         //bejeweledComponent.callbacks.totalBlastFinish = function () {};
@@ -150,7 +143,7 @@ function MainState() {
 
     this.onGameOver = function () {
         this.lockUi(true);
-        this.gameOverPopup.show(this.score);
+        this.gameOverPopup.show(this.scoreLogic.score);
     };
 
     this.onSettingsClick = function () {
@@ -176,12 +169,10 @@ function MainState() {
 
     this.onNewGameClick = function () {
         this.lockUi(false);
-        this.score = 0;
-        this.scoreText.setText(this.score);
-
-        this.bestScore = this.scoreRepository.getBest();
-        this.bestScoreText.setText(R.strings.en.bestScorePrefix + this.bestScore);
-
+        this.scoreLogic.onNewGame();
+        // this.score = 0;
+        this.scoreText.setText(this.scoreLogic.score);
+        this.bestScoreText.setText(this.scoreLogic.getBestScoreText());
 
         if (this.gameOverPopup.alive) this.gameOverPopup.kill();
         this.bejeweledComponent.restart();
