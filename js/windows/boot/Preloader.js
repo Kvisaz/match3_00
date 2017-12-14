@@ -21,7 +21,9 @@ function Preloader(assetLoader) {
         // иницализация разных синглтонов
         Sound.init(this.game, Repository); // инициализируем звуковую систему
         ButtonBuilder.init(this.game); // инициализируем билдер кнопок
-        Locale.setLocale(Locale.RU); // можно менять и в других состояних, но для вступления в силу нужен будет их перезапуска
+        Locale.autodetectLocale();
+        //Locale.setLocale(Locale.RU); // можно менять и в других состояних, но для вступления в силу нужен будет их перезапуска
+        document.title = Locale.strings.indexTitle;
         this.game.state.start(States.START_SCREEN);
     }
 };
