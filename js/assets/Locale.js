@@ -7,6 +7,7 @@ var Locale = {
     RU: { strings: R.strings.ru },
     DE: { strings: R.strings.de },
     TR: { strings: R.strings.tr },
+    NL: { strings: R.strings.nl },
     strings: R.strings.en // this.EN.strings is undefined
 };
 

@@ -6,8 +6,8 @@ function MainState() {
     this.create = function () {
         //this.COLUMNS = 8;
         //this.ROWS = 8;
-        this.COLUMNS = 8;
-        this.ROWS = 8;
+        this.COLUMNS = 4;
+        this.ROWS = 4;
         this.GRIDSTEP = 70;
 
         var buttonBuilder = ButtonBuilder;
@@ -46,7 +46,8 @@ function MainState() {
 
         this.effectManager = new EffectManager(this.game, this.bejeweledComponent);
 
-        this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        //this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        this.hintButton = buttonBuilder.hintButton(0, 0, this.onGameOver, this);
         this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
         this.hintButton.kill(); // прячем до начала игры
 
