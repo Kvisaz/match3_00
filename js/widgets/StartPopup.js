@@ -57,9 +57,14 @@ StartPopup.prototype.setNewGameCallBack = function (callback, context) {
 };
 
 StartPopup.prototype.addTitleLayout = function () {
-    var logo = this.game.add.image(0, 0, R.images.ui.titleLogo.page, R.images.ui.titleLogo.name);
+    var logo = this.game.add.image(0, 0, R.images.ui.elkaBg.page, R.images.ui.elkaBg.name);
     logo.alignIn(this.bg, Phaser.TOP_CENTER, 0, -14);
     this.bg.addChild(logo);
+
+    this.titleText = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.gameNameInLogo, 48);
+    this.titleText.align = "center";
+    this.titleText.alignIn(this.bg, Phaser.TOP_CENTER, 0, -46);
+    this.bg.addChild(this.titleText);
 
     var snowTop = this.game.add.image(0, 0, R.images.ui.snowTopping.page, R.images.ui.snowTopping.name);
     snowTop.alignIn(this.bg, Phaser.TOP_CENTER, 0, 14);
