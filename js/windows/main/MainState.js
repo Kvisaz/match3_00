@@ -6,8 +6,8 @@ function MainState() {
     this.create = function () {
         //this.COLUMNS = 8;
         //this.ROWS = 8;
-        this.COLUMNS = 3;
-        this.ROWS = 3;
+        this.COLUMNS = 8;
+        this.ROWS = 8;
         this.GRIDSTEP = 70;
 
         var buttonBuilder = ButtonBuilder;
