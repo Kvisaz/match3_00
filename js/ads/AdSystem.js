@@ -5,7 +5,7 @@ var Appodeal = Appodeal || undefined;
 var AdSystem = {};
 
 AdSystem.init = function () {
-
+    alert("Appodeal init");
     if (Appodeal === undefined) return;
     var appKey = "6dbdcd8af4f87460fee0c08f67aafd7cb9ba53264646147c";
     Appodeal.disableLocationPermissionCheck();
