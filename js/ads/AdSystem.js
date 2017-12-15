@@ -20,6 +20,8 @@ AdSystem.init = function () {
 
 AdSystem.showBanner = function () {
     if (Appodeal === undefined) return;
+
+    alert("Appodeal showBanner");
     Appodeal.isLoaded(Appodeal.BANNER, function (result) {
         Appodeal.show(Appodeal.BANNER_BOTTOM);
     });
