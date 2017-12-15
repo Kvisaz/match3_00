@@ -18,16 +18,16 @@ function BejeweledPresenter(view, cols, rows) {
 BejeweledPresenter.prototype.generateLevel = function () {
     this.jewelLevel.fill(JewelType.getRandomCommon, JewelType); // заполняем модель всеми доступными общими типами
     this.countAllCombos(); // считаем все комбы
-    while (this.combos.length > 0) {
+
+    do { // генерим рандомный уровень
         this.jewelLevel.fill(JewelType.getRandomCommon, JewelType); // генерим уровень, пока комбо не исчезнет
         this.countAllCombos(); // считаем комбо
         if (this.combos.length == 0) { // если комбо очистили - проверяем, есть ли решения
             this.solutions = this.jewelLevel.getSolutions(this.COMBO_AMOUNT_MIN);
-            if (this.solutions.length === 0) {
-                this.combos.length = 1; // на самом деле просто сбрасываем флаг, чтобы отгенерировать заново
-            }
         }
-    }
+        // если есть комбо или решений ноль - повторяем
+    } while (this.combos.length > 0 || this.solutions.length == 0);
+
     // обновить уровень
     this.jewelLevel.forEach(this.view.setJewelViewType.bind(this.view)); // обновляем вид камней на поле
 };

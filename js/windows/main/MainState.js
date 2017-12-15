@@ -6,8 +6,8 @@ function MainState() {
     this.create = function () {
         //this.COLUMNS = 8;
         //this.ROWS = 8;
-        this.COLUMNS = 4;
-        this.ROWS = 4;
+        this.COLUMNS = 3;
+        this.ROWS = 3;
         this.GRIDSTEP = 70;
 
         var buttonBuilder = ButtonBuilder;
@@ -40,7 +40,7 @@ function MainState() {
         this.settingsButton.alignTo(this.scoreButton.rootView, Phaser.RIGHT_CENTER, 10, 0);
 
 
-        this.bejeweledComponent = this.addBejeweled();
+        this.bejeweledComponent = this.addBejeweled(this.COLUMNS, this.ROWS, this.GRIDSTEP);
         this.addBejeweledLogic(this.bejeweledComponent);
 
         var snow1 = this.game.add.image(0, -10, R.images.overlay.snowTop.page, R.images.overlay.snowTop.name);
@@ -116,8 +116,8 @@ function MainState() {
 
 
 
-    this.addBejeweled = function () {
-        var bejeweledComponent = new BejeweledGroup(this.game, this.COLUMNS, this.ROWS, this.GRIDSTEP);
+    this.addBejeweled = function (columns, rows, gridstep) {
+        var bejeweledComponent = new BejeweledGroup(this.game, columns, rows, gridstep);
         bejeweledComponent.alignIn(this.game.world, Phaser.CENTER);
         return bejeweledComponent;
     };
