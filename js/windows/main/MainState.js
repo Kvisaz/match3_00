@@ -120,7 +120,7 @@ function MainState() {
 
     this.addBejeweled = function (columns, rows, gridstep) {
         var bejeweledComponent = new BejeweledGroup(this.game, columns, rows, gridstep);
-        bejeweledComponent.alignIn(this.game.world, Phaser.CENTER);
+        bejeweledComponent.alignIn(this.game.world, Phaser.CENTER, 0, -12);
         return bejeweledComponent;
     };
 

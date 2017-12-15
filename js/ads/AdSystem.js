@@ -19,7 +19,6 @@ AdSystem.init = function () {
 };
 
 AdSystem.showBanner = function () {
-    alert("Appodeal showBanner start");
     try {
         Appodeal.isLoaded(Appodeal.BANNER_BOTTOM, function (result) { // check if BANNER_BOTTOM can be shown for 'default' placement
             if (result) { // returns true or false
