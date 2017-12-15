@@ -9,7 +9,7 @@ function Preloader(assetLoader) {
         PhaserConfig.exe(this.game);
         ImageBuilder.init(this.game); // передаем ссылку нашей библиотеке для построения картинок
         assetLoader.preload(this.game); // загрузка ассетов - смотри R и AssetLoader
-        this.preloaderImage = new PreloaderImage(this.game);
+        this.preloaderImage = new PreloaderImage(this.game); //прогрессбар
     };
 
     this.loadUpdate = function () {
@@ -21,6 +21,7 @@ function Preloader(assetLoader) {
         // иницализация разных синглтонов
         Sound.init(this.game, Repository); // инициализируем звуковую систему
         ButtonBuilder.init(this.game); // инициализируем билдер кнопок
+        AdSystem.init(); // инициализируем рекламу
         Locale.autodetectLocale();
         //Locale.setLocale(Locale.RU); // можно менять и в других состояних, но для вступления в силу нужен будет их перезапуска
         document.title = Locale.strings.indexTitle;
