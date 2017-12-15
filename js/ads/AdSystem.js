@@ -13,7 +13,8 @@ AdSystem.init = function () {
 };
 
 AdSystem.showBanner = function () {
-    Appodeal.canShow(Appodeal.BANNER_BOTTOM, function(result) { // check if BANNER_BOTTOM can be shown for 'default' placement
+    alert("Appodeal showBanner start");
+    Appodeal.isLoaded(Appodeal.BANNER_BOTTOM, function(result) { // check if BANNER_BOTTOM can be shown for 'default' placement
         if(result) { // returns true or false
             alert("Appodeal can showBanner");
             Appodeal.show(Appodeal.BANNER_BOTTOM);
