@@ -60,10 +60,12 @@ var R = {
         },
 
         buttons: {
-            replayIdle: {page: "cristmas_tiles", name: "buttons-replay-idle"},
-            replayPressed: {page: "cristmas_tiles", name: "buttons-replay-pressed"},
-            settingsIdle: {page: "cristmas_tiles", name: "buttons-settings-idle"},
-            settingsPressed: {page: "cristmas_tiles", name: "buttons-settings-pressed"},
+            bt75greenbg: {page: "cristmas_tiles", name: "bt75greenbg"},
+            bt75yellowbg: {page: "cristmas_tiles", name: "bt75yellowbg"},
+            bt75iconReplay: {page: "cristmas_tiles", name: "bt75icon-replay"},
+            bt75iconSettings: {page: "cristmas_tiles", name: "bt75icon-settings"},
+            bt75iconTrophy: {page: "cristmas_tiles", name: "bt75icon-trophy"},
+            bt75shadow: {page: "cristmas_tiles", name: "bt75shadow"},
             bigGreenIdle: {page: "cristmas_tiles", name: "button-green-big-idle"},
             bigGreenPressed: {page: "cristmas_tiles", name: "button-green-big-pressed"},
             midGreenIdle: {page: "cristmas_tiles", name: "button-green-mid-idle"},

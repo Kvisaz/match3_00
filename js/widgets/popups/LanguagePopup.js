@@ -42,7 +42,8 @@ LanguagePopup.prototype.setXY = function (x, y) {
     return this;
 };
 
-LanguagePopup.prototype.onHide = function () {
+LanguagePopup.prototype.onOkButtonClick = function () {
+    this.hide();
     if (this.onHideCallback) {
         this.onHideCallback.call(this.onHideCallbackContext, this.selectedLocale);
     }
@@ -92,7 +93,7 @@ LanguagePopup.prototype.addLayout = function () {
     this.selectLocale(Locale.currentLocale);
 
     var buttonBuilder = ButtonBuilder;
-    this.startButton = buttonBuilder.bigGreenButton(this.onHide, this, Locale.strings.ok);
+    this.startButton = buttonBuilder.bigGreenButton(this.onOkButtonClick, this, Locale.strings.ok);
     this.startButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, 28);
     this.bg.addChild(this.startButton);
 };

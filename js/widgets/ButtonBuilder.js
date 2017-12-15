@@ -40,17 +40,21 @@ ButtonBuilder.newTextButton = function (x, y, callback, context,
 };
 
 ButtonBuilder.settingsButton = function (x, y, callback, context) {
-    return this.newButton(x, y, callback, context,
-        R.images.buttons.settingsIdle.page,
-        R.images.buttons.settingsIdle.name,
-        R.images.buttons.settingsPressed.name);
+    return new JewelButton(this.game, JewelButtonType.SETTINGS)
+        .setCallback(callback, context)
+        .setXY(x, y);
 };
 
 ButtonBuilder.newGameButton = function (x, y, callback, context) {
-    return this.newButton(x, y, callback, context,
-        R.images.buttons.replayIdle.page,
-        R.images.buttons.replayIdle.name,
-        R.images.buttons.replayPressed.name);
+    return new JewelButton(this.game, JewelButtonType.REPLAY)
+        .setCallback(callback, context)
+        .setXY(x, y);
+};
+
+ButtonBuilder.scoreButton = function (x, y, callback, context) {
+    return new JewelButton(this.game, JewelButtonType.SCORE)
+        .setCallback(callback, context)
+        .setXY(x, y);
 };
 
 

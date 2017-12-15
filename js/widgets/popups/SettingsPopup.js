@@ -11,31 +11,29 @@ function SettingsPopup(game) {
     this.closeButton.alignIn(this.bg, Phaser.BOTTOM_CENTER, 0, 32);
     this.bg.addChild(this.closeButton);
 
-    this.scoreCallback = undefined;
-    this.scoreCallbackContext = undefined;
-    this.scoreButton = this.game.add.button(0, 0, R.images.buttons.midBlueIdle.page,
+    this.languageButton = this.game.add.button(0, 0, R.images.buttons.midBlueIdle.page,
         function () {
-            this.onScoreButtonPressed();
+            this.onLanguageButtonPressed();
         }, this,
         R.images.buttons.midBlueIdle.name,
         R.images.buttons.midBlueIdle.name,
         R.images.buttons.midBluePressed.name,
         R.images.buttons.midBlueIdle.name);
-    this.scoreButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
+    this.languageButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
-    var scoreBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.strings.scoreTable, 28);
+    var languageBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.currentLocale.label, 28);
     // scoreBtLabel.tint = "0xffffff"; // для белого не нужно
-    scoreBtLabel.alignIn(this.scoreButton, Phaser.CENTER, 0, -5);
+    languageBtLabel.alignIn(this.languageButton, Phaser.CENTER, 0, -5);
 
-    this.bg.addChild(this.scoreButton);
-    this.bg.addChild(scoreBtLabel);
+    this.bg.addChild(this.languageButton);
+    this.bg.addChild(languageBtLabel);
 
     this.musicSlider = new VolumeSlider(this.game,
         Sound.settings.volume.music,
         Sound.settings.mute.music,
         Locale.strings.musicOn,
         Locale.strings.musicOff);
-    this.musicSlider.rootView.alignTo(this.scoreButton, Phaser.BOTTOM_CENTER, 0, 120);
+    this.musicSlider.rootView.alignTo(this.languageButton, Phaser.BOTTOM_CENTER, 0, 120);
     this.bg.addChild(this.musicSlider.rootView);
 
     this.musicSlider.setVolumeCallback(function (volume) {
@@ -84,30 +82,17 @@ SettingsPopup.prototype.setXY = function (x, y) {
     return this;
 };
 
-SettingsPopup.prototype.onNewGamePressed = function () {
+
+SettingsPopup.prototype.onLanguageButtonPressed = function () {
     this.hide();
-    if (this.newGameCallback) {
-        this.newGameCallback.call(this.newGameCallbackContext);
+    if (this.languageCallback) {
+        this.languageCallback.call(this.languageCallbackContext);
     }
 };
 
-SettingsPopup.prototype.setNewGameCallBack = function (callback, context) {
-    this.newGameCallback = callback;
-    this.newGameCallbackContext = context;
-    return this;
-};
-
-
-SettingsPopup.prototype.onScoreButtonPressed = function () {
-    this.hide();
-    if (this.scoreCallback) {
-        this.scoreCallback.call(this.scoreCallbackContext);
-    }
-};
-
-SettingsPopup.prototype.setScoreTableCallBack = function (callback, context) {
-    this.scoreCallback = callback;
-    this.scoreCallbackContext = context;
+SettingsPopup.prototype.setLanguageCallBack = function (callback, context) {
+    this.languageCallback = callback;
+    this.languageCallbackContext = context;
     return this;
 };
 

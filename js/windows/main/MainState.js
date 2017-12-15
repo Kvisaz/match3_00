@@ -17,7 +17,7 @@ function MainState() {
         var bg = this.game.add.image(0, 0, R.images.bg.cristmas); // bg
 
         var scoreBg = this.addImage(0, 0, R.images.ui.scoreBg);
-        scoreBg.alignIn(this.game.world, Phaser.TOP_CENTER, 0, -36);
+        scoreBg.alignIn(this.game.world, Phaser.TOP_LEFT, -96, -36);
         this.scoreText = this.game.add.bitmapText(0, 0, R.fonts.fedoka.name, "" + this.scoreLogic.score, 48);
         this.scoreText.tint = "0xF9DC07";
         this.scoreText.anchor.set(0.5, 0.5);
@@ -30,11 +30,14 @@ function MainState() {
         this.bestScoreText.anchor.setTo(0.5, 0.5); // если так не делать - при обновлении текста сместится выравнивание
         this.bestScoreText.alignTo(scoreBg, Phaser.BOTTOM_CENTER, 0, 4);
 
-        this.settingsButton = buttonBuilder.settingsButton(0, 0, this.onSettingsClick, this);
-        this.settingsButton.alignTo(scoreBg, Phaser.RIGHT_CENTER, 12, 0);
-
         this.newgameButton = buttonBuilder.newGameButton(0, 0, this.onNewGameClick, this);
-        this.newgameButton.alignTo(scoreBg, Phaser.LEFT_CENTER, 12, 0);
+        this.newgameButton.alignTo(scoreBg, Phaser.LEFT_CENTER, 6, 0);
+
+        this.scoreButton = buttonBuilder.scoreButton(0, 0, this.onScoreButtonClick, this);
+        this.scoreButton.alignTo(scoreBg, Phaser.RIGHT_CENTER, 6, 0);
+
+        this.settingsButton = buttonBuilder.settingsButton(0, 0, this.onSettingsClick, this);
+        this.settingsButton.alignTo(this.scoreButton.rootView, Phaser.RIGHT_CENTER, 10, 0);
 
 
         this.bejeweledComponent = this.addBejeweled();
@@ -46,9 +49,9 @@ function MainState() {
 
         this.effectManager = new EffectManager(this.game, this.bejeweledComponent);
 
-        //this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
         //this.hintButton = buttonBuilder.hintButton(0, 0, this.onGameOver, this);
-        this.hintButton = buttonBuilder.hintButton(0, 0, this.showLanguagePopup, this);
+        //this.hintButton = buttonBuilder.hintButton(0, 0, this.showLanguagePopup, this);
         this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
         this.hintButton.kill(); // прячем до начала игры
 
@@ -72,8 +75,7 @@ function MainState() {
 
     this.addSettingsPopup = function () {
         this.settingsPopup = new SettingsPopup(this.game)
-            .setNewGameCallBack(this.onNewGameClick, this)
-            .setScoreTableCallBack(this.onScoreButtonClick, this)
+            .setLanguageCallBack(this.showLanguagePopup, this)
             .setOnHideCallback(this.onSettingsHide, this);
         this.settingsPopup.rootView.alignIn(this.game.world, Phaser.CENTER);
     };
