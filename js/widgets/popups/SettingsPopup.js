@@ -21,12 +21,12 @@ function SettingsPopup(game) {
         R.images.buttons.midBlueIdle.name);
     this.languageButton.alignIn(this.bg, Phaser.TOP_CENTER, 0, -32);
 
-    var languageBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.currentLocale.label, 28);
+    this.languageBtLabel = this.game.add.bitmapText(0, 0, R.fonts.robotoBold.name, Locale.getLocale().label, 28);
     // scoreBtLabel.tint = "0xffffff"; // для белого не нужно
-    languageBtLabel.alignIn(this.languageButton, Phaser.CENTER, 0, -5);
+    this.languageBtLabel.alignIn(this.languageButton, Phaser.CENTER, 0, -5);
 
     this.bg.addChild(this.languageButton);
-    this.bg.addChild(languageBtLabel);
+    this.bg.addChild(this.languageBtLabel);
 
     this.musicSlider = new VolumeSlider(this.game,
         Sound.settings.volume.music,
@@ -64,6 +64,7 @@ function SettingsPopup(game) {
 }
 
 SettingsPopup.prototype.show = function () {
+    this.languageBtLabel.setText(Locale.getLocale().label);
     this.rootView.revive();
     this.game.world.bringToTop(this.rootView);
     // this.game.paused = true;
