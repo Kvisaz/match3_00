@@ -14,6 +14,8 @@ AdSystem.init = function () {
     document.addEventListener('onBannerLoaded', function(){
         AdSystem.showBanner();
     });
+
+    alert("Appodeal initialized");
 };
 
 AdSystem.showBanner = function () {

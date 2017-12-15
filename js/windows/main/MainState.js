@@ -62,6 +62,8 @@ function MainState() {
 
         this.showStart();
         Sound.playMusic();
+
+        AdSystem.showBanner(); // first test
     };
 
     this.addImage = function (x, y, image) {
