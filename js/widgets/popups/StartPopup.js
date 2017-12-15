@@ -27,10 +27,6 @@ StartPopup.prototype.show = function () {
     return this;
 };
 
-StartPopup.prototype.switch = function () {
-    if (this.rootView.alive) this.hide();
-    else this.show();
-};
 
 StartPopup.prototype.hide = function () {
     this.rootView.kill();

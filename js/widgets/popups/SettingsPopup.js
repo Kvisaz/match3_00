@@ -71,11 +71,6 @@ SettingsPopup.prototype.show = function () {
     // this.game.paused = true;
 };
 
-SettingsPopup.prototype.switch = function () {
-    if (this.rootView.alive) this.hide();
-    else this.show();
-};
-
 SettingsPopup.prototype.hide = function () {
     // Настройки звука сохраняем здесь, а не при изменении слайдера, чтобы не дергать файловую систему
     Sound.saveSettings();

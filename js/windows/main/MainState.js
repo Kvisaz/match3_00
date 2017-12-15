@@ -46,14 +46,16 @@ function MainState() {
 
         this.effectManager = new EffectManager(this.game, this.bejeweledComponent);
 
-        this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
+        //this.hintButton = buttonBuilder.hintButton(0, 0, this.onHintButtonClick, this);
         //this.hintButton = buttonBuilder.hintButton(0, 0, this.onGameOver, this);
+        this.hintButton = buttonBuilder.hintButton(0, 0, this.showLanguagePopup, this);
         this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
         this.hintButton.kill(); // прячем до начала игры
 
         this.addSettingsPopup();
         this.addGameOverPopup();
         this.addScoreTablePopup();
+        this.addLanguagePopup();
 
         this.showStart();
         Sound.playMusic();
@@ -88,6 +90,26 @@ function MainState() {
             .setBackCallBack(this.onResumeClick, this)
             .alignIn(this.game.world, Phaser.CENTER)
             .hide();
+    };
+
+    this.addLanguagePopup = function () {
+        this.languagePopup = new LanguagePopup(this.game)
+            .setOnHideCallback(this.onLanguagePopupHide, this)
+            .alignIn(this.game.world, Phaser.CENTER)
+            .hide();
+    };
+
+    this.showLanguagePopup = function () {
+        this.lockUi(true);
+        this.languagePopup.show();
+    };
+
+    this.onLanguagePopupHide = function (selectedLocale) {
+        this.lockUi(false);
+        if(Locale.currentLocale === selectedLocale) return;
+
+        Locale.setLocale(selectedLocale); // установка нового языка
+        this.game.state.start(States.START_SCREEN); // перезапуск окна
     };
 
 
@@ -141,6 +163,7 @@ function MainState() {
             me.onGameOver();
         };
     };
+
 
     this.onGameOver = function () {
         this.lockUi(true);

@@ -38,11 +38,6 @@ GameOverPopup.prototype.show = function (score) {
     return this;
 };
 
-GameOverPopup.prototype.switch = function () {
-    if (this.rootView.alive) this.hide();
-    else this.show();
-};
-
 GameOverPopup.prototype.hide = function () {
     this.rootView.kill();
     return this;

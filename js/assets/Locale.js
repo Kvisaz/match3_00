@@ -4,36 +4,36 @@
  */
 
 var Locale = {
-    en: {strings: R.strings.en},
-    ru: {strings: R.strings.ru},
-    de: {strings: R.strings.de},
-    tr: {strings: R.strings.tr},
-    nl: {strings: R.strings.nl},
-    es: {strings: R.strings.es},
-    pt: {strings: R.strings.pt},
-    fr: {strings: R.strings.fr},
+    locales: {
+        en: {strings: R.strings.en, label: "English"},
+        ru: {strings: R.strings.ru, label: "Русский"},
+        de: {strings: R.strings.de, label: "Deutsche"},
+        tr: {strings: R.strings.tr, label: "Türk"},
+        nl: {strings: R.strings.nl, label: "Nederlands"},
+        es: {strings: R.strings.es, label: "Español"},
+        pt: {strings: R.strings.pt, label: "Portugues"},
+        fr: {strings: R.strings.fr, label: "Français"},
+    },
+
+    currentLocale: undefined,
+
     strings: R.strings.en // this.EN.strings is undefined
 };
 
 // use: localeManager.setLocale(LocaleManager.RU);
 Locale.setLocale = function (locale) {
     if (locale) {
-        this.strings = locale.strings;
+        this.currentLocale = locale;
+        this.strings = this.currentLocale.strings;
     }
 };
 
 Locale.autodetectLocale = function () {
-
     function getLang() {
         return navigator.language;
     }
-
-    function detectStrings() {
-        var lang = getLang();
-        if (lang || Locale.hasOwnProperty(lang)) {
-            Locale.strings = Locale[lang].strings;
-        }
+    var lang = getLang();
+    if (lang || Locale.locales.hasOwnProperty(lang)) {
+        this.setLocale(Locale.locales[lang]);
     }
-
-    detectStrings();
 };

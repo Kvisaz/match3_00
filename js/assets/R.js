@@ -122,7 +122,8 @@ var R = {
         ru: {
             indexTitle: "Игра Дед Мороз Три в Ряд - играть онлайн бесплатно 2018",
             gameNameInLogo: "Дед Мороз и Три в Ряд",
-            backSettings: "ПРОДОЛЖИТЬ",
+            ok: "ОК",
+            backSettings: "ОК",
             newGame: "НОВАЯ ИГРА",
             scoreTable: "РЕКОРДЫ",
             musicOn: "Музыка",
@@ -143,6 +144,7 @@ var R = {
         en: {
             indexTitle: "Super Happy Winter Match 3 free online game 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "BACK",
             newGame: "NEW GAME",
             scoreTable: "SCORE TABLE",
@@ -164,6 +166,7 @@ var R = {
         de: {
             indexTitle: "Super Happy Winter Match 3 kostenloses Online-Spiel 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "ZURÜCK",
             newGame: "NEUES SPIEL",
             scoreTable: "RANGLISTE",
@@ -185,6 +188,7 @@ var R = {
         tr: {
             indexTitle: "Super Happy Winter Match 3 ücretsiz online oyun 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "GERİ",
             newGame: "YENİ OYUN",
             scoreTable: "skor tablosu",
@@ -206,6 +210,7 @@ var R = {
         pl: {
             indexTitle: "Super Happy Winter Match 3 darmowa gra online 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "PLECY",
             newGame: "NOWA GRA",
             scoreTable: "TABELA WYNIKÓW",
@@ -227,6 +232,7 @@ var R = {
         nl: {
             indexTitle: "Super Happy Winter Match 3 gratis online game 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "ACHTER",
             newGame: "NIEUW SPEL",
             scoreTable: "SCOORTAFEL",
@@ -248,6 +254,7 @@ var R = {
         es: {
             indexTitle: "Juego gratis en línea Super Happy Winter Match 3 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "ESPALDA",
             scoreBackButton: "ESPALDA",
             newGame: "NUEVO JUEGO",
@@ -269,6 +276,7 @@ var R = {
         pt: {
             indexTitle: "Super Happy Winter Match 3 jogo online grátis 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "COSTAS",
             scoreBackButton: "COSTAS",
             newGame: "NOVO JOGO",
@@ -290,6 +298,7 @@ var R = {
         fr: {
             indexTitle: "Super Happy Winter Match 3 jeu gratuit en ligne 2018",
             gameNameInLogo: "Happy Winter Match 3",
+            ok: "OK",
             backSettings: "ARRIÈRE",
             newGame: "NOUVEAU JEU",
             scoreTable: "TABLE DE SCORE",
