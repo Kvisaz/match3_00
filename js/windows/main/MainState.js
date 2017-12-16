@@ -1,7 +1,7 @@
 /**
  * Created by Work on 16.11.2017.
  */
-
+var startScreenNotShowed = true;
 function MainState() {
     this.create = function () {
         //this.COLUMNS = 8;
@@ -53,14 +53,17 @@ function MainState() {
         //this.hintButton = buttonBuilder.hintButton(0, 0, this.onGameOver, this);
         //this.hintButton = buttonBuilder.hintButton(0, 0, this.showLanguagePopup, this);
         this.hintButton.alignTo(this.bejeweledComponent.rootView, Phaser.BOTTOM_CENTER, 0, 20);
-        this.hintButton.kill(); // прячем до начала игры
+
 
         this.addSettingsPopup();
         this.addGameOverPopup();
         this.addScoreTablePopup();
         this.addLanguagePopup();
 
-        this.showStart();
+        if(startScreenNotShowed){
+            startScreenNotShowed = false; // не показывать при перезапусках
+            this.showStart();
+        }
         Sound.playMusic();
 
         this.game.time.events.add(3000, function () {
@@ -74,6 +77,7 @@ function MainState() {
 
     this.showStart = function () {
         this.lockUi(true);
+        this.hintButton.kill(); // прячем до начала игры
         var startPopup = new StartPopup(this.game).setNewGameCallBack(this.onStartGameClick, this).show();
     };
 
@@ -209,11 +213,12 @@ function MainState() {
     };
 
     this.restart = function () {
-        this.scoreLogic.onNewGame();
+        this.game.state.start(States.START_SCREEN); // перезапуск окна
+        /*this.scoreLogic.onNewGame();
         this.scoreText.setText(this.scoreLogic.score);
         this.bestScoreText.setText(this.scoreLogic.getBestScoreText());
         this.gameOverPopup.hide();
-        this.bejeweledComponent.restart();
+        this.bejeweledComponent.restart();*/
     };
 
     this.onSettingsHide = function () {
