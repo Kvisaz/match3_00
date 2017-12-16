@@ -1,9 +1,9 @@
 /**
  * Created by Work on 16.12.2017.
  */
-var AdSystem = {};
+var ProfitSystem = {};
 
-AdSystem.init = function () {
+ProfitSystem.init = function () {
     var appKey = "6dbdcd8af4f87460fee0c08f67aafd7cb9ba53264646147c";
     try{
         Appodeal.setTesting(true); // set test mode enabled || disabled
@@ -14,11 +14,9 @@ AdSystem.init = function () {
     catch (e){
 
     }
-
-   // alert("Appodeal initialized");
 };
 
-AdSystem.showBanner = function () {
+ProfitSystem.showBanner = function () {
     try {
         Appodeal.isLoaded(Appodeal.BANNER_BOTTOM, function (result) { // check if BANNER_BOTTOM can be shown for 'default' placement
             if (result) { // returns true or false
@@ -26,7 +24,6 @@ AdSystem.showBanner = function () {
                 Appodeal.show(Appodeal.BANNER_BOTTOM);
             }
             else {
-                // alert("Appodeal cannot showBanner");
             }
         });
     }

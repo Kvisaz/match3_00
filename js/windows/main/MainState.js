@@ -64,7 +64,7 @@ function MainState() {
         Sound.playMusic();
 
         this.game.time.events.add(3000, function () {
-            AdSystem.showBanner(); // показываем через 3 секунды
+            ProfitSystem.showBanner(); // показываем через 3 секунды
         }, this);
     };
 
