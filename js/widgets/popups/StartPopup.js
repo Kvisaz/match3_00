@@ -16,7 +16,7 @@ function StartPopup(game) {
 
 
     this.rootView = this.bg; // для ссылки снаружи
-    this.rootView.alignIn(game.world, Phaser.CENTER, 0, -20);
+    this.rootView.alignIn(game.world, Phaser.CENTER);
     this.hide(); // по умолчанию не показываем
 }
 

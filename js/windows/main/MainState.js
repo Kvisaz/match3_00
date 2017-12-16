@@ -86,7 +86,7 @@ function MainState() {
 
     this.addGameOverPopup = function () {
         this.gameOverPopup = new GameOverPopup(this.game, this.scoreRepository)
-            .setNewGameCallBack(this.onNewGameClick, this)
+            .setNewGameCallBack(this.onGameOverNewGameClick, this)
             .alignIn(this.game.world, Phaser.CENTER)
             .hide();
     };
@@ -188,6 +188,7 @@ function MainState() {
     };
 
     this.onScoreButtonClick = function () {
+        if (this.isUiLocked) return;
         this.lockUi(true);
         this.scoreTablePopup.show(); // показываем кнопку подсказки
     };
@@ -198,13 +199,20 @@ function MainState() {
     };
 
     this.onNewGameClick = function () {
+        if (this.isUiLocked) return;
+        this.restart();
+    };
+
+    this.onGameOverNewGameClick = function () {
         this.lockUi(false);
+        this.restart();
+    };
+
+    this.restart = function () {
         this.scoreLogic.onNewGame();
-        // this.score = 0;
         this.scoreText.setText(this.scoreLogic.score);
         this.bestScoreText.setText(this.scoreLogic.getBestScoreText());
-
-        if (this.gameOverPopup.alive) this.gameOverPopup.kill();
+        this.gameOverPopup.hide();
         this.bejeweledComponent.restart();
     };
 
