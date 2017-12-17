@@ -32,7 +32,7 @@
         <preference name="enabled" value="true"/>
         <icon src="img/launcher_app_xxhdpi.png" />
         <preference name="AndroidLaunchMode" value="singleTop"/>
-        <preference name="android-minSdkVersion" value="20" />
+        <preference name="android-minSdkVersion" value="19" />
     </platform>
 
 
