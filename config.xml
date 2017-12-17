@@ -3,8 +3,8 @@
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         xmlns:cdv="http://cordova.apache.org/ns/1.0"
         id          = "ru.zaxx.match3"
-        versionCode = "10"
-        version     = "1.0.0" >
+        versionCode = "11"
+        version     = "1.0.1" >
 
     <!-- versionCode is optional and Android only -->
 
