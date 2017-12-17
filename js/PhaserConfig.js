@@ -16,8 +16,8 @@ var PhaserConfig = {
 
     exe: function (game) {
         // game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; // для масштабирования во весь экран
-        /*game.scale.pageAlignHorizontally = true; // выравнять по центру
-         game.scale.pageAlignVertically = true;*/
+        game.scale.pageAlignHorizontally = true; // выравнять по центру
+        game.scale.pageAlignVertically = true;
         game.input.maxPointers = 1; // мультитач не интересует
         game.renderer.renderSession.roundPixels = true; // нахер пошли сотые доли пикселов
         // Phaser.Canvas.setImageRenderingCrisp(game.canvas); // только для пиксельной графики в точном или пропорциональном 2м масштабе
