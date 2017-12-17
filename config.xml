@@ -10,7 +10,7 @@
 
     <name>Happy Winter Match 3</name>
 
-    <description>Christmas Match 3 game</description>
+    <description>Free Winter Christmas Match 3 game</description>
 
     <author email="sergey.zoomaster@gmail.com" href="https://zaxx.ru">Sergey Tokarev</author>
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
@@ -30,7 +30,7 @@
     <platform name="android">
         <allow-intent href="market:*"/>
         <preference name="enabled" value="true"/>
-        <icon src="img/preloader_logo.png" />
+        <icon src="img/launcher_app_xxhdpi.png" />
     </platform>
 
 

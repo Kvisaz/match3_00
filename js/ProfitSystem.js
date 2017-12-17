@@ -5,13 +5,13 @@ var ProfitSystem = {};
 
 ProfitSystem.init = function () {
     var appKey = "6dbdcd8af4f87460fee0c08f67aafd7cb9ba53264646147c";
-    try{
-        Appodeal.setTesting(true); // set test mode enabled || disabled
+    try {
+        Appodeal.setTesting(false); // set test mode enabled || disabled
         Appodeal.disableLocationPermissionCheck();
         Appodeal.initialize(appKey, Appodeal.BANNER);
         Appodeal.enableBannerCallbacks(true);
     }
-    catch (e){
+    catch (e) {
 
     }
 };
@@ -27,7 +27,7 @@ ProfitSystem.showBanner = function () {
             }
         });
     }
-    catch (e){
+    catch (e) {
 
     }
 };
