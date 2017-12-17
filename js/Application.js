@@ -8,8 +8,7 @@
  *   каждый аргумент = { name: "boot", state: new BootState() } - к примеру
  */
 var App = function (states) {
-    var game = new Phaser.Game(AppConfig.width, AppConfig.height, Phaser.CANVAS);
-
+    var game = new Phaser.Game(PhaserConfig.settings);
     var current, next, i = 0, length = states.length;
     for (i = 0; i < length; i++) {
         current = states[i];
