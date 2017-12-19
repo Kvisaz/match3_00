@@ -10,6 +10,9 @@ function MainState() {
         this.ROWS = 8;
         this.GRIDSTEP = 70;
 
+        this.gameOverIndex = 0; // текущий геймувер
+        this.gameOverIndexDensity = 2; // как часто показывать фуллскрин баннер
+
         var buttonBuilder = ButtonBuilder;
         this.scoreRepository = new ScoreRepository(Repository);
         this.scoreLogic = new ScoreLogic(this.scoreRepository);
@@ -209,6 +212,11 @@ function MainState() {
 
     this.onGameOverNewGameClick = function () {
         this.lockUi(false);
+        this.gameOverIndex++;
+        var showAd = this.gameOverIndex % this.gameOverIndexDensity == 0;
+        if(showAd){
+            ProfitSystem.showFullscreen(); // вызывает фуллскрин каждый второй проигрыщ
+        }
         this.restart();
     };
 
