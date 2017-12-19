@@ -83,9 +83,7 @@ ProfitSystem.showBanner = function () {
         this.androidShowBanner();
     }
     else { // в web-версии показываем ссылку на Google Play
-        if(this.webBanner === undefined){
-            this.webBannerInit();
-        }
+        this.webBannerInit();
         this.webShowBanner();
     }
 };
