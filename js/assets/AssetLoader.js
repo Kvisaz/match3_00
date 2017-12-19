@@ -45,6 +45,7 @@ AssetLoader.preload = function (game) {
     this.loadBitmapFont(R.fonts.robotoBold);
     this.loadPages(R.atlas.common); // загрузка атласов
     this.loadImage(R.images.bg.cristmas);
+    this.loadImage(R.images.ads.googlePlay);
 
     this.loadEffect(R.effects.explosion);
 

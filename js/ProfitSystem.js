@@ -10,6 +10,7 @@ ProfitSystem.init = function (game) {
         this.androidInit();
     }
     else if (AppConfig.gameDistribution) {
+
         this.gdistributionInit();
     }
 };
@@ -78,10 +79,13 @@ ProfitSystem.gdistributionInit = function () {
 
 // -------------------- show bottom Banner on screen --------------------
 ProfitSystem.showBanner = function () {
-    if (this.game.device.android && this.game.device.desktop) {
+    if (this.game.device.android) {
         this.androidShowBanner();
     }
     else { // в web-версии показываем ссылку на Google Play
+        if(this.webBanner === undefined){
+            this.webBannerInit();
+        }
         this.webShowBanner();
     }
 };
@@ -100,18 +104,30 @@ ProfitSystem.androidShowBanner = function () {
     }
 };
 
+
+ProfitSystem.webBannerInit = function () {
+    this.webBanner = ProfitSystem.game.add.image(0, 0, R.images.ads.googlePlay);
+    this.webBanner.inputEnabled = true;
+    this.webBanner.events.onInputDown.add(function () {
+        window.open(AppConfig.googlePlayUrl, "_blank");
+    }, this);
+};
+
 ProfitSystem.webShowBanner = function () {
     // включаем показ баннера в веб-версии на GooglePlay
+    ProfitSystem.game.world.bringToTop(this.webBanner);
+    this.webBanner.alignIn(ProfitSystem.game.world, Phaser.BOTTOM_CENTER, 0, 12);
 };
 
 // -------------------- show fullScreen after gameOver --------------------
 ProfitSystem.showFullscreen = function () {
-    try{
+    try {
         if (AppConfig.gameDistribution && this.game.device.desktop) { // только для Андроида
             this.showGameDistributionFullscreen();
         }
     }
-    catch (e) {}
+    catch (e) {
+    }
 
 };
 

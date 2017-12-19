@@ -31,6 +31,10 @@ var R = {
     },
 
     images: {
+        ads: {
+            googlePlay: "google_play_560x105.png"
+        },
+
         bg: {
             cristmas: "bg_first.png",
         },
