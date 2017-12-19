@@ -106,11 +106,16 @@ ProfitSystem.webShowBanner = function () {
 
 // -------------------- show fullScreen after gameOver --------------------
 ProfitSystem.showFullscreen = function () {
-    if (AppConfig.gameDistribution && this.game.device.desktop) { // только для Андроида
-        this.showGameDistributionFullscreen();
+    try{
+        if (AppConfig.gameDistribution && this.game.device.desktop) { // только для Андроида
+            this.showGameDistributionFullscreen();
+        }
     }
+    catch (e) {}
+
 };
 
 ProfitSystem.showGameDistributionFullscreen = function () {
+    var gdApi = window['gdApi'];
     gdApi.showBanner();
 };
