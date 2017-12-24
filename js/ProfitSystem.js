@@ -10,7 +10,6 @@ ProfitSystem.init = function (game) {
         this.androidInit();
     }
     else if (AppConfig.gameDistribution) {
-
         this.gdistributionInit();
     }
 };

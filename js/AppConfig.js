@@ -6,6 +6,6 @@ var AppConfig = {
     height: 960,
     canvasId: "canvas",
     preloaderId: "preloader",
-    gameDistribution: true,
+    gameDistribution: false,
     googlePlayUrl: "https://play.google.com/store/apps/details?id=ru.zaxx.match3"
 };
