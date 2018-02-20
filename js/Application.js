@@ -7,6 +7,7 @@
  *
  *   каждый аргумент = { name: "boot", state: new BootState() } - к примеру
  */
+
 var App = function (states) {
     var game = new Phaser.Game(PhaserConfig.settings);
     var current, next, i = 0, length = states.length;
@@ -19,5 +20,5 @@ var App = function (states) {
 
 new App([
     {name: States.PRELOADER, state: new Preloader(AssetLoader)}, // загрузчик всех остальных картинок
-    {name: States.START_SCREEN, state: new MainState() } // запуск нашей игры
+    {name: States.START_SCREEN, state: new MainState()} // запуск нашей игры
 ]);

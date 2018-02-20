@@ -40,6 +40,13 @@ Sound.init = function (game, repository) {
         }
     };
 
+    this.game.onPause.add(function () {
+        this.music.mute = true;
+    }, this);
+    this.game.onResume.add(function () {
+        this.music.mute = this.settings.mute.music;
+    }, this, this);
+
     this.loadSettings(); // Загрузка предыдущих настроек, если есть
 };
 
