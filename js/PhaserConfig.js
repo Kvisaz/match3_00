@@ -24,5 +24,12 @@ var PhaserConfig = {
         game.tweens.frameBased = false; // анимации на основе миллисекунд, а не фреймов, по умолчанию и так стоит false
         game.time.advancedTiming = false; // true - позволяет мерять  fps rate, fps min/max, suggestedFps and msMin/msMax. Недорого
         game.forceSingleUpdate = true; // true - Should the game loop force a logic update, regardless of the delta timer
+
+        document.addEventListener('resume', function () {
+            game.onResume.dispatch();
+        }, false);
+        document.addEventListener('pause', function () {
+            game.onPause.dispatch();
+        }, false);
     }
 };
