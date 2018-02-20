@@ -79,6 +79,7 @@ ProfitSystem.gdistributionInit = function () {
 // -------------------- show bottom Banner on screen --------------------
 ProfitSystem.showBanner = function () {
     if (this.game.device.android) {
+        alert("this.game.device.android");
         this.androidShowBanner();
     }
     else { // в web-версии показываем ссылку на Google Play
