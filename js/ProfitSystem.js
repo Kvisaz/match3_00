@@ -23,7 +23,6 @@ ProfitSystem.androidInit = function () {
         Appodeal.enableBannerCallbacks(true);
     }
     catch (e) {
-        alert("androidInit exception "+e);
     }
 };
 
@@ -99,7 +98,6 @@ ProfitSystem.androidShowBanner = function () {
         });
     }
     catch (e) {
-        alert(e);
     }
 };
 
