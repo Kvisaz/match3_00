@@ -15,7 +15,9 @@
     <author email="sergey.zoomaster@gmail.com" href="https://zaxx.ru">Sergey Tokarev</author>
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
     <plugin name="com.appodeal.plugin" spec="2.1.1" />
+    <plugin name="cordova-plugin-crosswalk-webview" spec="2.4.0" />
     <plugin name="cordova-build-architecture" spec="https://github.com/MBuchalik/cordova-build-architecture.git#v1.0.3" source="git" />
+
 
     <content src="index.html" />
     <access origin="*"/>
