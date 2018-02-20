@@ -40,6 +40,13 @@ Sound.init = function (game, repository) {
         }
     };
 
+    document.addEventListener('resume', function() {
+        game.onResume.dispatch();
+    }, false);
+    document.addEventListener('pause', function() {
+        game.onPause.dispatch();
+    }, false);
+
     this.game.onPause.add(function () {
         this.music.mute = true;
     }, this);
